@@ -22,8 +22,8 @@
 
 		{% block stylesheets %}
 			<!--==============================
-																																																																																				        All CSS Files
-																																																																																				      ==============================-->
+																																																									        All CSS Files
+																																																									      ==============================-->
 			<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}"/>
@@ -34,40 +34,6 @@
 
 			<style>
 				/* Loading screen styles */
-				/* Structure du groupe d'inputs */
-				.input-group {
-					position: relative;
-					display: flex;
-					align-items: center;
-					width: 100%;
-				}
-
-				.input-group-append {
-					position: absolute;
-					right: 10px;
-					display: flex;
-					align-items: center;
-					justify-content: center;
-				}
-
-				.input-group-text {
-					cursor: pointer;
-					background-color: transparent;
-					border: none;
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					padding: 0;
-					height: 100%;
-					width: 30px; /* Ajuster la largeur de l'icône pour être plus petite */
-				}
-
-				#eyeIcon {
-					font-size: 18px; /* Ajuste la taille de l'icône */
-					color: #ccc; /* Couleur de l'icône */
-				}
-
-
 				#loading-screen {
 					position: fixed;
 					top: 0;
@@ -113,8 +79,8 @@
 		{% block body %}{% endblock %}
 		{% block javascripts %}
 			<!--==============================
-																																																																																					        All JS Files
-																																																																																					      ==============================-->
+																																																									        All JS Files
+																																																									      ==============================-->
 			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
 			<script src="{{ asset('assets/js/slick.min.js') }}"></script>
 			<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
@@ -147,5 +113,7 @@ loadingScreen.style.display = 'none';
 });
 			</script>
 		{% endblock %}
-		{{ include('includes/footer.html.twig')  }}</body>
-</html></body></html>
+		{{ include('includes/footer.html.twig')  }}
+
+	</body>
+</html>

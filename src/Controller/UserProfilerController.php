@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
 class UserProfilerController extends AbstractController
 {
     #[Route('/user/profiler', name: 'app_user_profiler')]
@@ -16,5 +15,4 @@ class UserProfilerController extends AbstractController
             'controller_name' => 'UserProfilerController',
         ]);
     }
-
 }

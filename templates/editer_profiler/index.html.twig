@@ -1,14 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
 	<div class="signup-wrapper space">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-6">
 					{% if app.user %}
 
-						<form action="{{ path('app_editer_profiler') }}" class="signup-form bg-smoke" method="post" enctype="multipart/form-data" novalidate>
+						<form action="{{ path('app_editer_profiler') }}" class="signup-form bg-smoke" method="post">
 							<h2 class="form-title text-center mb-lg-35">Modifier votre profil</h2>
 
 							<div class="form-group text-center">

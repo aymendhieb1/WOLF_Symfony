@@ -1,0 +1,253 @@
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+<style>
+    .form-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .is-valid {
+        border-color: #28a745 !important;
+    }
+
+    .field-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+
+    .field-success {
+        color: #28a745;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+
+    .btn-disabled {
+        background-color: #6c757d !important;
+        border-color: #6c757d !important;
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+</style>
+
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'forum-form'}}) }}
+    <div class="form-group">
+        {{ form_label(form.name) }}
+        {{ form_widget(form.name, {
+            'attr': {
+                'class': 'form-control' ~ (form.name.vars.valid ? '' : ' is-invalid'),
+                'onkeyup': 'validateName(this.value)',
+                'required': 'required'
+            }
+        }) }}
+        <div class="field-error" id="name-error"></div>
+        <div class="field-success" id="name-success">Nom valide</div>
+        {{ form_errors(form.name, {'attr': {'class': 'form-error'}}) }}
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.createdBy) }}
+        {{ form_widget(form.createdBy, {
+            'attr': {
+                'class': 'form-control',
+                'required': 'required'
+            }
+        }) }}
+        <div class="field-error" id="createdBy-error"></div>
+        {{ form_errors(form.createdBy) }}
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {
+            'attr': {
+                'class': 'form-control',
+                'rows': 5,
+                'onkeyup': 'validateDescription(this.value)',
+                'required': 'required'
+            }
+        }) }}
+        <div class="field-error" id="description-error"></div>
+        <div class="field-success" id="description-success">Description valide</div>
+        {{ form_errors(form.description) }}
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.date_creation) }}
+        {{ form_widget(form.date_creation, {
+            'attr': {
+                'class': 'form-control datetimepicker',
+                'required': 'required'
+            }
+        }) }}
+        <div class="field-error" id="date-error"></div>
+        {{ form_errors(form.date_creation) }}
+    </div>
+    
+    <div class="form-group form-check">
+        {{ form_widget(form.is_private, {'attr': {'class': 'form-check-input'}}) }}
+        {{ form_label(form.is_private) }}
+        {{ form_errors(form.is_private) }}
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.list_members) }}
+        {{ form_widget(form.list_members, {
+            'attr': {
+                'class': 'form-control',
+                'rows': 3,
+                'onkeyup': 'validateMembers(this.value)'
+            }
+        }) }}
+        <div class="field-error" id="members-error"></div>
+        <div class="field-success" id="members-success">Membres valides</div>
+        {{ form_errors(form.list_members) }}
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.post_count) }}
+        {{ form_widget(form.post_count, {
+            'attr': {
+                'class': 'form-control',
+                'readonly': 'readonly'
+            }
+        }) }}
+        {{ form_errors(form.post_count) }}
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.nbr_members) }}
+        {{ form_widget(form.nbr_members, {
+            'attr': {
+                'class': 'form-control',
+                'readonly': 'readonly'
+            }
+        }) }}
+        {{ form_errors(form.nbr_members) }}
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="submit-button" disabled>
+            {{ form.vars.data.forumId ? 'Update' : 'Create' }}
+        </button>
+    </div>
+{{ form_end(form) }}
+
+<script>
+let formValid = {
+    name: false,
+    description: false,
+    members: true
+};
+
+function validateName(name) {
+    const field = document.getElementById('forum_name');
+    const errorLabel = document.getElementById('name-error');
+    
+    if (!name || name.trim() === '') {
+        showError(field, errorLabel, "Le nom est requis");
+        formValid.name = false;
+    } else if (name.length > 20) {
+        showError(field, errorLabel, "Le nom ne doit pas dépasser 20 caractères");
+        formValid.name = false;
+    } else if (!name.match(/^[a-zA-Z0-9\s]+$/)) {
+        showError(field, errorLabel, "Le nom ne doit contenir que des lettres, chiffres et espaces");
+        formValid.name = false;
+    } else {
+        hideError(field, errorLabel);
+        formValid.name = true;
+    }
+    updateSubmitButton();
+}
+
+function validateDescription(description) {
+    const field = document.getElementById('forum_description');
+    const errorLabel = document.getElementById('description-error');
+    
+    if (!description || description.trim() === '') {
+        showError(field, errorLabel, "La description est requise");
+        formValid.description = false;
+    } else if (description.length > 500) {
+        showError(field, errorLabel, "La description ne doit pas dépasser 500 caractères");
+        formValid.description = false;
+    } else {
+        hideError(field, errorLabel);
+        formValid.description = true;
+    }
+    updateSubmitButton();
+}
+
+function validateMembers(members) {
+    const field = document.getElementById('forum_list_members');
+    const errorLabel = document.getElementById('members-error');
+    
+    if (members && members.trim() !== '') {
+        const memberList = members.split(',').map(m => m.trim());
+        if (memberList.some(m => m.length > 50)) {
+            showError(field, errorLabel, "Chaque email ne doit pas dépasser 50 caractères");
+            formValid.members = false;
+        } else if (memberList.some(m => !m.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))) {
+            showError(field, errorLabel, "Format d'email invalide");
+            formValid.members = false;
+        } else {
+            hideError(field, errorLabel);
+            formValid.members = true;
+        }
+    } else {
+        hideError(field, errorLabel);
+        formValid.members = true;
+    }
+    updateSubmitButton();
+}
+
+function showError(field, errorLabel, message) {
+    field.classList.remove('is-valid');
+    field.classList.add('is-invalid');
+    errorLabel.textContent = message;
+    errorLabel.style.display = 'block';
+    
+    // Hide success message if exists
+    const successLabel = document.getElementById(errorLabel.id.replace('-error', '-success'));
+    if (successLabel) {
+        successLabel.style.display = 'none';
+    }
+}
+
+function hideError(field, errorLabel) {
+    field.classList.remove('is-invalid');
+    field.classList.add('is-valid');
+    errorLabel.style.display = 'none';
+    
+    // Show success message if exists
+    const successLabel = document.getElementById(errorLabel.id.replace('-error', '-success'));
+    if (successLabel) {
+        successLabel.style.display = 'block';
+    }
+}
+
+function updateSubmitButton() {
+    const submitBtn = document.getElementById('submit-button');
+    const isValid = formValid.name && formValid.description && formValid.members;
+    
+    submitBtn.disabled = !isValid;
+    submitBtn.classList.toggle('btn-disabled', !isValid);
+}
+
+// Initialize validation on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const nameField = document.getElementById('forum_name');
+    const descriptionField = document.getElementById('forum_description');
+    const membersField = document.getElementById('forum_list_members');
+    
+    if (nameField) validateName(nameField.value);
+    if (descriptionField) validateDescription(descriptionField.value);
+    if (membersField) validateMembers(membersField.value);
+});
+</script>

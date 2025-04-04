@@ -2,23 +2,21 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Vehicule;
+use App\Form\VehiculeType;
+use App\Repository\VehiculeRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Vehicule;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class BackVehiculeController extends AbstractController
+class VehiculeController extends AbstractController
 {
-    #[Route('/back/vehicule', name: 'app_back_vehicule')]
-    public function index(EntityManagerInterface $entityManager): Response
+    #[Route('/vehicule', name: 'app_vehicule_index')]
+    public function index(VehiculeRepository $vehiculeRepository): Response
     {
-        $VehiculeRepository = $entityManager->getRepository(Vehicule::class);
-        $vehicule = $VehiculeRepository->findAll();
-
         return $this->render('back_vehicule/TableVehicule.html.twig', [
-            'controller_name' => 'BackVehiculeController',
-            'vehicules' =>$vehicule ,
+            'vehicules' => $vehiculeRepository->findAll(),
         ]);
     }
 
@@ -68,4 +66,3 @@ final class BackVehiculeController extends AbstractController
         ]);
     }
 }
-
