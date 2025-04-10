@@ -1,0 +1,207 @@
+{% extends 'base1.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        .modal-backdrop.fade.show {
+            opacity: 0.5;
+        }
+        .material-datatables {
+            padding: 20px 0;
+        }
+        .btn-just-icon {
+            padding: 8px;
+            min-width: auto;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Flash Messages -->
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <!-- Modal Trigger Buttons -->
+    <div class="text-right mt-3">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newForumModal">
+            <i class="material-icons">add</i> Create New Forum
+        </button>
+    </div>
+
+    <!-- New Forum Modal -->
+    <div class="modal fade" id="newForumModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Forum</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('forum/_form.html.twig', {form: create_form}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Forum Modal -->
+{% for forum in forums %}
+<div class="modal fade" id="editForumModal{{ forum.forumId }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Forum</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if edit_forms[forum.forumId] is defined %}
+                    {{ include('forum/_form.html.twig', {form: edit_forms[forum.forumId]}) }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+    <!-- Forum Table -->
+    <div class="material-datatables" style="overflow-x: auto; white-space: nowrap;">
+        <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Created By</th>
+                    <th>Posts</th>
+                    <th>Members</th>
+                    <th>Description</th>
+                    <th>Private</th>
+                    <th>date creation</th>
+                    <th>list_members</th>
+
+                    <th class="disabled-sorting text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for forum in forums %}
+                    <tr>
+                        <td>{{ forum.name }}</td>
+                        <td>{{ forum.createdBy.mail }}</td>
+                        <td>{{ forum.postCount }}</td>
+                        <td>{{ forum.nbrMembers }}</td>
+                        <td>{{ forum.description|slice(0, 50) }}{% if forum.description|length > 50 %}...{% endif %}</td>
+                        <td>{{ forum.isPrivate ? 'Yes' : 'No' }}</td>
+                        <td>{{ forum.DateCreation|date('Y-m-d') }}</td>
+                        <td></td>
+                        <td class="text-right">
+                            <button type="button" class="btn btn-link btn-info btn-just-icon edit" data-toggle="modal" data-target="#editForumModal{{ forum.forumId }}">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            
+                            <form method="POST" action="{{ path('app_back_forum_delete', {'forum_id': forum.forumId}) }}" style="display: inline-block;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ forum.forumId) }}">
+                                <button type="submit" class="btn btn-link btn-danger btn-just-icon remove" onclick="return confirm('Are you sure you want to delete this forum?');">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">No forums found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- jQuery, Popper.js, and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Handle form submission
+            $(document).on('submit', '#forum-form', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const forumId = $('#forum_forumId').val();
+                const url = forumId ? `/back/forum/edit/${forumId}` : '/back/forum/new';
+
+                // Validate form before submission
+                const name = $('#forum_name').val();
+                const description = $('#forum_description').val();
+                
+                if (!name || name.trim() === '') {
+                    alert('Le nom du forum est requis');
+                    return;
+                }
+                
+                if (!description || description.trim() === '') {
+                    alert('La description est requise');
+                    return;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            $('#newForumModal, #editForumModal').modal('hide');
+                            location.reload(); // Refresh the page to show updated data
+                        } else {
+                            // Handle validation errors
+                            if (response.errors) {
+                                Object.keys(response.errors).forEach(field => {
+                                    const errorDiv = $(`#${field}-error`);
+                                    errorDiv.text(response.errors[field]);
+                                    errorDiv.show();
+                                });
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error submitting form:', error);
+                        alert('Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.');
+                    }
+                });
+            });
+
+            // Initialize modals
+            $('.modal').on('shown.bs.modal', function() {
+                const form = $(this).find('form');
+                if (form.length) {
+                    const nameField = form.find('#forum_name');
+                    const descriptionField = form.find('#forum_description');
+                    const membersField = form.find('#forum_list_members');
+                    
+                    if (nameField.length) validateName(nameField.val());
+                    if (descriptionField.length) validateDescription(descriptionField.val());
+                    if (membersField.length) validateMembers(membersField.val());
+                }
+            });
+        });
+    </script>
+{% endblock %}
