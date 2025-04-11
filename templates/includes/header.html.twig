@@ -1,0 +1,306 @@
+<header class="vs-header header-layout1">
+	<div class="container">
+		<div class="header-top">
+			<div class="row justify-content-between align-items-center">
+				<div class="col d-none d-lg-block">
+					<ul class="header-contact">
+						<li>
+							<i class="fas fa-envelope"></i>
+							<a href="mailto:info@travolo.com">TripToGo2025@gmail.com</a>
+						</li>
+						<li>
+							<i class="fas fa-phone-alt"></i>
+							<a href="tel:02073885619">+216 56 581 222</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-auto">
+					<div class="header-social">
+						<a href="#">
+							<i class="fab fa-facebook-f"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-instagram"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-pinterest-p"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-twitter"></i>
+						</a>
+					</div>
+				</div>
+				{% if app.user %}
+					<div class="dropdown col-auto d-flex">
+						<button class="btn dropdown-toggle user-btn" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="far fa-user-circle"></i>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="userMenu">
+							<li>
+								<a class="dropdown-item" href="{{ path('app_user_profiler') }}">Mon Profil</a>
+							</li>
+							<li>
+								<a class="dropdown-item logout" href="{{ path('app_logout') }}">Se déconnecter</a>
+							</li>
+						</ul>
+					</div>
+				{% else %}
+					<div class="col-auto d-flex">
+						<a class="btn user-btn" href="{{ path('app_seconnecter') }}">
+							<i class="far fa-user-circle"></i>
+						</a>
+					</div>
+				{% endif %}
+
+
+			</div>
+		</div>
+	</div>
+	<div class="sticky-wrapper">
+		<div class="sticky-active">
+			<div class="container position-relative z-index-common">
+				<div class="row align-items-center justify-content-between">
+					<div class="col-auto">
+						<div class="vs-logo">
+							<a href="{{path('app_home')}}">
+								<img src="{{ asset('assets/img/primary.png') }}" alt="logo"/>
+							</a>
+						</div>
+					</div>
+					<div class="col text-end text-xl-center">
+						<nav class="main-menu menu-style1 d-none d-lg-block">
+							<ul>
+								<!-- Toujours afficher Accueil -->
+								<li>
+									<a href="{{ path('app_home') }}">Accueil</a>
+								</li>
+
+
+								<!-- Si l'utilisateur est connecté, afficher le menu complet -->
+								<li class="menu-item-has-children">
+									<a href="#">Destinations</a>
+									<ul class="sub-menu">
+										<li>
+											{% if app.user %}
+												<a href="about.html">Destinations</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													Destinations
+												</a>
+											{% endif %}
+										</li>
+										<li>
+											{% if app.user %}
+												<a href="about.html">Détails des destinations</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													Détails des destinations
+												</a>
+											{% endif %}
+										</li>
+									</ul>
+								</li>
+								<li class="menu-item-has-children mega-menu-wrap">
+									<a href="#">Les pages</a>
+									<ul class="mega-menu">
+
+										<li>
+											<a href="#">Liste des pages 1</a>
+											<ul></li>
+											{% if app.user %}
+												<a href="about.html">À propos de nous</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													À propos de nous
+												</a>
+											{% endif %}
+										</li>
+										<li></li>
+										<li>
+											{% if app.user %}
+												<a href="about.html">Destinations</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													Destinations
+												</a>
+											{% endif %}
+										</li>
+										<li>
+											{% if app.user %}
+												<a href="about.html">Détails des destinations</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													Détails des destinations
+												</a>
+											{% endif %}
+										</li>
+
+										<li>
+											{% if app.user %}
+												<a href="about.html">Liste des tours</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													List des tours
+												</a>
+											{% endif %}
+										</li>
+										<li>
+											{% if app.user %}
+												<a href="about.html">Réservation de tours</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													Réservation de tours
+												</a>
+											{% endif %}
+										</li>
+									</ul>
+								</li>
+
+								<li>
+									<a href="#">Liste des pages 2</a>
+									<ul>
+
+										<li>
+											{% if app.user %}
+												<a href="about.html">Grille des blogs</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													Grille des blogs
+												</a>
+											{% endif %}
+										</li>
+										<li>
+											{% if app.user %}
+												<a href="about.html">Détails du blog</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													Détails du blog
+												</a>
+											{% endif %}
+										</li>
+
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li class="menu-item-has-children">
+							<a href="#">Tours</a>
+							<ul class="sub-menu">
+								<li>
+									{% if app.user %}
+										<a href="about.html">Liste des tours</a>
+									{% else %}
+										<a href="{{ path('app_seconnecter') }}">
+											Liste des tours
+										</a>
+									{% endif %}
+								</li>
+								<li>
+									{% if app.user %}
+										<a href="about.html">Réservation de tours</a>
+									{% else %}
+										<a href="{{ path('app_seconnecter') }}">
+											Réservation de tours
+										</a>
+									{% endif %}
+								</li>
+							</ul>
+						</li>
+
+
+						<!-- Toujours afficher Contact -->
+						<li>
+							<a href="contact.html">Contact</a>
+						</li>
+					</ul>
+				</nav>
+				<button class="vs-menu-toggle d-inline-block d-lg-none">
+					<i class="fal fa-bars"></i>
+				</button>
+			</div>
+
+
+			<div class="col-auto d-none d-xl-block">
+				<div class="header-btns">
+					<button class="searchBoxTggler">
+						<i class="fal fa-search"></i>
+					</button>
+					<button class="sideCartToggler">
+						<i class="fal fa-shopping-bag"></i>
+						<span class="button-badge">2</span>
+					</button>
+					<button class="sideMenuToggler">
+						<i class="fal fa-bars"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<style>
+		/* Style général du dropdown */
+		.dropdown-menu {
+			background-color: var(--theme-color2);
+			border: 1px solid var(--theme-color);
+			border-radius: 4px;
+			padding: 0;
+			margin: 0;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+		}
+
+		/* Suppression du style par défaut de la liste */
+		.dropdown-menu li {
+			list-style: none;
+		}
+
+		/* Style de chaque item du menu */
+		.dropdown-item {
+			display: block;
+			padding: 10px 15px;
+			color: #ffffff; /* Texte en blanc pour le contraste */
+			text-decoration: none;
+			transition: background-color 0.3s, color 0.3s;
+		}
+
+		/* Effet de survol et focus pour un retour visuel interactif */
+		.dropdown-item:hover,
+		.dropdown-item:focus {
+			background-color: var(--theme-color);
+			color: #ffffff;
+		}
+
+		/* Optionnel : style pour l'item actif */
+		.dropdown-item.active,
+		.dropdown-item:active {
+			background-color: var(--theme-color);
+			color: #ffffff;
+		}
+	</style>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+	<!-- Script JavaScript pour afficher la confirmation -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+var logoutLink = document.querySelector('.logout');
+
+logoutLink.addEventListener('click', function (e) { // Empêche le comportement par défaut du lien
+e.preventDefault();
+
+// Affiche la boîte de dialogue SweetAlert2
+Swal.fire({
+title: 'Déconnexion',
+text: 'Vous voulez vraiment vous déconnecter ?',
+icon: 'warning',
+showCancelButton: true,
+confirmButtonColor: ' #ff681a',
+cancelButtonColor: '#132a3e',
+confirmButtonText: 'Oui, déconnectez-moi',
+cancelButtonText: 'Annuler'
+}).then((result) => {
+if (result.isConfirmed) {
+window.location.href = logoutLink.getAttribute('href');
+}
+});
+});
+});
+	</script>
+</div></div></header>

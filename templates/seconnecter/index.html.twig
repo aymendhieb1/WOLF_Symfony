@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+	<!--********************************
+																					  Code Start From Here 
+																						******************************** -->
+
+
+	<!--==============================
+																					    Sidemenu
+																					    ============================== -->
+		<div class="sidemenu-wrapper offcanvas-wrapper d-none d-lg-block"> <div class="sidemenu-content">
+			<button class="closeButton sideMenuCls">
+				<i class="far fa-times"></i>
+			</button>
+			<div class="widget">
+				<div class="vs-widget-about">
+					<div class="footer-logo">
+						<a href="index.html"><img src="assets/img/logo.svg" alt="Travolo"/></a>
+					</div>
+					<p class="footer-text">
+						Ut tellus dolor, dapibus eget, elementum ifend cursus eleifend,
+																																																																																																																														              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
+																																																																																																																														              end cursus eleifendrpis.
+					</p>
+					<div class="info-social style2">
+						<a href="#">
+							<i class="fab fa-facebook-f"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-twitter"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-linkedin-in"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-google"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="widget">
+				<h3 class="widget_title">Recent Articles</h3>
+				<div class="recent-post-wrap">
+					<div class="recent-post">
+						<div class="media-img">
+							<a href="blog-details.html"><img src="assets/img/blog/recent-post1.jpg" alt="Blog Image"/></a>
+						</div>
+						<div class="media-body">
+							<div class="recent-post-meta">
+								<i class="fal fa-calendar-alt"></i>
+								<a href="blog.html">December 15, 2022</a>
+							</div>
+							<h4 class="post-title">
+								<a class="text-inherit" href="blog-details.html">We are Giving Amazing Tour for VIP</a>
+							</h4>
+						</div>
+					</div>
+					<div class="recent-post">
+						<div class="media-img">
+							<a href="blog-details.html"><img src="assets/img/blog/recent-post2.jpg" alt="Blog Image"/></a>
+						</div>
+						<div class="media-body">
+							<div class="recent-post-meta">
+								<i class="fal fa-calendar-alt"></i>
+								<a href="blog.html">March 13, 2022</a>
+							</div>
+							<h4 class="post-title">
+								<a class="text-inherit" href="blog-details.html">The journey journal chronicles of a wandering soul</a>
+							</h4>
+						</div>
+					</div>
+					<div class="recent-post">
+						<div class="media-img">
+							<a href="blog-details.html"><img src="assets/img/blog/recent-post3.jpg" alt="Blog Image"/></a>
+						</div>
+						<div class="media-body">
+							<div class="recent-post-meta">
+								<i class="fal fa-calendar-alt"></i>
+								<a href="blog.html">Augest 23, 2022</a>
+							</div>
+							<h4 class="post-title">
+								<a class="text-inherit" href="blog-details.html">Roam And Revel captivating at tellus.</a>
+							</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--==============================
+																					    Cart Side bar
+																					  ============================== -->
+	<div class="sideCart-wrapper offcanvas-wrapper d-none d-lg-block">
+		<div class="sidemenu-content">
+			<button class="closeButton border-theme bg-theme-hover sideMenuCls">
+				<i class="far fa-times"></i>
+			</button>
+			<div class="widget widget_shopping_cart">
+				<h3 class="widget_title">Shopping cart</h3>
+				<div class="widget_shopping_cart_content">
+					<ul class="cart_list">
+						<li class="mini_cart_item">
+							<a href="shop.html" class="remove">
+								<i class="fal fa-trash-alt"></i>
+							</a>
+							<a href="shop.html"><img src="assets/img/products/p-1-1.png" alt="Cart Image"/>Modern Cow Boy Hat</a>
+							<span class="quantity">
+								1 ×
+								<span class="amount">
+									<span>$</span>100.00</span>
+							</span>
+						</li>
+						<li class="mini_cart_item">
+							<a href="shop.html" class="remove">
+								<i class="fal fa-trash-alt"></i>
+							</a>
+							<a href="shop.html"><img src="assets/img/products/p-1-2.png" alt="Cart Image"/>Cat Eye Sunglasses</a>
+							<span class="quantity">
+								1 ×
+								<span class="amount">
+									<span>$</span>10.00</span>
+							</span>
+						</li>
+					</ul>
+					<div class="total">
+						<strong>Subtotal:</strong>
+						<span class="amount">
+							<span>$</span>110.00</span>
+					</div>
+					<div class="buttons">
+						<a href="cart.html" class="vs-btn style4">View cart</a>
+						<a href="checkout.html" class="vs-btn style4">Checkout</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--==============================
+																					    Popup Search Box
+																					    ============================== -->
+	<div class="popup-search-box d-none d-lg-block">
+		<button class="searchClose">
+			<i class="fal fa-times"></i>
+		</button>
+		<form action="#">
+			<input type="text" class="border-theme" placeholder="What are you looking for"/>
+			<button type="submit">
+				<i class="fal fa-search"></i>
+			</button>
+		</form>
+	</div>
+
+
+	<!-- Hero Area Start -->
+	<div class="breadcumb-wrapper" style="
+																																																															        background-color: rgba(
+																																																															          19,
+																																																															          42,
+																																																															          62
+																																																															        ); /* Fond avec couleur #132a3e et opacité 0.5 */
+																																																															        background-size: cover; /* Si vous voulez que l'arrière-plan couvre toute la zone */
+																																																															        background-position: center; /* Centrer l'image de fond */
+																																																															        background-repeat: no-repeat; /* Empêche la répétition de l'image */
+																																																															      ">
+		<div class="container z-index-common">
+			<div class="breadcumb-content">
+				<h1 class="breadcumb-title">Se connecter</h1>
+				<div class="breadcumb-menu-wrap">
+					<ul class="breadcumb-menu">
+						<li>
+							<a href="index.html">Accueil</a>
+						</li>
+						<li>Se connecter</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Hero Area End -->
+
+	<!-- Sign Up Area Start -->
+	<div class="signup-wrapper space">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-6">
+					<form action="{{ path('app_seconnecter') }}" class="signup-form bg-smoke" method="post" novalidate>
+
+						<h2 class="form-title text-center mb-lg-35">Se connecter</h2>
+						<div class="form-group">
+							<label for="loginUserId" class="sr-only">Adresse e-mail*</label>
+							<input type="text" class="form-control" placeholder="Adresse e-mail*" id="loginUserId" name="mail" value="{{last_username}}"/>
+						</div>
+						<div class="form-group">
+							<label for="loginUserPass" class="sr-only">Mot de passe*</label>
+							<input type="password" class="form-control" placeholder="Mot de passe*" id="loginUserPass" name="mdp"/>
+						</div>
+						<div class="form-group">
+							<input type="checkbox" name="loginRemember" id="loginRemember"/>
+						</div>
+						<div class="form-group mb-0 text-center">
+							<button class="vs-btn mask-style1 w-100 style4" type="submit">
+								Se connecter
+							</button>
+							<div class="bottom-links link-inherit d-md-flex justify-content-between mt-3">
+								<a href="#" class="recovery-link mb-2 mb-md-0">Mot de passe oublié ?</a>
+								<a href="{{ path('app_sinscrire') }}">Ou Créer un compte</a>
+							</div>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Sign Up Area End -->
+
+
+	<!--********************************
+																					  Code Ends Here 
+																						******************************** -->
+
+	<!-- Scroll To Top -->
+		<a href="#" class="scrollToTop scroll-btn"> <i class="far fa-arrow-up"></i>
+	</a>
+
+
+{% endblock %}

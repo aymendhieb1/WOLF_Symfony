@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+	{{ parent() }}
+
+	<style>
+		/* Police et fond général pour améliorer la lisibilité */
+		body {
+			font-family: 'Roboto', sans-serif;
+			background-color: #f9f9f9;
+		}
+
+		/* Encapsulation spécifique à la page profil */
+		.profile-page {
+			padding: 40px 20px;
+		}
+
+		.profile-page .profile-container {
+			max-width: 1200px;
+			margin: 40px auto;
+			padding: 40px;
+			background-color: #fff;
+			border-radius: 12px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			display: flex;
+			overflow: hidden;
+			transition: transform 0.3s ease;
+		}
+
+		.profile-page .profile-container:hover {
+			transform: scale(1.02);
+		}
+
+		.profile-page .profile-left {
+			flex: 0 0 300px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding-right: 40px;
+			border-right: 2px solid #e0e0e0;
+		}
+
+		/* Nouveau style pour l'image de profil */
+		.profile-page .profile-pic {
+			width: 250px;
+			height: 250px;
+			object-fit: cover;
+			border-radius: 50%;
+			border: 6px solid #fff;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease;
+		}
+
+		.profile-page .profile-pic:hover {
+			transform: scale(1.05);
+		}
+
+		.profile-page .profile-right {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding-left: 40px;
+		}
+
+		.profile-page .profile-right h2 {
+			font-size: 28px;
+			margin-bottom: 20px;
+			color: #333;
+			border-bottom: 2px solid var(--theme-color);
+			padding-bottom: 10px;
+		}
+
+		.profile-page .info-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 40px;
+			row-gap: 20px;
+			margin-bottom: 30px;
+		}
+
+		.profile-page .info-item {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.profile-page .info-item span.label {
+			font-weight: 600;
+			font-size: 16px;
+			margin-bottom: 5px;
+			color: #666;
+		}
+
+		.profile-page .info-item span.value {
+			font-weight: bold;
+			font-size: 18px;
+			color: var(--theme-color);
+		}
+
+		.profile-page .edit-btn {
+			display: inline-block;
+			padding: 12px 25px;
+			border-radius: 4px;
+			background-color: var(--theme-color);
+			color: #fff;
+			text-decoration: none;
+			font-weight: bold;
+			transition: background-color 0.3s ease, transform 0.3s ease;
+			text-align: center;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			margin-top: 20px;
+		}
+
+		.profile-page .edit-btn:hover {
+			background-color: #e35f16;
+			transform: translateY(-3px);
+		}
+
+		/* Responsive adjustments */
+		@media(max-width: 768px) {
+			.profile-page .profile-container {
+				flex-direction: column;
+				padding: 20px;
+			}
+
+			.profile-page .profile-left {
+				padding-right: 0;
+				border-right: none;
+				margin-bottom: 20px;
+			}
+
+			.profile-page .profile-right {
+				padding-left: 0;
+			}
+
+			.profile-page .info-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+{% endblock %}
+{% block body %}
+
+	<div class="profile-page">
+		<div
+			class="profile-container">
+			<!-- Section de gauche : photo -->
+			<div
+				class="profile-left">
+				<!-- Ajout de la classe "profile-pic" pour cibler ce style -->
+				{% if app.user.photoProfil %}
+					<img class="profile-pic" src="{{ asset('uploads/profile/' ~ app.user.photoProfil) }}" alt="Photo de profil">
+				{% else %}
+					<img class="profile-pic" src="{{ asset('assets/img/your-profile-picture.png') }}" alt="Photo de profil">
+				{% endif %}
+			</div>
+
+			<!-- Section de droite : informations utilisateur -->
+			<div class="profile-right">
+				<div class="info-grid">
+					{% if app.user %}
+						<div class="info-item">
+							<span class="label">Nom :</span>
+							<span class="value">{{ app.user.nom|upper }}</span>
+						</div>
+						<div class="info-item">
+							<span class="label">Prénom :</span>
+							<span class="value">{{ app.user.prenom|upper }}</span>
+						</div>
+						<div class="info-item">
+							<span class="label">E-mail :</span>
+							<span class="value">{{ app.user.mail }}</span>
+						</div>
+						<div class="info-item">
+							<span class="label">Téléphone :</span>
+							<span class="value">{{ app.user.numTel }}</span>
+						</div>
+					{% else %}
+						<div class="info-item">
+							<span class="label">Nom :</span>
+							<span class="value">Non disponible</span>
+						</div>
+						<!-- Répétez pour les autres informations -->
+					{% endif %}
+				</div>
+				<a href="{{path('app_editer_profiler')}}" class="edit-btn">Éditer profil</a>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}

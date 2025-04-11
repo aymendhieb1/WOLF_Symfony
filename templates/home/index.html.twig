@@ -1,0 +1,1139 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+	<!--********************************
+																																																			    Code Start From Here 
+																																																			    ******************************** -->
+
+
+	<!--==============================
+																																																			      Popup Search Box
+																																																			    ============================== -->
+		<div class="popup-search-box d-none d-lg-block"> <button class="searchClose">
+			<i class="fal fa-times"></i>
+		</button>
+		<form action="#">
+			<input type="text" class="border-theme" placeholder="What are you looking for"/>
+			<button type="submit">
+				<i class="fal fa-search"></i>
+			</button>
+		</form>
+	</div>
+
+
+	<!--==============================
+																																																			    Hero Area Start 
+																																																			  ==============================-->
+	<section class="hero-layout" data-bg-src="{{ asset('assets/img/banner/banner-bg-1.png') }}">
+		<div class="hero-mask">
+			<div class="vs-carousel" id="hero-slider" data-slide-show="1" autoplay="false">
+				<div class="hero-slide">
+					<div class="container">
+						<div class="row align-items-center justify-content-between">
+							<div class="col-lg-6">
+								<div class="hero-content">
+									<span class="hero-subtitle">Allons-y maintenant</span>
+									<h1 class="hero-title">
+										Explore le monde et découvre sa beauté
+									</h1>
+									<p class="hero-text">
+										Partez à l'aventure à travers les paysages les plus
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      magnifiques de la planète. Que ce soit en montagne, au
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      bord de la mer ou en pleine nature, chaque endroit a une
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      histoire à raconter. Osez découvrir de nouveaux horizons
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      et laissez-vous émerveiller par la richesse du monde qui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      vous entoure.
+									</p>
+
+									{% if app.user %}
+										<a href="about.html" class="vs-btn style4">En savoir plus</a>
+									{% else %}
+										<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+											En savoir plus
+										</a>
+									{% endif %}
+
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="hero-img">
+									<img class="img1" src="https://www.triptogo.com/images/promotion/turkey/bg-card-turkey.png" alt="hero"/>
+									<img class="img2" src="https://www.triptogo.com/images/promotion/southern-africa/southern_africa_card.jpg" alt="hero"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="hero-slide">
+					<div class="container">
+						<div class="row align-items-center justify-content-between">
+							<div class="col-lg-6">
+								<div class="hero-content">
+									<span class="hero-subtitle">Allons-y maintenant</span>
+									<h1 class="hero-title">Lancez votre aventure imaginaire</h1>
+									<p class="hero-text">
+										Partez à la découverte d’un monde rempli de mystères et de
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      merveilles. Chaque pas vous rapproche d’une nouvelle
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      expérience, d’une légende à vivre et d’un rêve à réaliser.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      Laissez votre imagination vous guider.
+									</p>
+									<a href="about.html">En savoir plus</a>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="hero-img">
+									<img class="img1" src="https://www.triptogo.com/images/promotion/home_japan.jpg" alt="hero"/>
+									<img class="img2" src="https://www.triptogo.com/images/promotion/home_egypt.jpg" alt="hero"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="hero-slide">
+					<div class="container">
+						<div class="row align-items-center justify-content-between">
+							<div class="col-lg-6">
+								<div class="hero-content">
+									<span class="hero-subtitle">Allons-y maintenant</span>
+									<h1 class="hero-title">
+										Découvrir des histoires, un voyage à la fois
+									</h1>
+									<p class="hero-text">
+										Chaque destination cache un récit unique qui n’attend qu’à
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      être exploré. Partez à la rencontre de cultures
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      fascinantes, de paysages inoubliables et d’expériences qui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      marquent une vie. Le monde regorge d’histoires à vivre.
+									</p>
+									<a href="about.html">En savoir plus</a>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="hero-img">
+									<img class="img1" src="https://www.triptogo.com/images/promotion/home_taiwan.jpg" alt="hero"/>
+									<img class="img2" src="https://www.triptogo.com/images/promotion/home_egypt.jpg" alt="hero"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="slide-count vs-slider-tab" data-asnavfor="#hero-slider">
+				<button class="tab-btn active">1</button>
+				<button class="tab-btn">2</button>
+				<button class="tab-btn">3</button>
+			</div>
+
+			<div class="hero-bottom">
+				<div class="container">
+					<form class="hero-form">
+						<div class="row">
+							<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+								<div class="form-group">
+									<i class="fas fa-compass"></i>
+									<input type="text" placeholder="Où aller ?"/>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+								<div class="form-group">
+									<i class="fas fa-calendar-alt"></i>
+									<select class="form-select" name="name">
+										<option value="" selected="selected" disabled="disabled" hidden="">
+											Sélectionnez le mois
+										</option>
+										<option value="">Janvier</option>
+										<option value="">Février</option>
+										<option value="">Mars</option>
+										<option value="">Avril</option>
+										<option value="">Mai</option>
+										<option value="">Juin</option>
+										<option value="">Juillet</option>
+										<option value="">Août</option>
+										<option value="">Septembre</option>
+										<option value="">Octobre</option>
+										<option value="">Novembre</option>
+										<option value="">Décembre</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+								<div class="form-group">
+									<i class="fas fa-thumbtack"></i>
+									<select class="form-select" name="name">
+										<option value="" selected="selected" disabled="disabled" hidden="">
+											Sélectionner un type
+										</option>
+										<option value="">Aventure</option>
+										<option value="">Combiné</option>
+										<option value="">Sportif</option>
+										<option value="">National</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+								{% if app.user %}
+									<a href="about.html" class="vs-btn style4">Trouver maintenant</a>
+								{% else %}
+									<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+										Trouver maintenant
+									</a>
+								{% endif %}
+							</div>
+
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- ============================
+																																																			      Hero Area End 
+																																																			    ==============================-->
+
+	<!--==============================
+																																																			    About Blog Area Start 
+																																																			  ==============================-->
+	<div class="space-top space-extra-bottom blog-wrapper1 shape-mockup-wrap">
+		<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-5%" data-left="-5%">
+			<img src="assets/img/shape/circle1.png" alt="circle"/>
+		</div>
+		<div class="shape-mockup d-none d-xl-block jump z-index-negative" data-bottom="5%" data-right="5%">
+			<img src="assets/img/shape/Dot.png" alt="Dots"/>
+		</div>
+		<div class="container">
+			<div class="row justify-content-center text-center">
+				<div class="col-xxl-6 col-xl-7 col-lg-8 wow fadeInUp" data-wow-delay="0.3s">
+					<div class="title-area">
+						<span class="sec-subtitle">Conseils essentiels pour le voyage
+						</span>
+						<h2 class="sec-title h1">
+							Conseils géniaux pour rendre votre voyage magnifique
+						</h2>
+					</div>
+				</div>
+			</div>
+			<div class="blog-style4">
+				<div class="blog-image">
+					<img src="assets/img/passport.jpg" alt="blog image"/>
+					<div class="category-tag">
+						<a href="#">
+							<i class="fas fa-tag"></i>Conseils
+						</a>
+					</div>
+				</div>
+				<div class="blog-content" data-bg-src="assets/img/shape/blog-bg.png">
+					<a class="blog-date" href="blog-details.html">
+						<i class="far fa-calendar-alt"></i>
+						Planifiez à l’avance</a>
+					<h3 class="blog-title">
+						<a href="blog-details.html">Réservez vos billets, logements et activités tôt pour éviter
+																																																																																																																																																																																																																																																																																																																																																																					                les mauvaises surprises.</a>
+					</h3>
+
+					{% if app.user %}
+						<a href="about.html" class="vs-btn style4">En savoir plus</a>
+					{% else %}
+						<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+							En savoir plus
+						</a>
+					{% endif %}
+				</div>
+			</div>
+			<div class="blog-style4">
+				<div class="blog-image">
+					<img src="assets/img/checklist.jpg" alt="blog image"/>
+					<div class="category-tag">
+						<a href="#">
+							<i class="fas fa-tag"></i>Conseils</a>
+					</div>
+				</div>
+				<div class="blog-content" data-bg-src="assets/img/shape/blog-bg.png">
+					<a class="blog-date" href="blog-details.html">
+						<i class="far fa-calendar-alt"></i>
+						Faites une liste de
+																																																																																																																																																																																																																																																																																																																		              vérification (checklist)</a>
+					<h3 class="blog-title">
+						<a href="blog-details.html">Notez ce que vous devez emporter : passeport, argent,
+																																																																																																																																																																																																																																																																																																																																																																					                chargeurs, vêtements, etc.
+						</a>
+					</h3>
+
+					{% if app.user %}
+						<a href="about.html" class="vs-btn style4">En savoir plus</a>
+					{% else %}
+						<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+							En savoir plus
+						</a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--==============================
+																																																			    About Blog Area End 
+																																																			  ==============================-->
+
+	<!--==============================
+																																																			      Tour Package Area Start 
+																																																			    ==============================-->
+	<section class="space bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
+		<div class="shape-mockup d-none d-xl-block jump z-index-negative" data-bottom="20%" data-left="5%">
+			<img src="assets/img/shape/Dot.png" alt="Dots"/>
+		</div>
+		<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-bottom="-5%" data-right="-5%">
+			<img src="assets/img/shape/circle1.png" alt="Circle"/>
+		</div>
+		<div class="shape-mockup d-none d-xl-block ripple-animation z-index-negative" data-top="10%" data-left="10%">
+			<img src="assets/img/shape/Plane.png" alt="plane"/>
+		</div>
+		<div class="container">
+			<div class="row justify-content-center text-center">
+				<div class="col-xl-6 col-lg-8 wow fadeInUp" data-wow-delay="0.3s">
+					<div class="title-area">
+						<span class="sec-subtitle">Visites impressionnantes</span>
+						<h2 class="sec-title h1">Meilleur forfait vacances</h2>
+						<p class="sec-text">
+							Découvrez nos offres exceptionnelles pour vivre des vacances
+																																																																																																																																																																																																																																																																																																																																																																					                inoubliables. Que ce soit pour l'aventure, la détente ou la
+																																																																																																																																																																																																																																																																																																																																																																					                découverte culturelle, nous avons le forfait idéal pour vous.
+																																																																																																																																																																																																																																																																																																																																																																					                Préparez-vous à explorer le monde autrement.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="row vs-carousel" data-slide-show="4" data-arrows="false" data-lg-slide-show="3" data-md-slide-show="2" data-sm-slide-show="1">
+				<div class="col-xl-3 col-lg-6 col-sm-6">
+					<div class="package-style1">
+						<div class="package-img">
+							<a href="tour-booking.html"><img class="w-100" src="https://www.triptogo.com/images/promotion/turkey/bg-card-turkey.png" alt="Package Image"/></a>
+						</div>
+						<div class="package-content">
+							<div class="package-review">
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="far fa-star"></i>
+							</div>
+							<h3 class="package-title">
+								<a href="tour-booking.html">Türkiye</a>
+							</h3>
+							<p class="package-text">Istanbul</p>
+							<div class="package-meta">
+								<a href="#">
+									<i class="fas fa-calendar-alt"></i>
+									Days: 4</a>
+								<a href="#">
+									<i class="fas fa-user"></i>
+									People: 3</a>
+							</div>
+							<div class="package-footer">
+								<span class="package-price">$399</span>
+								{% if app.user %}
+									<a href="about.html" class="vs-btn style4">En savoir plus</a>
+								{% else %}
+									<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+										En savoir plus
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-lg-6 col-sm-6">
+					<div class="package-style1">
+						<div class="package-img">
+							<a href="tour-booking.html"><img class="w-100" src="https://www.triptogo.com/images/promotion/southern-africa/southern_africa_card.jpg" alt="Package Image"/></a>
+						</div>
+						<div class="package-content">
+							<div class="package-review">
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+							</div>
+							<h3 class="package-title">
+								<a href="tour-booking.html">Southern Africa</a>
+							</h3>
+							<p class="package-text">South Africa</p>
+							<div class="package-meta">
+								<a href="#">
+									<i class="fas fa-calendar-alt"></i>
+									Days: 4</a>
+								<a href="#">
+									<i class="fas fa-user"></i>
+									People: 3</a>
+							</div>
+							<div class="package-footer">
+								<span class="package-price">$259</span>
+								{% if app.user %}
+									<a href="about.html" class="vs-btn style4">En savoir plus</a>
+								{% else %}
+									<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+										En savoir plus
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-lg-6 col-sm-6">
+					<div class="package-style1">
+						<div class="package-img">
+							<a href="tour-booking.html"><img class="w-100" src="https://www.triptogo.com/images/promotion/home_egypt.jpg" alt="Package Image"/></a>
+						</div>
+						<div class="package-content">
+							<div class="package-review">
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="far fa-star"></i>
+								<i class="far fa-star"></i>
+							</div>
+							<h3 class="package-title">
+								<a href="tour-booking.html">Egypte</a>
+							</h3>
+							<p class="package-text">Egypte,Cairo</p>
+							<div class="package-meta">
+								<a href="#">
+									<i class="fas fa-calendar-alt"></i>
+									Days: 4</a>
+								<a href="#">
+									<i class="fas fa-user"></i>
+									People: 3</a>
+							</div>
+							<div class="package-footer">
+								<span class="package-price">$299</span>
+								{% if app.user %}
+									<a href="about.html" class="vs-btn style4">En savoir plus</a>
+								{% else %}
+									<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+										En savoir plus
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-lg-6 col-sm-6">
+					<div class="package-style1">
+						<div class="package-img">
+							<a href="tour-booking.html"><img class="w-100" src="https://www.triptogo.com/images/promotion/home_japan.jpg" alt="Package Image"/></a>
+						</div>
+						<div class="package-content">
+							<div class="package-review">
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="far fa-star"></i>
+							</div>
+							<h3 class="package-title">
+								<a href="tour-booking.html">Japan</a>
+							</h3>
+							<p class="package-text">Japan,Tokyo</p>
+							<div class="package-meta">
+								<a href="#">
+									<i class="fas fa-calendar-alt"></i>
+									Days: 4</a>
+								<a href="#">
+									<i class="fas fa-user"></i>
+									People: 3</a>
+							</div>
+							<div class="package-footer">
+								<span class="package-price">$299</span>
+								{% if app.user %}
+									<a href="about.html" class="vs-btn style4">En savoir plus</a>
+								{% else %}
+									<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+										En savoir plus
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xl-3 col-lg-6 col-sm-6">
+					<div class="package-style1">
+						<div class="package-img">
+							<a href="tour-booking.html"><img class="w-100" src="https://www.triptogo.com/images/promotion/home_taiwan.jpg" alt="Package Image"/></a>
+						</div>
+						<div class="package-content">
+							<div class="package-review">
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="fas fa-star"></i>
+								<i class="far fa-star"></i>
+							</div>
+							<h3 class="package-title">
+								<a href="tour-booking.html">Taiwan</a>
+							</h3>
+							<p class="package-text">Taiwan, Taipei</p>
+							<div class="package-meta">
+								<a href="#">
+									<i class="fas fa-calendar-alt"></i>
+									Days: 2</a>
+								<a href="#">
+									<i class="fas fa-user"></i>
+									People: 2</a>
+							</div>
+							<div class="package-footer">
+								<span class="package-price">$199</span>
+								{% if app.user %}
+									<a href="about.html" class="vs-btn style4">En savoir plus</a>
+								{% else %}
+									<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
+										En savoir plus
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center pt-lg-2">
+				{% if app.user %}
+					<a href="about.html" class="vs-btn">Plus</a>
+				{% else %}
+					<a href="{{ path('app_seconnecter') }}" class="vs-btn">
+						Plus
+					</a>
+				{% endif %}
+			</a>
+		</div>
+	</div>
+</section>
+<!--==============================
+											      Tour Package Area End 
+											    ==============================-->
+
+<!--==============================
+											      Gallery Area Start 
+											    ==============================-->
+<section class="space space-extra-bottom gallery-style1">
+	<div class="container">
+		<div class="row">
+			<div class="col-xl-6">
+				<div class="title-area">
+					<br/><br/><br/><br/><br/><br/><br/>
+					<span class="sec-subtitle">Partez & Découvrez</span>
+					<h2 class="sec-title h1">Villes à couper le souffle</h2>
+					<p class="sec-text">
+						Explorez des destinations incroyables autour du monde. Chaque
+																																																																																																																																																																																																																																																																																																																													                ville vous réserve une expérience unique et mémorable.
+					</p>
+				</div>
+			</div>
+
+			<div class="col-xl-6">
+				<div style="
+																																																																																																																																																																																																																																																																																																																													                position: relative;
+																																																																																																																																																																																																																																																																																																																													                width: 100%;
+																																																																																																																																																																																																																																																																																																																													                padding-top: 100%; /* ratio 1:1 = 100% */
+																																																																																																																																																																																																																																																																																																																													                overflow: hidden;
+																																																																																																																																																																																																																																																																																																																													                border-radius: 20px;
+																																																																																																																																																																																																																																																																																																																													                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+																																																																																																																																																																																																																																																																																																																													              ">
+					<video autoplay muted loop playsinline style="
+																																																																																																																																																																																																																																																																																																																																																																																                  position: absolute;
+																																																																																																																																																																																																																																																																																																																																																																																                  top: 0;
+																																																																																																																																																																																																																																																																																																																																																																																                  left: 0;
+																																																																																																																																																																																																																																																																																																																																																																																                  width: 100%;
+																																																																																																																																																																																																																																																																																																																																																																																                  height: 100%;
+																																																																																																																																																																																																																																																																																																																																																																																                  object-fit: cover;
+																																																																																																																																																																																																																																																																																																																																																																																                ">
+						<source src="assets/img/0303.mp4" type="video/mp4"/>
+						Votre navigateur ne prend pas en charge la lecture de la vidéo.
+					</video>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!--==============================
+											      Gallery Area End 
+											    ==============================-->
+
+<!--==============================
+											      Features Area Start 
+											    ==============================-->
+<section class="space-extra-bottom">
+	<div class="container">
+		<div class="row">
+			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
+				<div class="features-style1">
+					<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
+					<div class="features-image">
+						<img src="assets/img/features/features-1-1.png" alt="image"/>
+					</div>
+					<div class="features-content">
+						<h3 class="features-title">Activités Spéciales</h3>
+						<p class="features-text">
+							Profitez d’activités uniques et inoubliables lors de votre
+																																																																																																																																																																																																																																																																																																																																																																																                  voyage. Que ce soit des aventures en plein air, des ateliers
+																																																																																																																																																																																																																																																																																																																																																																																                  culturels ou des expériences locales.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
+				<div class="features-style1">
+					<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
+					<div class="features-image">
+						<img src="assets/img/features/features-1-2.png" alt="image"/>
+					</div>
+					<div class="features-content">
+						<h3 class="features-title">Guide Pratique</h3>
+						<p class="features-text">
+							Suivez nos conseils avisés pour profiter pleinement de chaque
+																																																																																																																																																																																																																																																																																																																																																																																                  destination. Nos guides vous accompagnent pas à pas pour une
+																																																																																																																																																																																																																																																																																																																																																																																                  expérience sans stress et enrichissante.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
+				<div class="features-style1">
+					<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
+					<div class="features-image">
+						<img src="assets/img/features/features-1-3.png" alt="image"/>
+					</div>
+					<div class="features-content">
+						<h3 class="features-title">Organisation du Voyage</h3>
+						<p class="features-text">
+							Nous nous occupons de tous les détails de votre voyage :
+																																																																																																																																																																																																																																																																																																																																																																																                  transport, hébergement et activités. Voyagez l'esprit
+																																																																																																																																																																																																																																																																																																																																																																																                  tranquille, tout est déjà planifié pour vous.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
+				<div class="features-style1">
+					<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
+					<div class="features-image">
+						<img src="assets/img/features/features-1-4.png" alt="image"/>
+					</div>
+					<div class="features-content">
+						<h3 class="features-title">Responsable des Lieux</h3>
+						<p class="features-text">
+							Un expert local veille à ce que chaque site soit prêt à vous
+																																																																																																																																																																																																																																																																																																																																																																																                  accueillir dans les meilleures conditions. Profitez de chaque
+																																																																																																																																																																																																																																																																																																																																																																																                  lieu sans vous soucier de l’organisation.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!--==============================
+											      Features Area End 
+											    ==============================-->
+
+<!--==============================
+											      Special Offer Area Start 
+											    ==============================-->
+<section class="space position-relative" data-bg-src="assets/img/bg/offer-bg.jpg">
+	<div class="container">
+		<div class="row align-items-center justify-content-between">
+			<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-6">
+				<div class="title-area white-title mb-md-0">
+					<span class="sec-subtitle">Partez & Découvrez</span>
+					<h2 class="sec-title h1">Profitez d'une offre spéciale</h2>
+					<p class="sec-text">
+						Explorez de nouvelles destinations à des prix exceptionnels.
+																																																																																																																																																																																																																																																																																																																													                Vivez une expérience unique avec nos offres limitées et partez à
+																																																																																																																																																																																																																																																																																																																													                l’aventure dès aujourd’hui.
+					</p>
+
+					{% if app.user %}
+						<a href="about.html" class="vs-btn style2">Voir plus</a>
+					{% else %}
+						<a href="{{ path('app_seconnecter') }}" class="vs-btn style2">
+							Voir plus
+						</a>
+					{% endif %}
+				</div>
+			</div>
+			<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-6">
+				<div class="img-box1">
+					<img class="img-1-1" src="assets/img/shape/offer-1-1.png" alt="Offer image"/>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!--==============================
+											      Special Offer Area End 
+											    ==============================-->
+
+<!--==============================
+											      Destiniations Area Start 
+											  ==============================-->
+<section class="space space-extra-bottom bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
+	<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-20%" data-right="-8%">
+		<img src="assets/img/shape/circle1.png" alt="circle"/>
+	</div>
+	<div class="shape-mockup d-none d-xl-block z-index-negative" data-bottom="13%" data-left="0%">
+		<img src="assets/img/shape/walk.png" alt="circle"/>
+	</div>
+	<div class="container">
+		<div class="row justify-content-between align-items-center">
+			<div class="col-lg-5 col-md-8">
+				<div class="title-area">
+					<span class="sec-subtitle">Destinations phares</span>
+					<h2 class="sec-title h1">Des villes inoubliables</h2>
+					<p class="sec-text">
+						Découvrez des lieux qui marquent les esprits. Chaque ville a son
+																																																																																																																																																																																																																																																																																																																													                charme unique, prête à vous offrir des souvenirs mémorables et
+																																																																																																																																																																																																																																																																																																																													                des aventures exceptionnelles.
+					</p>
+				</div>
+			</div>
+			<div class="col-auto">
+				<div class="sec-btns">
+					<button class="icon-btn" data-slick-prev=".destinationSlide">
+						<i class="fas fa-chevron-left"></i>
+					</button>
+					<button class="icon-btn" data-slick-next=".destinationSlide">
+						<i class="fas fa-chevron-right"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="row destinationSlide vs-carousel" data-slide-show="3" data-arrows="false" data-lg-slide-show="2" data-md-slide-show="2" data-sm-slide-show="1">
+			<div class="col-xl-4">
+				<div class="destination-style1">
+					<a href="destination-details.html">
+						<img src="https://www.triptogo.com/images/promotion/home_taiwan.jpg" alt="destination image"/></a>
+					<span class="destination-price">$259</span>
+					<div class="destination-info">
+						<h4 class="destination-name">
+							{% if app.user %}
+								<a href="about.html">Thailand</a>
+							{% else %}
+								<a href="{{ path('app_seconnecter') }}">
+									Thailand
+								</a>
+							{% endif %}
+						</h4>
+						<p class="destination-text">Explore Sea & Get Relax</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-4">
+				<div class="destination-style1">
+					<a href="destination-details.html">
+						<img src="https://data.triptogo.com/image/cache/catalog/Asia/japan/Hiroshima/miyajima-400x266.5.jpg" alt="destination image"/></a>
+					<span class="destination-price">$369</span>
+					<div class="destination-info">
+						<h4 class="destination-name">
+							{% if app.user %}
+								<a href="about.html">Japan</a>
+							{% else %}
+								<a href="{{ path('app_seconnecter') }}">
+									Japan
+								</a>
+							{% endif %}
+						</h4>
+						<p class="destination-text">Explore Sea & Get Relax</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-4">
+				<div class="destination-style1">
+					<a href="destination-details.html">
+						<img src="https://data.triptogo.com/image/cache/catalog/Europe/Spain/Barcelona/Barceloneta-beach-400x266.5.jpg" alt="destination image"/></a>
+					<span class="destination-price">$299</span>
+					<div class="destination-info">
+						<h4 class="destination-name">
+							{% if app.user %}
+								<a href="about.html">Spain</a>
+							{% else %}
+								<a href="{{ path('app_seconnecter') }}">
+									Spain
+								</a>
+							{% endif %}
+						</h4>
+						<p class="destination-text">Explore Sea & Get Relax</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-4">
+				<div class="destination-style1">
+					<a href="destination-details.html">
+						<img src="https://www.triptogo.com/images/promotion/home_peru.jpg" alt="destination image"/></a>
+					<span class="destination-price">$158</span>
+					<div class="destination-info">
+						<h4 class="destination-name">
+							{% if app.user %}
+								<a href="about.html">Mexico</a>
+							{% else %}
+								<a href="{{ path('app_seconnecter') }}">
+									Mexico
+								</a>
+							{% endif %}
+						</h4>
+						<p class="destination-text">Explore World & Get Relax</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!--==============================
+											      Destinations Area End 
+											  ==============================-->
+
+<!--==============================
+											      Testimonial Area Start 
+											    ==============================-->
+<section class="space testimonial-style1" data-bg-src="assets/img/bg/testimonial-bg.jpg">
+	<div class="container">
+		<div class="row justify-content-between align-items-center">
+			<div class="col-xxl-5 col-xl-5">
+				<div class="title-area">
+					<span class="sec-subtitle" style="color: #ff681a;">Partez à la découverte</span>
+					<h2 class="sec-title h1">Ce que disent nos clients</h2>
+					<p class="sec-text">
+						Découvrez les avis authentiques de nos voyageurs satisfaits.
+																																																																																																																																																																																																																																																																																																																													                Leurs expériences témoignent de la qualité de nos services et de
+																																																																																																																																																																																																																																																																																																																													                la magie des destinations proposées.
+					</p>
+					{% if app.user %}
+						<a href="about.html" class="vs-btn style3">Voir plus</a>
+					{% else %}
+						<a href="{{ path('app_seconnecter') }}" class="vs-btn style3">
+							Voir plus
+						</a>
+					{% endif %}
+				</div>
+			</div>
+			<div class="col-xxl-6 col-xl-7">
+				<div class="testi-style1">
+					<div class="testi-avaters vs-slider-tab" data-asnavfor="#testId"></div>
+					<div class="testi-shape"></div>
+					<div class="vs-carousel" id="testId" data-slide-show="1" data-fade="true">
+						<div class="position-relative z-index-common">
+							<div class="testi-quote">
+								<img src="assets/img/shape/quote1.png" alt="quote"/>
+							</div>
+
+							<p class="testi-text">
+								"En tant que client de TripToGo, je suis extrêmement
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    satisfait de la plateforme. L'application est intuitive et
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    facile à utiliser, ce qui m'a permis de planifier mes
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    voyages en toute simplicité. Chaque fonctionnalité semble
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    parfaitement adaptée aux besoins des voyageurs, et
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    l'ensemble de l'expérience est vraiment fluide."
+							</p>
+
+							<div class="testi-avater">
+								<img src="assets/img/youssef.jpg" alt="customer image" style="
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                        border-radius: 50%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                        width: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                        height: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                        object-fit: cover;
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                      "/>
+							</div>
+
+							<h3 class="testi-name">Youssef Dhib</h3>
+						</div>
+
+						<div class="position-relative z-index-common">
+							<div class="testi-quote">
+								<img src="assets/img/shape/quote1.png" alt="quote"/>
+							</div>
+
+							<p class="testi-text">
+								"TripToGo a transformé mes voyages ! Grâce à leur service
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    personnalisé et à la qualité de leur plateforme, chaque
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    étape de mon voyage a été simplifiée. Que ce soit pour
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    réserver des hôtels, des vols ou planifier des activités,
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                    tout est facile et efficace.
+							</p>
+
+							<div class="testi-avater">
+								<img src="assets/img/aymen.jpg" alt="customer image" style="
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                        border-radius: 50%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                        width: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                        height: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                        object-fit: cover;
+																																																																																																																																																																																																																																																																																																																																																																																																																																			                      "/>
+							</div>
+							<h3 class="testi-name">Aymen Dhieb</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!--==============================
+											    Testimonial Area End 
+											  ==============================-->
+
+<!--==============================
+											      Blogs Area Start 
+											  ==============================-->
+<section class="space space-extra-bottom blog-wrapper">
+	<div class="container">
+		<div class="row justify-content-center text-center">
+			<div class="col-xl-6 col-lg-8 wow fadeInUp" data-wow-delay="0.3s">
+				<div class="title-area">
+					<span class="sec-subtitle">Blog & Actualités</span>
+					<h2 class="sec-title h1">Notre Dernier Blog</h2>
+					<p class="sec-text">
+						Découvrez nos derniers articles où nous partageons des conseils
+																																																																																																																																																																																																																																																																																																																													                de voyage, des astuces et des histoires inspirantes pour
+																																																																																																																																																																																																																																																																																																																													                enrichir votre expérience. Restez à jour avec les tendances du
+																																																																																																																																																																																																																																																																																																																													                moment et préparez-vous à vivre des aventures inoubliables.
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="row vs-carousel" data-slide-show="3" data-arrows="false" data-lg-slide-show="2" data-md-slide-show="2" data-sm-slide-show="1" adaptiveheight="true">
+			<div class="col-xl-4">
+				<div class="vs-blog blog-style3">
+					<div class="blog-img">
+						<a href="blog-details.html">
+							<img src="assets/img/blog/blog-h-1-1.jpg" alt="blog image"/>
+						</a>
+					</div>
+					<div class="blog-content">
+						<h2 class="blog-title">
+							<a href="blog-details.html">Nous Offrons Une Expérience Incroyable Pour Nos VIP</a>
+						</h2>
+						<p class="blog-text">
+							Découvrez comment nous offrons une expérience exceptionnelle
+																																																																																																																																																																																																																																																																																																																																																																																                  aux voyageurs VIP, en offrant des services exclusifs et
+																																																																																																																																																																																																																																																																																																																																																																																                  personnalisés pour un voyage mémorable.
+						</p>
+						<div class="blog-bottom">
+							<a class="blog-date" href="blog-details.html">
+								<i class="fas fa-calendar-alt"></i>
+								22 juillet 2023
+							</a>
+							{% if app.user %}
+								<a href="about.html">Lire la suite</a>
+							{% else %}
+								<a href="{{ path('app_seconnecter') }}">
+									Lire la suite
+								</a>
+							{% endif %}
+							<i class="fal fa-arrow-right"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-4">
+			<div class="vs-blog blog-style3">
+				<div class="blog-img">
+					<a href="blog-details.html">
+						<img src="assets/img/blog/blog-h-1-2.jpg" alt="blog image"/>
+					</a>
+				</div>
+				<div class="blog-content">
+					<h2 class="blog-title">
+						<a href="blog-details.html">Explorer des Territoires Inexplorés</a>
+					</h2>
+					<p class="blog-text">
+						L'aventure n'a pas de limites. Découvrez des territoires
+																																																																																																																																																																																																																																																																																																																																																							                  inexplorés et plongez dans l'inconnu pour des découvertes
+																																																																																																																																																																																																																																																																																																																																																							                  époustouflantes.
+					</p>
+					<div class="blog-bottom">
+						<a class="blog-date" href="blog-details.html">
+							<i class="fas fa-calendar-alt"></i>
+							24 juillet 2023
+						</a>
+						{% if app.user %}
+							<a href="about.html">Lire la suite</a>
+						{% else %}
+							<a href="{{ path('app_seconnecter') }}">
+								Lire la suite
+							</a>
+						{% endif %}
+						<i class="fal fa-arrow-right"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xl-4">
+		<div class="vs-blog blog-style3">
+			<div class="blog-img">
+				<a href="blog-details.html">
+					<img src="assets/img/blog/blog-h-1-3.jpg" alt="blog image"/>
+				</a>
+			</div>
+			<div class="blog-content">
+				<h2 class="blog-title">
+					<a href="blog-details.html">Voyage et Révélation de Destinations Captivantes</a>
+				</h2>
+				<p class="blog-text">
+					Découvrez les destinations les plus fascinantes et les plus
+																																																																																																																																																																																																																																																																																																																																                  captivantes du monde. Nous vous emmenons vers les lieux les
+																																																																																																																																																																																																																																																																																																																																                  plus inoubliables à explorer.
+				</p>
+				<div class="blog-bottom">
+					<a class="blog-date" href="blog-details.html">
+						<i class="fas fa-calendar-alt"></i>
+						21 août 2023
+					</a>
+					{% if app.user %}
+						<a href="about.html">Lire la suite</a>
+					{% else %}
+						<a href="{{ path('app_seconnecter') }}">
+							Lire la suite
+						</a>
+					{% endif %}
+					<i class="fal fa-arrow-right"></i>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-xl-4">
+	<div class="vs-blog blog-style3">
+		<div class="blog-img">
+			<a href="blog-details.html">
+				<img src="assets/img/blog/blog-h-1-4.jpg" alt="blog image"/>
+			</a>
+		</div>
+		<div class="blog-content">
+			<h2 class="blog-title">
+				<a href="blog-details.html">Vignettes de Voyage : Aventures au-delà de l'Horizon</a>
+			</h2>
+			<p class="blog-text">
+				Embarquez pour des aventures fascinantes qui vous emmèneront
+																																																																																																																																																																																																																																																																																																										                  au-delà de l'horizon, dans des lieux exotiques et éloignés,
+																																																																																																																																																																																																																																																																																																										                  prêts à vous émerveiller.
+			</p>
+			<div class="blog-bottom">
+				<a class="blog-date" href="blog-details.html">
+					<i class="fas fa-calendar-alt"></i>
+					21 septembre 2023
+				</a>
+				{% if app.user %}
+					<a href="about.html">Lire la suite</a>
+				{% else %}
+					<a href="{{ path('app_seconnecter') }}">
+						Lire la suite
+					</a>
+				{% endif %}
+				<i class="fal fa-arrow-right"></i>
+			</a>
+		</div>
+	</div>
+</div></div></div><div class="text-center mb-30 wow fadeInUp pt-lg-2" data-wow-delay="0.7s"><a href="blog-grid.html" class="vs-btn">Voir Plus</a></div></div></section><!--==============================
+																																				      Blogs Area End 
+																																				  ==============================--><!--==============================
+																																				      Sidemenu
+																																				  ============================== --><div class="sidemenu-wrapper offcanvas-wrapper d-none d-lg-block"><div class="sidemenu-content"><button class="closeButton sideMenuCls"><i class="far fa-times"></i></button><div class="widget"><div class="vs-widget-about">
+<div class="footer-logo">
+	<a href="index.html"><img src="assets/img/primary.png" alt="Travolo"/></a>
+</div>
+<p class="footer-text">
+	Ut tellus dolor, dapibus eget, elementum iifend cursus eleifend,
+																																																																																																																																																																															              elit. Aenean iifend tor wisi Aliquam er at volutpat. Dui ac tui
+																																																																																																																																																																															              end cursus eleifendrpis.
+</p>
+<div class="info-social style2">
+	<a href="#">
+		<i class="fab fa-facebook-f"></i>
+	</a>
+	<a href="#">
+		<i class="fab fa-twitter"></i>
+	</a>
+	<a href="#">
+		<i class="fab fa-linkedin-in"></i>
+	</a>
+	<a href="#">
+		<i class="fab fa-google"></i>
+	</a>
+</div></div></div><div class="widget"><h3 class="widget_title">Articles récents</h3><div class="recent-post-wrap">
+<div class="recent-post">
+	<div class="media-img">
+		<a href="blog-details.html"><img src="assets/img/blog/recent-post1.jpg" alt="Image du Blog"/></a>
+	</div>
+	<div class="media-body">
+		<div class="recent-post-meta">
+			<i class="fal fa-calendar-alt"></i>
+			<a href="blog.html">15 Décembre 2022</a>
+		</div>
+		<h4 class="post-title">
+			<a class="text-inherit" href="blog-details.html">Nous offrons un tour incroyable pour les VIP</a>
+		</h4>
+	</div>
+</div>
+<div class="recent-post">
+	<div class="media-img">
+		<a href="blog-details.html"><img src="assets/img/blog/recent-post2.jpg" alt="Image du Blog"/></a>
+	</div>
+	<div class="media-body">
+		<div class="recent-post-meta">
+			<i class="fal fa-calendar-alt"></i>
+			<a href="blog.html">13 Mars 2022</a>
+		</div>
+		<h4 class="post-title">
+			<a class="text-inherit" href="blog-details.html">Le journal du voyageur : Chroniques d'une âme errante</a>
+		</h4>
+	</div>
+</div>
+<div class="recent-post">
+	<div class="media-img">
+		<a href="blog-details.html"><img src="assets/img/blog/recent-post3.jpg" alt="Image du Blog"/></a>
+	</div>
+	<div class="media-body">
+		<div class="recent-post-meta">
+			<i class="fal fa-calendar-alt"></i>
+			<a href="blog.html">23 Août 2022</a>
+		</div>
+		<h4 class="post-title">
+			<a class="text-inherit" href="blog-details.html">Errer et se révéler, captivant à tellus.</a>
+		</h4>
+	</div>
+</div></div></div></div></div><!--==============================
+																																				    Cart Side bar
+																																				  ============================== --><div class="sideCart-wrapper offcanvas-wrapper d-none d-lg-block"><div class="sidemenu-content"><button class="closeButton border-theme bg-theme-hover sideMenuCls"><i class="far fa-times"></i></button><div class="widget widget_shopping_cart"><h3 class="widget_title">Shopping cart</h3><div class="widget_shopping_cart_content">
+<ul class="cart_list">
+	<li class="mini_cart_item">
+		<a href="shop.html" class="remove">
+			<i class="fal fa-trash-alt"></i>
+		</a>
+		<a href="shop.html"><img src="assets/img/products/p-1-1.png" alt="Cart Image"/>Modern Cow Boy Hat</a>
+		<span class="quantity">
+			1 ×
+			<span class="amount">
+				<span>$</span>100.00</span>
+		</span>
+	</li>
+	<li class="mini_cart_item">
+		<a href="shop.html" class="remove">
+			<i class="fal fa-trash-alt"></i>
+		</a>
+		<a href="shop.html"><img src="assets/img/products/p-1-2.png" alt="Cart Image"/>Cat Eye Sunglasses</a>
+		<span class="quantity">
+			1 ×
+			<span class="amount">
+				<span>$</span>10.00</span>
+		</span>
+	</li>
+</ul>
+<div class="total">
+	<strong>Subtotal:</strong>
+	<span class="amount">
+		<span>$</span>110.00</span>
+</div>
+<div class="buttons">
+	<a href="cart.html" class="vs-btn style4">View cart</a>
+	<a href="checkout.html" class="vs-btn style4">Checkout</a>
+</div></div></div></div></div>{% endblock %}

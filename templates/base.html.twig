@@ -1,19 +1,119 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+	<head>
+		<meta class="no-js" lang="fr">
+		<meta http-equiv="x-ua-compatible" content="ie=edge"/>
+		<title>TripToGo - Agence de voyages et réservation de circuits</title>
+		<meta name="author" content="vecuro"/>
+		<meta name="description" content="Travolo - Travel Agency & Tour Booking HTML Template"/>
+		<meta name="keywords" content="Travolo - Travel Agency & Tour Booking HTML Template"/>
+		<meta
+		name="robots" content="INDEX,FOLLOW"/>
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+		<!-- Mobile Specific Metas -->
+		<meta
+		name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+		<!-- Favicons -->
+		<link rel="icon" type="image/png" href="{{ asset('assets/img/primary.png') }}"/>
+		<meta name="msapplication-TileColor" content="#ffffff"/>
+		<meta name="theme-color" content="#ffffff"/>
+
+
+		{% block stylesheets %}
+			<!--==============================
+																																																									        All CSS Files
+																																																									      ==============================-->
+			<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
+			<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}"/>
+			<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}"/>
+			<link rel="stylesheet" href="{{ asset('assets/css/slick.min.css') }}"/>
+			<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"/>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+
+
+			<style>
+				/* Loading screen styles */
+				#loading-screen {
+					position: fixed;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					background-color: #fff;
+					z-index: 9999;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+				.spinner {
+					border: 8px solid #f3f3f3;
+					border-top: 8px solid #ff681a;
+					border-radius: 50%;
+					width: 60px;
+					height: 60px;
+					animation: spin 1s linear infinite;
+				}
+				@keyframes spin {
+					0% {
+						transform: rotate(0deg);
+					}
+					100% {
+						transform: rotate(360deg);
+					}
+				}
+			</style>
+
+
+		{% endblock %}
+
+
+	</head>
+
+	<body>
+		<div id="loading-screen">
+			<div class="spinner"></div>
+		</div>
+		{{ include('includes/header.html.twig')  }}
+
+		{% block body %}{% endblock %}
+		{% block javascripts %}
+			<!--==============================
+																																																									        All JS Files
+																																																									      ==============================-->
+			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
+			<script src="{{ asset('assets/js/slick.min.js') }}"></script>
+			<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+			<script src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
+			<script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
+			<script src="{{ asset('assets/js/circle-progress.min.js') }}"></script>
+			<script src="{{ asset('assets/js/imagesLoaded.js') }}"></script>
+			<script src="{{ asset('assets/js/isotope.js') }}"></script>
+			<script src="{{ asset('assets/js/wow.min.js') }}"></script>
+			<script src="{{ asset('assets/js/main.js') }}"></script>
+			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+			<script>
+				toastr.options = {
+"closeButton": true,
+"progressBar": true,
+"positionClass": "toast-top-right",
+"timeOut": "5000"
+};{% for label, messages in app.flashes %}{% for message in messages %}toastr["{{ label }}"]("{{ message }}");{% endfor %}{% endfor %}
+			</script>
+
+
+			<script>
+				// Hide the loading screen when the page has loaded
+window.addEventListener('load', function () {
+var loadingScreen = document.getElementById('loading-screen');
+if (loadingScreen) {
+loadingScreen.style.display = 'none';
+}
+});
+			</script>
+		{% endblock %}
+		{{ include('includes/footer.html.twig')  }}
+
+	</body>
 </html>
