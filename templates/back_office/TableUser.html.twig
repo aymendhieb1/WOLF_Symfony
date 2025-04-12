@@ -10,10 +10,10 @@
 		<div
 			class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
 			<!--
-																																																																																																																																																																																																																																																																																					        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-																																																																																																																																																																																																																																																																																					
-																																																																																																																																																																																																																																																																																					        Tip 2: you can also add an image using data-image tag
-																																																																																																																																																																																																																																																																																					    -->
+																																																																																																																																																																																																																																																																																																							        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+																																																																																																																																																																																																																																																																																																							
+																																																																																																																																																																																																																																																																																																							        Tip 2: you can also add an image using data-image tag
+																																																																																																																																																																																																																																																																																																							    -->
 			<div class="logo">
 				<img src="{{ asset('assets/img/secondry - Copie.png') }}" class="simple-text logo-mini" alt="Logo">
 
@@ -278,14 +278,11 @@
 									<a class="nav-link" href="javascript:;" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										<i class="material-icons">person</i>
 										<p class="d-lg-none d-md-block">
-											Account
+											Votre compte
 										</p>
 									</a>
 									<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-										<a class="dropdown-item" href="#">Profile</a>
-										<a class="dropdown-item" href="#">Settings</a>
-										<div class="dropdown-divider"></div>
-										<a class="dropdown-item" href="#">Log out</a>
+										<a class="dropdown-item" href="{{path('app_logout')}}">Se déconnecter</a>
 									</div>
 								</li>
 							</ul>
@@ -474,29 +471,8 @@
 							<img src="{{ asset('assets/img/sidebar-4.jpg')}}" alt="">
 						</a>
 					</li>
-					<li class="button-container">
-						<a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-rose btn-block btn-fill">Buy Now</a>
-						<a href="https://demos.creative-tim.com/material-dashboard-pro/docs/2.1/getting-started/introduction.html" target="_blank" class="btn btn-default btn-block">
-							Documentation
-						</a>
-						<a href="https://www.creative-tim.com/product/material-dashboard" target="_blank" class="btn btn-info btn-block">
-							Get Free Demo!
-						</a>
-					</li>
-					<li class="button-container github-star">
-						<a class="github-button" href="https://github.com/creativetimofficial/ct-material-dashboard-pro" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star ntkme/github-buttons on GitHub">Star</a>
-					</li>
-					<li class="header-title">Thank you for 95 shares!</li>
-					<li class="button-container text-center">
-						<button id="twitter" class="btn btn-round btn-twitter">
-							<i class="fa fa-twitter"></i>
-							&middot; 45</button>
-						<button id="facebook" class="btn btn-round btn-facebook">
-							<i class="fa fa-facebook-f"></i>
-							&middot; 50</button>
-						<br>
-						<br>
-					</li>
+
+
 				</ul>
 			</div>
 		</div>
@@ -979,10 +955,7 @@ console.log('Facebook Track Error:', err);
 		</noscript>
 		<script>
 			$(document).ready(function () {
-if ($.fn.DataTable.isDataTable('#datatables')) {
-$('#datatables').DataTable().destroy();
-console.log("Instance détruite.");
-}
+
 var table = $('#datatables').DataTable({
 "pagingType": "full_numbers",
 "lengthMenu": [
@@ -1000,7 +973,6 @@ searchPlaceholder: "Chercher",
 emptyTable: "Aucune donnée disponible dans le tableau"
 }
 });
-console.log("Nouvelle instance DataTable initialisée.");
 
 
 // Edit record
