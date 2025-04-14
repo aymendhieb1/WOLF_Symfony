@@ -76,39 +76,15 @@
 								</li>
 
 
-								<!-- Si l'utilisateur est connecté, afficher le menu complet -->
-								<li class="menu-item-has-children">
-									<a href="#">Destinations</a>
-									<ul class="sub-menu">
-										<li>
-											{% if app.user %}
-												<a href="about.html">Destinations</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													Destinations
-												</a>
-											{% endif %}
-										</li>
-										<li>
-											{% if app.user %}
-												<a href="about.html">Détails des destinations</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													Détails des destinations
-												</a>
-											{% endif %}
-										</li>
-									</ul>
-								</li>
 								<li class="menu-item-has-children mega-menu-wrap">
-									<a href="#">Les pages</a>
+									<a href="#">Nos offres</a>
 									<ul class="mega-menu">
 
 										<li>
 											<a href="#">Liste des pages 1</a>
 											<ul></li>
 											{% if app.user %}
-												<a href="about.html">À propos de nous</a>
+												<a href="{{ path('app_about_us') }}">À propos de nous</a>
 											{% else %}
 												<a href="{{ path('app_seconnecter') }}">
 													À propos de nous
@@ -183,34 +159,23 @@
 								</li>
 							</ul>
 						</li>
-						<li class="menu-item-has-children">
-							<a href="#">Tours</a>
-							<ul class="sub-menu">
-								<li>
-									{% if app.user %}
-										<a href="about.html">Liste des tours</a>
-									{% else %}
-										<a href="{{ path('app_seconnecter') }}">
-											Liste des tours
-										</a>
-									{% endif %}
-								</li>
-								<li>
-									{% if app.user %}
-										<a href="about.html">Réservation de tours</a>
-									{% else %}
-										<a href="{{ path('app_seconnecter') }}">
-											Réservation de tours
-										</a>
-									{% endif %}
-								</li>
-							</ul>
+
+						<li>
+							{% if app.user %}
+								<a href="{{path('app_about_us')}}">à propos de nous
+								</a>
+							{% else %}
+								<a href="{{ path('app_seconnecter') }}">
+									à propos de nous
+
+								</a>
+							{% endif %}
 						</li>
 
 
 						<!-- Toujours afficher Contact -->
 						<li>
-							<a href="contact.html">Contact</a>
+							<a href="{{path('app_contact')}}">Contact</a>
 						</li>
 					</ul>
 				</nav>
@@ -223,15 +188,13 @@
 			<div class="col-auto d-none d-xl-block">
 				<div class="header-btns">
 					<button class="searchBoxTggler">
-						<i class="fal fa-search"></i>
+						<i class="fas fa-robot"></i>
 					</button>
 					<button class="sideCartToggler">
 						<i class="fal fa-shopping-bag"></i>
 						<span class="button-badge">2</span>
 					</button>
-					<button class="sideMenuToggler">
-						<i class="fal fa-bars"></i>
-					</button>
+
 				</div>
 			</div>
 		</div>

@@ -93,15 +93,13 @@ class UserType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('num_tel', IntegerType::class, [
+            ->add('num_tel', TextType::class, [
                 'label' => false,
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez renseigner votre numéro de téléphone.',
-                    ]),
+                    new NotBlank(['message' => 'Veuillez entrer votre numéro de téléphone.']),
                     new Regex([
-                        'pattern' => '/^[0-9]{8}$/',
-                        'message' => 'Le numéro de téléphone doit contenir exactement 8 chiffres.',
+                        'pattern' => '/^\+\d{6,15}$/',
+                        'message' => 'Le numéro doit inclure l’indicatif, ex: +21612345678',
                     ]),
                 ]
             ])
@@ -111,8 +109,8 @@ class UserType extends AbstractType
 
             ->add('photo_profil', FileType::class, [
                 'label' => false,
-                'mapped' => false,        // Le champ n'est pas mappé directement à l'entité
-                'required' => false,      // Si l'upload n'est pas obligatoire
+                'mapped' => false,
+                'required' => false,
                 'constraints' => [
                     new File([
                         'maxSize' => '2M',
@@ -159,6 +157,16 @@ class UserType extends AbstractType
         if ($user) {
             $context->buildViolation('Email déjà utilisé')
                 ->atPath('email')
+                ->addViolation();
+        }
+    }
+    public function validateENumberExists($value, ExecutionContextInterface $context): void
+    {
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['num_tel' => $value]);
+
+        if ($user) {
+            $context->buildViolation('Numéro de téléphone déjà utilisé')
+                ->atPath('num_tel')
                 ->addViolation();
         }
     }

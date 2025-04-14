@@ -59,6 +59,8 @@ class SinscrireController extends AbstractController
 
             // Récupérer le mot de passe en clair soumis dans le formulaire
             $plainPassword = $form->get('mdp')->getData();
+
+
             // 5. Hacher le mot de passe
             $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
             $user->setMdp($hashedPassword);

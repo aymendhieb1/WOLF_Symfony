@@ -15,6 +15,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
 class LoginAuthenticator extends AbstractAuthenticator
 {
@@ -23,13 +25,22 @@ class LoginAuthenticator extends AbstractAuthenticator
     private RouterInterface $router;
     private EntityManagerInterface $entityManager;
     private RequestStack $requestStack;
+    private UserPasswordHasherInterface $passwordHasher;
 
 
-    public function __construct(RouterInterface $router, EntityManagerInterface $entityManager, RequestStack $requestStack)
-    {
+
+    public function __construct(
+        RouterInterface $router,
+        EntityManagerInterface $entityManager,
+        RequestStack $requestStack,
+        UserPasswordHasherInterface $passwordHasher
+    ) {
         $this->router = $router;
         $this->entityManager = $entityManager;
         $this->requestStack = $requestStack;
+        $this->passwordHasher = $passwordHasher;
+
+
     }
     public function supports(Request $request): ?bool
     {
@@ -39,20 +50,34 @@ class LoginAuthenticator extends AbstractAuthenticator
     public function authenticate(Request $request): Passport
     {
         $mail = $request->request->get('mail');
+        $password = $request->request->get('mdp');
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['mail' => $mail]);
 
-        if ($user && $user->getStatus() === 1) {
+        $session = $this->requestStack->getSession();
 
-            throw new CustomUserMessageAuthenticationException('USER_BLOCKED');
+        if (!$user) {
+            if ($session) {
+                $session->getFlashBag()->add('warning', 'Aucun compte ne correspond à cet email.');
+            }
+            throw new CustomUserMessageAuthenticationException('INVALID_EMAIL');
+        }
 
+
+        if (!$this->passwordHasher->isPasswordValid($user, $password)) {
+            if ($session) {
+                $session->getFlashBag()->add('warning', 'Mot de passe incorrect.');
+            }
+            throw new CustomUserMessageAuthenticationException('INVALID_PASSWORD');
         }
 
         return new Passport(
             new UserBadge($mail),
-            new PasswordCredentials($request->request->get('mdp'))
+            new PasswordCredentials($password)
         );
     }
+
+
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): RedirectResponse
     {
@@ -71,8 +96,10 @@ class LoginAuthenticator extends AbstractAuthenticator
         if ($exception->getMessageKey() === 'USER_BLOCKED') {
             $session = $this->requestStack->getSession();
             if ($session) {
-                $session->getFlashBag()->add('error', 'Votre compte est bloqué. Veuillez contacter l\'administrateur.');
+                $session->getFlashBag()->add('warning
+                ', 'Votre compte est bloqué. Veuillez contacter l\'administrateur.');
             }
+
         }
 
         return new RedirectResponse($this->router->generate('app_seconnecter'));

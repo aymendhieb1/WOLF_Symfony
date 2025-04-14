@@ -25,8 +25,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
 
-    #[ORM\Column(length: 255)]
-    private ?int $num_tel = null;
+    #[ORM\Column(length: 200)]
+    private ?string $num_tel = null;
+
 
     #[ORM\Column(length: 255)]
     private ?string $mdp = null;
@@ -91,17 +92,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getNumTel(): ?int
+    public function getNumTel(): ?string
     {
         return $this->num_tel;
     }
 
-    public function setNumTel(int $num_tel): static
+    public function setNumTel(string $num_tel): static
     {
         $this->num_tel = $num_tel;
-
         return $this;
     }
+
 
     public function getMdp(): ?string
     {
