@@ -1,0 +1,164 @@
+{% extends 'base1.html.twig' %}
+
+{% block body %}
+<div class="wrapper">
+    <div class="main-panel">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-wrapper">
+                    <a class="navbar-brand" href="javascript:;">Nouvelle Activité</a>
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title">Créer une nouvelle activité</h4>
+                            </div>
+                            <div class="card-body">
+                            {{ form_start(form,{'attr': {'novalidate': 'novalidate', 'id': 'activite-form'}} ) }}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.nom) }}
+                                            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="nom-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.description) }}
+                                            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="description-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin-bottom: 20px;">Type d'activité</div>
+                                            {{ form_widget(form.type, {
+                                                'attr': {
+                                                    'class': 'form-control',
+                                                    'style': 'margin-top: 10px;'
+                                                },
+                                                'label': false
+                                            }) }}
+                                            <div class="invalid-feedback" id="type-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.prix) }}
+                                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'min': '0', 'step': '0.01'}}) }}
+                                            <div class="invalid-feedback" id="prix-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary">Créer</button>
+                                        <a href="{{ path('app_back_activite') }}" class="btn btn-default">Retour</a>
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('activite-form').addEventListener('submit', function(event) {
+    let isValid = true;
+
+    // Reset previous error states
+    document.querySelectorAll('.invalid-feedback').forEach(function(el) {
+        el.style.display = 'none';
+    });
+    document.querySelectorAll('.form-control').forEach(function(el) {
+        el.classList.remove('is-invalid');
+    });
+
+    // Validate nom
+    const nomInput = document.getElementById('{{ form.nom.vars.id }}');
+    if (!nomInput.value) {
+        nomInput.classList.add('is-invalid');
+        document.getElementById('nom-error').textContent = 'Le nom est obligatoire';
+        document.getElementById('nom-error').style.display = 'block';
+        isValid = false;
+    } else if (nomInput.value.length < 3) {
+        nomInput.classList.add('is-invalid');
+        document.getElementById('nom-error').textContent = 'Le nom doit contenir au moins 3 caractères';
+        document.getElementById('nom-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate description
+    const descriptionInput = document.getElementById('{{ form.description.vars.id }}');
+    if (!descriptionInput.value) {
+        descriptionInput.classList.add('is-invalid');
+        document.getElementById('description-error').textContent = 'La description est obligatoire';
+        document.getElementById('description-error').style.display = 'block';
+        isValid = false;
+    } else if (descriptionInput.value.length < 10) {
+        descriptionInput.classList.add('is-invalid');
+        document.getElementById('description-error').textContent = 'La description doit contenir au moins 10 caractères';
+        document.getElementById('description-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate type
+    const typeInput = document.getElementById('{{ form.type.vars.id }}');
+    if (!typeInput.value) {
+        typeInput.classList.add('is-invalid');
+        document.getElementById('type-error').textContent = 'Le type est obligatoire';
+        document.getElementById('type-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate prix
+    const prixInput = document.getElementById('{{ form.prix.vars.id }}');
+    if (!prixInput.value) {
+        prixInput.classList.add('is-invalid');
+        document.getElementById('prix-error').textContent = 'Le prix est obligatoire';
+        document.getElementById('prix-error').style.display = 'block';
+        isValid = false;
+    } else if (isNaN(prixInput.value)) {
+        prixInput.classList.add('is-invalid');
+        document.getElementById('prix-error').textContent = 'Le prix doit être un nombre';
+        document.getElementById('prix-error').style.display = 'block';
+        isValid = false;
+    } else if (parseFloat(prixInput.value) < 0) {
+        prixInput.classList.add('is-invalid');
+        document.getElementById('prix-error').textContent = 'Le prix doit être supérieur ou égal à 0';
+        document.getElementById('prix-error').style.display = 'block';
+        isValid = false;
+    }
+
+    if (!isValid) {
+        event.preventDefault();
+    }
+});
+
+// Style the error messages
+document.querySelectorAll('.invalid-feedback').forEach(function(el) {
+    el.style.color = '#dc3545';
+    el.style.display = 'none';
+    el.style.marginTop = '0.25rem';
+    el.style.fontSize = '80%';
+});
+</script>
+{% endblock %} 

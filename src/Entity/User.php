@@ -39,6 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $photo_profil = null;
     #[ORM\Column(length: 255)]
     private ?int $role = null;
+
     public function getRole(): ?int
     {
         return $this->role;
@@ -143,9 +144,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->mail;
     }
 
-    /**
-     * Retourne les rôles de l'utilisateur sous forme de tableau.
-     */
+
     public function getRoles(): array
     {
         if ($this->role === 0) {
@@ -157,30 +156,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
-    /**
-     * Retourne le mot de passe haché de l'utilisateur.
-     */
+
     public function getPassword(): string
     {
         return $this->mdp;
     }
 
-    /**
-     * Si vous stockez des données sensibles temporairement, vous pouvez les effacer ici.
-     */
+
     public function eraseCredentials(): void
     {
-        // Par exemple, si vous aviez un champ "plainPassword", vous pourriez le vider ici.
     }
     public function getUsername(): string
     {
-        // Retourne l'identifiant unique de l'utilisateur (ici, on utilise l'email)
         return $this->mail;
     }
 
     public function getSalt(): ?string
     {
-        // Avec bcrypt ou sodium, le sel est géré automatiquement
         return null;
     }
 }

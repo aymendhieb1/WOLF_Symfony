@@ -1,0 +1,614 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<style>:root
+	{
+		--theme-color: #ff681a;
+	}
+
+	@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800 &display=swap');
+
+	body {
+		font-family: 'Jost', sans-serif;
+	}
+
+	.package-style1 {
+		background: #fff;
+		border-radius: 10px;
+		overflow: hidden;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		margin-bottom: 30px;
+		height: 400px;
+		display: flex;
+		flex-direction: column;
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+	}
+
+	.package-style1:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+	}
+
+	.package-img {
+		position: relative;
+		overflow: hidden;
+		background: #f8f9fa;
+		height: 200px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.package-img img {
+		transition: transform 0.5s ease;
+	}
+
+	.package-style1:hover .package-img img {
+		transform: scale(1.1);
+	}
+
+	.package-content {
+		padding: 20px;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.package-title {
+		font-size: 20px;
+		font-weight: 600;
+		margin-bottom: 10px;
+		color: #333;
+		transition: color 0.3s ease;
+	}
+
+	.package-title:hover {
+		color: var(--theme-color);
+	}
+
+	.package-text {
+		color: #666;
+		margin-bottom: 15px;
+		font-size: 14px;
+		line-height: 1.6;
+	}
+
+	.package-meta {
+		display: flex;
+		gap: 15px;
+		margin-bottom: 15px;
+		flex-wrap: wrap;
+	}
+
+	.package-meta a {
+		color: #666;
+		text-decoration: none;
+		transition: color 0.3s ease;
+		font-size: 14px;
+	}
+
+	.package-meta a i {
+		margin-right: 5px;
+		color: var(--theme-color);
+	}
+
+	.package-meta a:hover {
+		color: var(--theme-color);
+	}
+
+	.vs-btn {
+		background: var(--theme-color);
+		color: #fff;
+		padding: 8px 20px;
+		border-radius: 5px;
+		text-decoration: none;
+		transition: all 0.3s ease;
+		border: none;
+		cursor: pointer;
+		font-family: 'Jost', sans-serif;
+		font-weight: 500;
+		font-size: 14px;
+	}
+
+	.vs-btn:hover {
+		background: #e55a0f;
+		color: #fff;
+		transform: translateY(-2px);
+	}
+
+	.package-footer {
+		margin-top: auto;
+	}
+
+	.sessions-list {
+		margin-top: 15px;
+		max-height: 200px;
+		overflow-y: auto;
+	}
+
+	.session-item {
+		padding: 10px;
+		border-bottom: 1px solid #eee;
+		transition: background-color 0.3s ease;
+	}
+
+	.session-item:hover {
+		background-color: #f8f9fa;
+	}
+
+	.session-details {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.session-info {
+		display: flex;
+		gap: 15px;
+		flex-wrap: wrap;
+	}
+
+	.session-info span {
+		color: #666;
+	}
+
+	.session-info i {
+		color: #ff4a52;
+		margin-right: 5px;
+	}
+
+	.filter-menu1 {
+		display: flex;
+		gap: 10px;
+		margin-bottom: 30px;
+		flex-wrap: wrap;
+	}
+
+	.tab-button {
+		background: #fff;
+		border: 1px solid #eee;
+		color: #666;
+	}
+
+	.tab-button.active {
+		background: var(--theme-color);
+		border-color: var(--theme-color);
+		color: #fff;
+	}
+
+	.tab-button:hover:not(.active) {
+		border-color: var(--theme-color);
+		color: var(--theme-color);
+	}
+
+	.sidebar-area {
+		background: #fff;
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+	}
+
+	.widget_title {
+		font-size: 20px;
+		margin-bottom: 20px;
+		color: #333;
+	}
+
+	.form-group {
+		margin-bottom: 15px;
+		position: relative;
+	}
+
+	.form-group i {
+		position: absolute;
+		left: 15px;
+		top: 50%;
+		transform: translateY(-50%);
+		color: #666;
+	}
+
+	.form-control,
+	.form-select {
+		padding-left: 40px;
+		border-radius: 5px;
+		border: 1px solid #ddd;
+		font-family: 'Jost', sans-serif;
+	}
+
+	.price_slider_wrapper {
+		margin: 20px 0;
+	}
+
+	.chekbox-area {
+		margin-bottom: 10px;
+	}
+
+	.modal {
+		display: none;
+		position: fixed;
+		z-index: 1000;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+
+	.modal-content {
+		background-color: #fefefe;
+		margin: 5% auto;
+		padding: 20px;
+		border-radius: 10px;
+		width: 80%;
+		max-width: 800px;
+		max-height: 80vh;
+		overflow-y: auto;
+	}
+
+	.close {
+		color: var(--theme-color);
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+		cursor: pointer;
+	}
+
+	.close:hover {
+		color: #e55a0f;
+	}
+
+	.session-modal-card {
+		background: #fff;
+		border-radius: 10px;
+		padding: 20px;
+		margin-bottom: 20px;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		transition: transform 0.3s ease;
+	}
+
+	.session-modal-card:hover {
+		transform: translateY(-5px);
+	}
+
+	.session-modal-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 15px;
+	}
+
+	.session-modal-title {
+		font-size: 24px;
+		color: #333;
+		margin: 0;
+	}
+
+	.session-modal-body {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 20px;
+	}
+
+	.session-info-card {
+		background: #f8f9fa;
+		padding: 15px;
+		border-radius: 8px;
+	}
+
+	.session-info-item {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+
+	.session-info-item i {
+		color: #ff4a52;
+		margin-right: 10px;
+		width: 20px;
+	}
+
+	.session-info-item span {
+		color: #666;
+	}
+
+	.modal-reserve-btn {
+		background: var(--theme-color);
+		color: #fff;
+		border: none;
+		padding: 10px 20px;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		margin-top: 15px;
+	}
+
+	.modal-reserve-btn:hover {
+		background: #e55a0f;
+		transform: translateY(-2px);
+	}
+</style>
+
+<div class="wrapper">
+	<div
+		class="main-panel">
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-wrapper"></div>
+			</div>
+		</nav>
+		<!-- End Navbar -->
+		<div class="content">
+			<div class="container-fluid">
+				<div class="filter-menu1">
+					<button class="tab-button active" data-filter="*">
+						<i class="fas fa-sort-alpha-up"></i>
+						Nom (A - Z)</button>
+					<button class="tab-button" data-filter=".date">
+						<i class="fas fa-calendar-alt"></i>
+						Date</button>
+					<button class="tab-button" data-filter=".hightTolow">
+						<i class="fas fa-upload"></i>
+						Prix Croissant</button>
+					<button class="tab-button" data-filter=".lowToHigh">
+						<i class="fas fa-download"></i>
+						Prix Décroissant</button>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-9">
+						<div class="row filter-active tours-active">
+							{% for activite in activites %}
+								<div class="col-xl-4 col-lg-6 col-sm-6 filter-item hightTolow">
+									<div class="package-style1">
+										<div class="package-img">
+											{% set imageMap = {
+                                            'Aventure': 'adventure.jpg',
+                                            'Combiné': 'combined.jpg',
+                                            'National': 'nationale.png',
+                                            'Sportif': 'sports.jpg'
+                                        } %}
+											{% set imageName = imageMap[activite.type] ?? 'default.jpg' %}
+											<img src="{{ asset('uploads/images/' ~ imageName) }}" alt="{{ activite.type }}" style="width: 100%; height: 100%; object-fit: cover;">
+										</div>
+										<div class="package-content">
+											<h3 class="package-title">{{ activite.nom }}</h3>
+											<p class="package-text">{{ activite.description|slice(0, 100) }}...</p>
+											<div class="package-meta">
+												<a href="#">
+													<i class="fas fa-tag"></i>
+													Type:
+													{{ activite.type }}</a>
+												<a href="#">
+													<i class="fas fa-money-bill"></i>
+													Prix:
+													{{ activite.prix }}
+													DT</a>
+											</div>
+
+											<div class="package-footer">
+												<button class="vs-btn sessions-btn" style="width: 100%; margin-top: 10px;" data-activity-id="{{ activite.id }}" data-activity-name="{{ activite.nom }}">
+													<i class="fas fa-calendar-alt"></i>
+													Sessions
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="sidebar-area tours-sidebar">
+							<div class="widget">
+								<h3 class="widget_title">Filtrer les Activités</h3>
+								<form class="booking-form">
+									<div class="form-group">
+										<i class="fas fa-search"></i>
+										<input type="text" class="form-control" placeholder="Rechercher une activité"/>
+									</div>
+									<div class="form-group">
+										<i class="fas fa-thumbtack"></i>
+										<select class="form-select">
+											<option value="" selected disabled hidden>Sélectionner le Type</option>
+											<option value="Aventure">Aventure</option>
+											<option value="Combiné">Combiné</option>
+											<option value="Sportif">Sportif</option>
+											<option value="National">National</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<i class="fas fa-calendar-alt"></i>
+										<select class="form-select">
+											<option value="" selected disabled hidden>Sélectionner le Mois</option>
+											<option value="1">Janvier</option>
+											<option value="2">Février</option>
+											<option value="3">Mars</option>
+											<option value="4">Avril</option>
+											<option value="5">Mai</option>
+											<option value="6">Juin</option>
+											<option value="7">Juillet</option>
+											<option value="8">Août</option>
+											<option value="9">Septembre</option>
+											<option value="10">Octobre</option>
+											<option value="11">Novembre</option>
+											<option value="12">Décembre</option>
+										</select>
+									</div>
+									<div class="price_slider_wrapper">
+										<h3 class="widget_title">Filtrer par Prix</h3>
+										<div class="price_slider"></div>
+										<div class="price_label">
+											Prix:
+											<span class="from">10 DT</span>
+											—
+											<span class="to">1000 DT</span>
+										</div>
+									</div>
+									<button class="vs-btn style4 w-100">Rechercher</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Sessions Modal -->
+<div id="sessionsModal" class="modal">
+	<div class="modal-content" style="max-width: 800px;">
+		<span class="close">&times;</span>
+		<div class="session-modal-card">
+			<div class="session-modal-header">
+				<h2 class="session-modal-title">Sessions Disponibles</h2>
+			</div>
+			<div
+				class="sessions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px;"><!-- Sessions will be dynamically inserted here -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () { // Filter functionality
+const filterButtons = document.querySelectorAll('.tab-button');
+const filterItems = document.querySelectorAll('.filter-item');
+
+filterButtons.forEach(button => {
+button.addEventListener('click', () => { // Remove active class from all buttons
+filterButtons.forEach(btn => btn.classList.remove('active'));
+// Add active class to clicked button
+button.classList.add('active');
+
+const filterValue = button.getAttribute('data-filter');
+
+filterItems.forEach(item => {
+if (filterValue === '*' || item.classList.contains(filterValue.replace('.', ''))) {
+item.style.display = 'block';
+} else {
+item.style.display = 'none';
+}
+});
+});
+});
+});
+
+// Sessions button functionality
+const sessionsModal = document.getElementById('sessionsModal');
+const sessionsModalClose = sessionsModal.querySelector('.close');
+const sessionButtons = document.querySelectorAll('.sessions-btn');
+
+sessionButtons.forEach(button => {
+button.addEventListener('click', function (e) {
+e.stopPropagation();
+const activityId = this.getAttribute('data-activity-id');
+const activityName = this.getAttribute('data-activity-name');
+const activityCard = this.closest('.package-style1');
+
+// Update modal title
+sessionsModal.querySelector('.session-modal-title').textContent = `Sessions pour ${activityName}`;
+
+// Clear previous sessions
+const sessionsGrid = sessionsModal.querySelector('.sessions-grid');
+sessionsGrid.innerHTML = '';
+
+// Get the activity data from the template
+const activityData = {
+name: activityName,
+type: activityCard.querySelector('.package-meta a:nth-child(1)').textContent,
+price: activityCard.querySelector('.package-meta a:nth-child(2)').textContent
+};
+
+// Fetch sessions for this activity
+fetch (`/session/api/sessions/activity/${activityId}`).then(response => {
+if (!response.ok) {
+throw new Error('Network response was not ok');
+}
+return response.json();
+}).then(sessions => {
+if (sessions && sessions.length > 0) {
+sessions.forEach(session => {
+const sessionCard = document.createElement('div');
+sessionCard.className = 'session-card';
+sessionCard.style.cssText = `
+                            background: #fff;
+                            border-radius: 10px;
+                            padding: 15px;
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                            cursor: pointer;
+                            transition: transform 0.3s ease;
+                        `;
+
+const date = new Date(session.date);
+const formattedDate = date.toLocaleDateString('fr-FR');
+const formattedTime = session.heure;
+
+sessionCard.innerHTML = `
+                            <div class="session-info" style="margin-bottom: 10px;">
+                                <div style="margin-bottom: 5px;"><i class="fas fa-calendar"></i> ${formattedDate}</div>
+                                <div style="margin-bottom: 5px;"><i class="fas fa-clock"></i> ${formattedTime}</div>
+                                <div><i class="fas fa-users"></i> ${
+session.nbPlace
+} places disponibles</div>
+                            </div>
+                        `;
+
+sessionCard.addEventListener('click', () => { // Show the session details modal
+document.getElementById('modal-date').textContent = `Date: ${formattedDate}`;
+document.getElementById('modal-time').textContent = `Heure: ${formattedTime}`;
+document.getElementById('modal-available').textContent = `Places disponibles: ${
+session.nbPlace
+}`;
+document.getElementById('modal-activity').textContent = 'Activité: ' + activityData.name;
+document.getElementById('modal-type').textContent = activityData.type;
+document.getElementById('modal-price').textContent = activityData.price;
+
+modal.style.display = 'block';
+sessionsModal.style.display = 'none';
+});
+
+sessionsGrid.appendChild(sessionCard);
+});
+} else {
+sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Aucune session disponible pour le moment</p>';
+}
+}).catch(error => {
+console.error('Error fetching sessions:', error);
+sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Erreur lors du chargement des sessions</p>';
+});
+
+sessionsModal.style.display = 'block';
+});
+});
+
+sessionsModalClose.onclick = function () {
+sessionsModal.style.display = 'none';
+}
+
+window.onclick = function (event) {
+if (event.target == sessionsModal) {
+sessionsModal.style.display = 'none';
+}
+if (event.target == modal) {
+modal.style.display = 'none';
+}
+}
+
+// Add hover effect to session cards
+document.addEventListener('mouseover', function (e) {
+if (e.target.closest('.session-card')) {
+e.target.closest('.session-card').style.transform = 'translateY(-5px)';
+}
+});
+
+document.addEventListener('mouseout', function (e) {
+if (e.target.closest('.session-card')) {
+e.target.closest('.session-card').style.transform = 'translateY(0)';
+}
+});
+</script>{% endblock %}

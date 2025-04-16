@@ -10,10 +10,10 @@
 		<div
 			class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
 			<!--
-																																																																																																																																																																																																																																																																																																							        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-																																																																																																																																																																																																																																																																																																							
-																																																																																																																																																																																																																																																																																																							        Tip 2: you can also add an image using data-image tag
-																																																																																																																																																																																																																																																																																																							    -->
+																																																																																																																																																																																																																																																																																																																																		        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+																																																																																																																																																																																																																																																																																																																																		
+																																																																																																																																																																																																																																																																																																																																		        Tip 2: you can also add an image using data-image tag
+																																																																																																																																																																																																																																																																																																																																		    -->
 			<div class="logo">
 				<img src="{{ asset('assets/img/secondry - Copie.png') }}" class="simple-text logo-mini" alt="Logo">
 
@@ -54,7 +54,7 @@
 						<div class="collapse" id="gestionHotelMenu">
 							<ul class="nav">
 								<li class="nav-item  ">
-									<a class="nav-link" href="{{path('app_back_hotel')}}">
+									<a class="nav-link" href="{{path('app_back_hotel_index')}}">
 										<span class="sidebar-mini">H</span>
 										<span class="sidebar-normal">Hotel</span>
 									</a>
@@ -549,7 +549,7 @@ const prenom = this.getAttribute('data-prenom');
 
 Swal.fire({
 title: 'Confirmation',
-text: "Voulez-vous vraiment débloquer l'utilisateur " + nom.toUpperCase() + " " + prenom.toUpperCase() + " ?",
+text: "Voulez-vous vraiment bloquer l'utilisateur " + nom.toUpperCase() + " " + prenom.toUpperCase() + " ?",
 icon: 'warning',
 showCancelButton: true,
 confirmButtonColor: ' #ff681a',

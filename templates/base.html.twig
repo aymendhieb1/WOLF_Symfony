@@ -23,8 +23,8 @@
 
 		{% block stylesheets %}
 			<!--==============================
-																																																																																																																																																																																																																																																																								        All CSS Files
-																																																																																																																																																																																																																																																																								      ==============================-->
+																																																																																																																																																																																																																																																																																																			        All CSS Files
+																																																																																																																																																																																																																																																																																																			      ==============================-->
 			<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}"/>
@@ -64,10 +64,10 @@
 				/* === Messages === */
 				.chat-messages {
 					flex: 1;
-					max-height: 500px;
+					max-height: 600px;
 					overflow-y: auto;
 					color: #eee;
-					padding: 100px 0 100px 200px;
+					padding: 100px 0 100px 250px;
 					margin-bottom: 10px;
 
 				}
@@ -76,7 +76,7 @@
 					padding: 10px 15px;
 					border-radius: 20px;
 					margin-bottom: 10px;
-					max-width: 80%;
+					max-width: 50%;
 					word-wrap: break-word;
 				}
 
@@ -129,9 +129,6 @@
 					transition: background 0.3s ease;
 				}
 
-				.chat-form button:hover {
-					background: #e55d12;
-				}
 
 				/* === Responsive === */
 				@media(max-width: 600px) {
@@ -219,8 +216,8 @@
 		{% block body %}{% endblock %}
 		{% block javascripts %}
 			<!--==============================
-																																																																																																																																																																																																																																																																									        All JS Files
-																																																																																																																																																																																																																																																																									      ==============================-->
+																																																																																																																																																																																																																																																																																																				        All JS Files
+																																																																																																																																																																																																																																																																																																				      ==============================-->
 			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
 			<script src="{{ asset('assets/js/slick.min.js') }}"></script>
 			<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
@@ -233,6 +230,26 @@
 			<script src="{{ asset('assets/js/main.js') }}"></script>
 			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+			<script>
+				window.addEventListener("load", function () {
+setTimeout(function () {
+fetch("{{ path('app_logout') }}", {
+method: 'POST',
+headers: {
+'X-Requested-With': 'XMLHttpRequest'
+}
+}).then(response => {
+if (response.ok) {
+window.location.href = "{{ path('app_home') }}";
+} else {
+console.log("Erreur lors de la déconnexion.");
+}
+}).catch(error => {
+console.error("Erreur de requête AJAX:", error);
+});
+}, 1800000);
+});
+			</script>
 			<script>
 				toastr.options = {
 "closeButton": true,
