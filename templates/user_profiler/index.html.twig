@@ -150,10 +150,10 @@
 			<div
 				class="profile-left">
 				<!-- Ajout de la classe "profile-pic" pour cibler ce style -->
-				{% if app.user.photoProfil %}
-					<img class="profile-pic" src="{{ asset('uploads/profile/' ~ app.user.photoProfil) }}" alt="Photo de profil">
+				{% if app.user.photoProfil starts with 'http' %}
+					<img class="profile-pic" src="{{ app.user.photoProfil }}" alt="Photo de profil">
 				{% else %}
-					<img class="profile-pic" src="{{ asset('assets/img/your-profile-picture.png') }}" alt="Photo de profil">
+					<img class="profile-pic" src="{{ asset('uploads/profile/' ~ app.user.photoProfil) }}" alt="Photo de profil">
 				{% endif %}
 			</div>
 

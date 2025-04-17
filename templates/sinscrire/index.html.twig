@@ -15,8 +15,13 @@
 					</div>
 					<p class="footer-text">
 						Ut tellus dolor, dapibus eget, elementum ifend cursus eleifend,
+<<<<<<< HEAD
 																																																																																																																																																																																																																																																																																																																																																																																																																																																						              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
 																																																																																																																																																																																																																																																																																																																																																																																																																																																						              end cursus eleifendrpis.
+=======
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																								              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																								              end cursus eleifendrpis.
+>>>>>>> c10d64b (Third commit projet)
 					</p>
 					<div class="info-social style2">
 						<a href="#">
@@ -85,8 +90,13 @@
 	</div>
 
 	<!--==============================
+<<<<<<< HEAD
 																																																																									    Cart Side bar
 																																																																									  ============================== -->
+=======
+																																																																																																																																												    Cart Side bar
+																																																																																																																																												  ============================== -->
+>>>>>>> c10d64b (Third commit projet)
 	<div class="sideCart-wrapper offcanvas-wrapper d-none d-lg-block">
 		<div class="sidemenu-content">
 			<button class="closeButton border-theme bg-theme-hover sideMenuCls">
@@ -134,8 +144,13 @@
 	</div>
 
 	<!--==============================
+<<<<<<< HEAD
 																																																																									    Popup Search Box
 																																																																									    ============================== -->
+=======
+																																																																																																																																												    Popup Search Box
+																																																																																																																																												    ============================== -->
+>>>>>>> c10d64b (Third commit projet)
 	<div class="popup-search-box d-none d-lg-block">
 		<button class="searchClose">
 			<i class="fal fa-times"></i>
@@ -243,6 +258,78 @@
 							</div>
 						</div>
 						{{ form_end(form) }}
+<<<<<<< HEAD
+=======
+
+						<script>
+							document.getElementById('{{ form.photo_profil.vars.id }}').addEventListener('change', function (event) {
+var previewContainer = document.getElementById('profile-preview').parentElement;
+if (event.target.files && event.target.files[0]) { // Crée une URL temporaire pour le fichier sélectionné
+var imageUrl = URL.createObjectURL(event.target.files[0]);
+// Crée l'élément image pour la prévisualisation
+previewContainer.innerHTML = '<img id="profile-preview" src="' + imageUrl + '" alt="Photo de profil" />';
+}
+});
+						</script>
+
+
+						<script>
+							document.addEventListener('DOMContentLoaded', function () {
+const select = document.getElementById('country-code');
+const phoneInput = document.getElementById('user_num_tel');
+
+if (! select || ! phoneInput) {
+console.error("❌ Impossible de trouver les éléments nécessaires.");
+return;
+}
+
+select.addEventListener('change', function () {
+const newPrefix = select.value;
+
+// Récupère le numéro actuel sans préfixe (ex: on enlève +216, +33, etc.)
+const existingNumber = phoneInput.value.replace(/^\+?[0-9]{1,4}/, '').trim();
+
+// Mets à jour avec le nouveau préfixe + le reste du numéro
+phoneInput.value = newPrefix + existingNumber;
+
+// Place le curseur à la fin
+phoneInput.focus();
+phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+
+console.log("✅ Nouveau numéro mis à jour :", phoneInput.value);
+});
+});
+						</script>
+
+
+						<script>
+							document.addEventListener('DOMContentLoaded', function () {
+fetch('/assets/data/CountryCodes.json').then(response => response.json()).then(data => {
+const select = document.getElementById('country-code');
+select.innerHTML = '';
+
+data.forEach(country => {
+const option = document.createElement('option');
+option.value = country.dial_code;
+option.textContent = `${
+country.name
+} (${
+country.dial_code
+})`;
+option.dataset.country = country.name;
+select.appendChild(option);
+});
+
+const tunisie = data.find(c => c.code === 'TN');
+if (tunisie) {
+select.value = tunisie.dial_code;
+}
+}).catch(error => {
+console.error('Erreur lors du chargement des pays :', error);
+});
+});
+						</script>
+>>>>>>> c10d64b (Third commit projet)
 
 					</div>
 				</div>

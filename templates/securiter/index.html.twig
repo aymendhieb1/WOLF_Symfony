@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<title>Error Page</title>
+		<meta name="author" content="vecuro">
+		<meta name="description" content="Travolo - Travel Agency & Tour Booking HTML Template">
+		<meta name="keywords" content="Travolo - Travel Agency & Tour Booking HTML Template">
+		<meta
+		name="robots" content="INDEX,FOLLOW">
+
+		<!-- Mobile Specific Metas -->
+		<meta
+		name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Favicons - Place favicon.ico in the root directory -->
+		<link rel="icon" type="image/png" href="{{ asset('assets/img/primary.png') }}">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta
+		name="theme-color" content="#ffffff">
+
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link
+		href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+		<!-- All CSS Files -->
+		<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('assets/css/slick.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+	</head>
+
+	<body>
+
+		{% block body %}
+
+
+			<!-- Hero Area End -->
+
+			<!-- Error Area Start -->
+				<section class="space"> <div class="container">
+					<div class="error-content text-center">
+						<h2 class="text-theme">Accès interdit</h2>
+						<h3 class="error-title">Oups ! Vous n'avez pas les droits nécessaires pour accéder à cette page.</h3>
+						<p class="error-text">Désolé, mais vous n'êtes pas autorisé à voir cette page. Si vous pensez qu'il y a une erreur, contactez l'administrateur.</p>
+						<a href="{{ path('app_home') }}" class="vs-btn style4">Retour à l'accueil</a>
+						<img class="error-img" src="{{ asset('assets/img/shape/error-1-1.png') }}" alt="Image d'erreur">
+					</div>
+				</div>
+			</section>
+
+			<!-- Error Area End -->
+
+		{% endblock %}
+
+	</body>
+</html>
