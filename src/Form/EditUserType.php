@@ -76,13 +76,7 @@ class EditUserType extends AbstractType
             ])
             ->add('num_tel', TextType::class, [
                 'label' => false,
-                'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer votre numéro de téléphone.']),
-                    new Regex([
-                        'pattern' => '/^\+\d{6,15}$/',
-                        'message' => 'Le numéro doit inclure l’indicatif, ex: +21612345678',
-                    ]),
-                ]
+
             ])
 
 
@@ -110,18 +104,8 @@ class EditUserType extends AbstractType
                 'label' => false,
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
-                'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer un mot de passe']),
-                    new Length([
-                        'min' => 8,
-                        'max' => 20,
-                        'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères',
-                        'maxMessage' => 'Le mot de passe ne peut pas contenir plus de {{ limit }} caractères',
-                    ]),
-                    new Regex(['pattern' => '/[a-z]/', 'message' => 'Le mot de passe doit contenir au moins une lettre minuscule.']),
-                    new Regex(['pattern' => '/[A-Z]/', 'message' => 'Le mot de passe doit contenir au moins une lettre majuscule.']),
-                    new Regex(['pattern' => '/[0-9]/', 'message' => 'Le mot de passe doit contenir au moins un chiffre.']),
-                ],
+
+
             ])
             ->add('newPassword', PasswordType::class, [
                 'label' => false,

@@ -40,6 +40,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $photo_profil = null;
     #[ORM\Column(length: 255)]
     private ?int $role = null;
+    private ?string $resetToken = null;
+
 
     public function getRole(): ?int
     {
@@ -175,5 +177,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getSalt(): ?string
     {
         return null;
+    }
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+        return $this;
     }
 }

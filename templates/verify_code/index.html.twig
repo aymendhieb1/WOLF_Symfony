@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<section class="py-5" style="background-color: #f4f7fa;">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-8 col-lg-5">
+					<div class="card shadow-lg border-0 rounded-4">
+						<div class="card-body p-4">
+							<div class="text-center mb-4">
+								<img src="{{ asset('assets/img/primary.png') }}" alt="TripToGo Logo" style="width: 80px; height: auto;">
+							</div>
+							<h3 class="text-center mb-3" style="color: #ff681a;">
+								Vérification du code</h3>
+							<p class="text-center text-muted mb-4">Veuillez saisir le code que vous avez reçu par e-mail.</p>
+
+							{% for label, messages in app.flashes %}
+								{% for message in messages %}
+									<div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+										{{ message }}
+										<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+									</div>
+								{% endfor %}
+							{% endfor %}
+
+							<form method="post">
+								<div class="form-group mb-3">
+									<label for="code" class="form-label">Code de vérification</label>
+									<input type="text" id="code" name="code" class="form-control text-center" placeholder="Ex : 123456" required maxlength="6">
+								</div>
+
+								<button type="submit" class="vs-btn mask-style1 w-100 style4">
+									Vérifier le code
+								</button>
+							</form>
+
+							<div class="text-center mt-4">
+								<a href="{{ path('app_reset_password') }}" class="recovery-link mb-2 mb-md-0">
+									Revenir à la demande de réinitialisation
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

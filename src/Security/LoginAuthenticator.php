@@ -51,23 +51,42 @@ class LoginAuthenticator extends AbstractAuthenticator
     {
         $mail = $request->request->get('mail');
         $password = $request->request->get('mdp');
-
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['mail' => $mail]);
+        $captchaResponse = $request->request->get('h-captcha-response');
 
         $session = $this->requestStack->getSession();
 
-        if (!$user) {
-            if ($session) {
-                $session->getFlashBag()->add('warning', 'Aucun compte ne correspond à cet email.');
-            }
-            throw new CustomUserMessageAuthenticationException('INVALID_EMAIL');
+        if (!$captchaResponse) {
+            $session?->getFlashBag()->add('warning', 'Veuillez valider le captcha.');
+            throw new CustomUserMessageAuthenticationException('Captcha requis');
+        }
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('POST', 'https://hcaptcha.com/siteverify', [
+                'form_params' => [
+                    'secret' => 'ed883902-a6d6-424a-978a-1a5e36147308',
+                    'response' => $captchaResponse,
+                    'remoteip' => $request->getClientIp(),
+                ],
+            ]);
+
+            $captchaData = json_decode($response->getBody()->getContents(), true);
+        } catch (\Exception $e) {
+            $session?->getFlashBag()->add('warning', 'Erreur de validation du captcha.');
+            throw new CustomUserMessageAuthenticationException('Erreur hCaptcha');
         }
 
 
+
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['mail' => $mail]);
+
+        if (!$user) {
+            $session?->getFlashBag()->add('warning', 'Aucun compte ne correspond à cet email.');
+            throw new CustomUserMessageAuthenticationException('INVALID_EMAIL');
+        }
+
         if (!$this->passwordHasher->isPasswordValid($user, $password)) {
-            if ($session) {
-                $session->getFlashBag()->add('warning', 'Mot de passe incorrect.');
-            }
+            $session?->getFlashBag()->add('warning', 'Mot de passe incorrect.');
             throw new CustomUserMessageAuthenticationException('INVALID_PASSWORD');
         }
 
@@ -76,6 +95,7 @@ class LoginAuthenticator extends AbstractAuthenticator
             new PasswordCredentials($password)
         );
     }
+
 
 
 
