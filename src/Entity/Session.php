@@ -2,101 +2,92 @@
 
 namespace App\Entity;
 
+use App\Repository\SessionRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-use App\Entity\Activite;
-
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SessionRepository::class)]
+#[ORM\Table(name: 'session')]
 class Session
 {
-    public function __construct()
-    {
-    }
-
-
     #[ORM\Id]
-    #[ORM\Column(type: "integer")]
-    private int $id_sess;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: 'id_sess', type: Types::INTEGER)]
+    private ?int $id = null;
 
-        #[ORM\ManyToOne(targetEntity: Activite::class, inversedBy: "sessions")]
-    #[ORM\JoinColumn(name: 'id_act', referencedColumnName: 'id_act', onDelete: 'CASCADE')]
-    private Activite $id_act;
+    #[ORM\Column(name: 'date_sess', type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(type: "date")]
-    private \DateTimeInterface $date_sess;
+    #[ORM\Column(name: 'time_sess', type: Types::TIME_MUTABLE)]
+    private ?\DateTimeInterface $heure = null;
 
-    #[ORM\Column(type: "string")]
-    private string $time_sess;
+    #[ORM\Column(name: 'cap_sess', type: Types::INTEGER)]
+    private ?int $capacite = null;
 
-    #[ORM\Column(type: "integer")]
-    private int $cap_sess;
+    #[ORM\Column(name: 'nbr_places_sess', type: Types::INTEGER)]
+    private ?int $nbPlace = null;
 
-    #[ORM\Column(type: "integer")]
-    private int $nbr_places_sess;
+    #[ORM\ManyToOne(targetEntity: Activite::class)]
+    #[ORM\JoinColumn(name: 'id_act', referencedColumnName: 'id_act', nullable: true, onDelete: 'SET NULL')]
+    private ?Activite $activite = null;
 
-    public function getId_sess(): int
+    public function getId(): ?int
     {
-        return $this->id_sess;
+        return $this->id;
     }
 
-    public function setId_sess(int $value): self
+    public function getDate(): ?\DateTimeInterface
     {
-        $this->id_sess = $value;
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
         return $this;
     }
 
-    public function getId_act(): int
+    public function getHeure(): ?\DateTimeInterface
     {
-        return $this->id_act;
+        return $this->heure;
     }
 
-    public function setId_act(int $value): self
+    public function setHeure(\DateTimeInterface $heure): static
     {
-        $this->id_act = $value;
+        $this->heure = $heure;
         return $this;
     }
 
-    public function getDate_sess(): \DateTimeInterface
+    public function getCapacite(): ?int
     {
-        return $this->date_sess;
+        return $this->capacite;
     }
 
-    public function setDate_sess(\DateTimeInterface $value): self
+    public function setCapacite(int $capacite): static
     {
-        $this->date_sess = $value;
+        $this->capacite = $capacite;
         return $this;
     }
 
-    public function getTime_sess(): \DateTimeInterface
+    public function getNbPlace(): ?int
     {
-        return $this->time_sess;
+        return $this->nbPlace;
     }
 
-    public function setTime_sess(\DateTimeInterface $value): self
+    public function setNbPlace(int $nbPlace): static
     {
-        $this->time_sess = $value;
+        $this->nbPlace = $nbPlace;
         return $this;
     }
 
-    public function getCap_sess(): int
+    public function getActivite(): ?Activite
     {
-        return $this->cap_sess;
+        return $this->activite;
     }
 
-    public function setCap_sess(int $value): self
+    public function setActivite(?Activite $activite): static
     {
-        $this->cap_sess = $value;
+        $this->activite = $activite;
         return $this;
     }
-
-    public function getNbr_places_sess(): int
-    {
-        return $this->nbr_places_sess;
-    }
-
-    public function setNbr_places_sess(int $value): self
-    {
-        $this->nbr_places_sess = $value;
-        return $this;
-    }
-}
+} 

@@ -1,15 +1,15 @@
 parameters:
   photos_directory: "%kernel.project_dir%/public/uploads/photos"
   profile_pictures_directory: "%kernel.project_dir%/public/uploads/profile"
+  permits_directory: "uploads/permits"
+  uploads_directory: "%kernel.project_dir%/public/uploads"
+  hotel_images_directory: "%kernel.project_dir%/public/uploads/hotels"
 
 services:
-  # Configuration par défaut pour les services dans ce fichier
   _defaults:
-    autowire: true # Injecte automatiquement les dépendances
-    autoconfigure: true # Enregistre automatiquement certains services (commandes, subscribers, etc.)
+    autowire: true
+    autoconfigure: true
 
-  # Permet d'utiliser les classes situées dans src/ comme services
-  # Chaque classe aura pour identifiant son nom de classe complet
   App\:
     resource: "../src/"
     exclude:
@@ -17,4 +17,6 @@ services:
       - "../src/Entity/"
       - "../src/Kernel.php"
 
-  # Vous pouvez ajouter d'autres définitions de services ici, si nécessaire.
+  App\Controller\BackContratController:
+    arguments:
+      $uploadsDirectory: "uploads/permits"

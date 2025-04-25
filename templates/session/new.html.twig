@@ -1,0 +1,195 @@
+{% extends 'base1.html.twig' %}
+
+{% block body %}
+<div class="wrapper">
+    <div class="main-panel">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-wrapper">
+                    <a class="navbar-brand" href="javascript:;">Nouvelle Session</a>
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title">Créer une nouvelle session</h4>
+                            </div>
+                            <div class="card-body">
+                                {{ form_start(form,{'attr': {'novalidate': 'novalidate', 'id': 'session-form'}} ) }}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div style="margin-bottom: 20px;">{{ form_label(form.activite) }}</div>
+                                            {{ form_widget(form.activite, {
+                                                'attr': {
+                                                    'class': 'form-control',
+                                                    'style': 'margin-top: 15px;'
+                                                }
+                                            }) }}
+                                            <div class="invalid-feedback" id="activite-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.date) }}
+                                            {{ form_widget(form.date, {'attr': {'class': 'form-control', 'min': "now"|date('Y-m-d')}}) }}
+                                            <div class="invalid-feedback" id="date-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.heure) }}
+                                            {{ form_widget(form.heure, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="heure-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.capacite) }}
+                                            {{ form_widget(form.capacite, {'attr': {'class': 'form-control', 'min': '1'}}) }}
+                                            <div class="invalid-feedback" id="capacite-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.nbPlace) }}
+                                            {{ form_widget(form.nbPlace, {'attr': {'class': 'form-control', 'min': '0'}}) }}
+                                            <div class="invalid-feedback" id="nbPlace-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary">Créer</button>
+                                        <a href="{{ path('app_back_session') }}" class="btn btn-default">Retour</a>
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('session-form').addEventListener('submit', function(event) {
+    let isValid = true;
+    let errorMessage = '';
+
+    // Reset previous error states
+    document.querySelectorAll('.invalid-feedback').forEach(function(el) {
+        el.style.display = 'none';
+    });
+    document.querySelectorAll('.form-control').forEach(function(el) {
+        el.classList.remove('is-invalid');
+    });
+
+    // Validate activity
+    const activiteInput = document.getElementById('{{ form.activite.vars.id }}');
+    if (!activiteInput.value) {
+        errorMessage += 'L\'activité est obligatoire\n';
+        activiteInput.classList.add('is-invalid');
+        document.getElementById('activite-error').textContent = 'L\'activité est obligatoire';
+        document.getElementById('activite-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate date
+    const dateInput = document.getElementById('{{ form.date.vars.id }}');
+    const selectedDate = new Date(dateInput.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (!dateInput.value) {
+        errorMessage += 'La date est obligatoire\n';
+        dateInput.classList.add('is-invalid');
+        document.getElementById('date-error').textContent = 'La date est obligatoire';
+        document.getElementById('date-error').style.display = 'block';
+        isValid = false;
+    } else if (selectedDate < today) {
+        errorMessage += 'La date doit être supérieure ou égale à aujourd\'hui\n';
+        dateInput.classList.add('is-invalid');
+        document.getElementById('date-error').textContent = 'La date doit être supérieure ou égale à aujourd\'hui';
+        document.getElementById('date-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate time
+    const heureInput = document.getElementById('{{ form.heure.vars.id }}');
+    if (!heureInput.value) {
+        errorMessage += 'L\'heure est obligatoire\n';
+        heureInput.classList.add('is-invalid');
+        document.getElementById('heure-error').textContent = 'L\'heure est obligatoire';
+        document.getElementById('heure-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate capacity
+    const capaciteInput = document.getElementById('{{ form.capacite.vars.id }}');
+    if (!capaciteInput.value) {
+        errorMessage += 'La capacité est obligatoire\n';
+        capaciteInput.classList.add('is-invalid');
+        document.getElementById('capacite-error').textContent = 'La capacité est obligatoire';
+        document.getElementById('capacite-error').style.display = 'block';
+        isValid = false;
+    } else if (isNaN(capaciteInput.value) || parseInt(capaciteInput.value) < 1) {
+        errorMessage += 'La capacité doit être un nombre positif\n';
+        capaciteInput.classList.add('is-invalid');
+        document.getElementById('capacite-error').textContent = 'La capacité doit être un nombre positif';
+        document.getElementById('capacite-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate available places
+    const nbPlaceInput = document.getElementById('{{ form.nbPlace.vars.id }}');
+    if (!nbPlaceInput.value) {
+        errorMessage += 'Le nombre de places est obligatoire\n';
+        nbPlaceInput.classList.add('is-invalid');
+        document.getElementById('nbPlace-error').textContent = 'Le nombre de places est obligatoire';
+        document.getElementById('nbPlace-error').style.display = 'block';
+        isValid = false;
+    } else if (isNaN(nbPlaceInput.value) || parseInt(nbPlaceInput.value) < 0) {
+        errorMessage += 'Le nombre de places doit être un nombre positif ou zéro\n';
+        nbPlaceInput.classList.add('is-invalid');
+        document.getElementById('nbPlace-error').textContent = 'Le nombre de places doit être un nombre positif ou zéro';
+        document.getElementById('nbPlace-error').style.display = 'block';
+        isValid = false;
+    } else if (parseInt(nbPlaceInput.value) > parseInt(capaciteInput.value)) {
+        errorMessage += 'Le nombre de places ne peut pas être supérieur à la capacité\n';
+        nbPlaceInput.classList.add('is-invalid');
+        document.getElementById('nbPlace-error').textContent = 'Le nombre de places ne peut pas être supérieur à la capacité';
+        document.getElementById('nbPlace-error').style.display = 'block';
+        isValid = false;
+    }
+
+    if (!isValid) {
+        event.preventDefault();
+    }
+});
+
+// Style the error messages
+document.querySelectorAll('.invalid-feedback').forEach(function(el) {
+    el.style.color = '#dc3545';
+    el.style.display = 'none';
+    el.style.marginTop = '0.25rem';
+    el.style.fontSize = '80%';
+});
+</script>
+{% endblock %} 

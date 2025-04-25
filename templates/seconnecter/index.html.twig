@@ -4,13 +4,13 @@
 {% block body %}
 
 	<!--********************************
-																					  Code Start From Here 
-																						******************************** -->
+																																																			  Code Start From Here 
+																																																				******************************** -->
 
 
 	<!--==============================
-																					    Sidemenu
-																					    ============================== -->
+																																																			    Sidemenu
+																																																			    ============================== -->
 		<div class="sidemenu-wrapper offcanvas-wrapper d-none d-lg-block"> <div class="sidemenu-content">
 			<button class="closeButton sideMenuCls">
 				<i class="far fa-times"></i>
@@ -22,8 +22,8 @@
 					</div>
 					<p class="footer-text">
 						Ut tellus dolor, dapibus eget, elementum ifend cursus eleifend,
-																																																																																																																														              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
-																																																																																																																														              end cursus eleifendrpis.
+																																																																																																																																																																																																																																																																																																																		              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
+																																																																																																																																																																																																																																																																																																																		              end cursus eleifendrpis.
 					</p>
 					<div class="info-social style2">
 						<a href="#">
@@ -92,8 +92,8 @@
 	</div>
 
 	<!--==============================
-																					    Cart Side bar
-																					  ============================== -->
+																																																			    Cart Side bar
+																																																			  ============================== -->
 	<div class="sideCart-wrapper offcanvas-wrapper d-none d-lg-block">
 		<div class="sidemenu-content">
 			<button class="closeButton border-theme bg-theme-hover sideMenuCls">
@@ -141,8 +141,8 @@
 	</div>
 
 	<!--==============================
-																					    Popup Search Box
-																					    ============================== -->
+																																																			    Popup Search Box
+																																																			    ============================== -->
 	<div class="popup-search-box d-none d-lg-block">
 		<button class="searchClose">
 			<i class="fal fa-times"></i>
@@ -156,78 +156,88 @@
 	</div>
 
 
-	<!-- Hero Area Start -->
-	<div class="breadcumb-wrapper" style="
-																																																															        background-color: rgba(
-																																																															          19,
-																																																															          42,
-																																																															          62
-																																																															        ); /* Fond avec couleur #132a3e et opacité 0.5 */
-																																																															        background-size: cover; /* Si vous voulez que l'arrière-plan couvre toute la zone */
-																																																															        background-position: center; /* Centrer l'image de fond */
-																																																															        background-repeat: no-repeat; /* Empêche la répétition de l'image */
-																																																															      ">
-		<div class="container z-index-common">
-			<div class="breadcumb-content">
-				<h1 class="breadcumb-title">Se connecter</h1>
-				<div class="breadcumb-menu-wrap">
-					<ul class="breadcumb-menu">
-						<li>
-							<a href="index.html">Accueil</a>
-						</li>
-						<li>Se connecter</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
 	<!-- Hero Area End -->
 
 	<!-- Sign Up Area Start -->
-	<div class="signup-wrapper space">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-lg-6">
-					<form action="{{ path('app_seconnecter') }}" class="signup-form bg-smoke" method="post" novalidate>
 
-						<h2 class="form-title text-center mb-lg-35">Se connecter</h2>
-						<div class="form-group">
-							<label for="loginUserId" class="sr-only">Adresse e-mail*</label>
-							<input type="text" class="form-control" placeholder="Adresse e-mail*" id="loginUserId" name="mail" value="{{last_username}}"/>
-						</div>
-						<div class="form-group">
-							<label for="loginUserPass" class="sr-only">Mot de passe*</label>
-							<input type="password" class="form-control" placeholder="Mot de passe*" id="loginUserPass" name="mdp"/>
-						</div>
-						<div class="form-group">
-							<input type="checkbox" name="loginRemember" id="loginRemember"/>
-						</div>
-						<div class="form-group mb-0 text-center">
-							<button class="vs-btn mask-style1 w-100 style4" type="submit">
-								Se connecter
-							</button>
-							<div class="bottom-links link-inherit d-md-flex justify-content-between mt-3">
-								<a href="#" class="recovery-link mb-2 mb-md-0">Mot de passe oublié ?</a>
-								<a href="{{ path('app_sinscrire') }}">Ou Créer un compte</a>
+
+	<section class="space space-extra-bottom bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
+		<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-20%" data-right="-8%">
+			<img src="assets/img/shape/circle1.png" alt="circle"/>
+		</div>
+		<div class="shape-mockup d-none d-xl-block z-index-negative" data-bottom="13%" data-left="0%">
+			<img src="assets/img/shape/walk.png" alt="circle"/>
+		</div>
+
+		<div class="signup-wrapper space">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-6">
+						<form action="{{ path('app_seconnecter') }}" class="signup-form bg-smoke" method="post" novalidate>
+
+							<h2 class="form-title text-center mb-lg-35">Se connecter</h2>
+							<div class="form-group">
+								<label for="loginUserId" class="sr-only">Adresse e-mail*</label>
+								<input type="text" class="form-control" placeholder="Adresse e-mail*" id="loginUserId" name="mail" value="{{last_username}}"/>
 							</div>
-						</div>
+							<div class="form-group">
+								<label for="loginUserPass" class="sr-only">Mot de passe*</label>
+								<div class="input-group">
+									<input type="password" class="form-control" placeholder="Mot de passe*" id="loginUserPass" name="mdp"/>
+									<div class="input-group-append">
+										<span class="input-group-text" id="togglePassword" style="cursor: pointer;">
+											<i class="fa fa-eye" id="eyeIcon"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<input type="checkbox" name="loginRemember" id="loginRemember"/>
+							</div>
+							<div class="form-group mb-0 text-center">
+								<button class="vs-btn mask-style1 w-100 style4" type="submit">
+									Se connecter
+								</button>
+								<div class="bottom-links link-inherit d-md-flex justify-content-between mt-3">
+									<a href="#" class="recovery-link mb-2 mb-md-0">Mot de passe oublié ?</a>
+									<a href="{{ path('app_sinscrire') }}">Ou Créer un compte</a>
+								</div>
+							</div>
 
-					</form>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</section>
 
 	<!-- Sign Up Area End -->
 
 
 	<!--********************************
-																					  Code Ends Here 
-																						******************************** -->
+																																																			  Code Ends Here 
+																																																				******************************** -->
 
 	<!-- Scroll To Top -->
 		<a href="#" class="scrollToTop scroll-btn"> <i class="far fa-arrow-up"></i>
 	</a>
+	<script>
+		// Toggle Password visibility
+document.getElementById("togglePassword").addEventListener("click", function () {
+var passwordField = document.getElementById("loginUserPass");
+var eyeIcon = document.getElementById("eyeIcon");
 
+// Si le mot de passe est masqué, on le montre et inversement
+if (passwordField.type === "password") {
+passwordField.type = "text";
+eyeIcon.classList.remove("fa-eye");
+eyeIcon.classList.add("fa-eye-slash");
+} else {
+passwordField.type = "password";
+eyeIcon.classList.remove("fa-eye-slash");
+eyeIcon.classList.add("fa-eye");
+}
+});
+	</script>
 
 {% endblock %}

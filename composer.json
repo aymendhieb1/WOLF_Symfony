@@ -9,10 +9,15 @@
         "php": ">=7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "abraham/twitteroauth": "^7.0",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+        "google/apiclient": "^2.12.0",
+        "guzzlehttp/guzzle": "*",
+        "knplabs/knp-paginator-bundle": "*",
+        "knplabs/knp-snappy-bundle": "^1.10",
         "mercuryseries/flashy-bundle": "^5.1",
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.1",
@@ -57,7 +62,8 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "process-timeout": 3600
     },
     "autoload": {
         "psr-4": {
@@ -96,12 +102,12 @@
         }
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^4.0",
+        "doctrine/doctrine-fixtures-bundle": "*",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "5.4.*",
         "symfony/css-selector": "5.4.*",
         "symfony/debug-bundle": "5.4.*",
-        "symfony/maker-bundle": "^1.50",
+        "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "5.4.*",
         "symfony/web-profiler-bundle": "5.4.*"

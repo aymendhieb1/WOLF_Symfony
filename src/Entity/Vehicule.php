@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VehiculeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VehiculeRepository::class)]
@@ -24,6 +26,14 @@ class Vehicule
 
     #[ORM\Column(nullable: true)]
     private ?int $cylinder = null;
+
+    #[ORM\OneToMany(targetEntity: Contrat::class, mappedBy: 'id_vehicule', cascade: ['persist'])]
+    private Collection $contrats;
+
+    public function __construct()
+    {
+        $this->contrats = new ArrayCollection();
+    }
 
     public function getId_vehicule(): ?int
     {
@@ -72,5 +82,39 @@ class Vehicule
     {
         $this->cylinder = $cylinder;
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Contrat>
+     */
+    public function getContrats(): Collection
+    {
+        return $this->contrats;
+    }
+
+    public function addContrat(Contrat $contrat): static
+    {
+        if (!$this->contrats->contains($contrat)) {
+            $this->contrats->add($contrat);
+            $contrat->setIdVehicule($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContrat(Contrat $contrat): static
+    {
+        if ($this->contrats->removeElement($contrat)) {
+            if ($contrat->getIdVehicule() === $this) {
+                $contrat->setIdVehicule(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->matricule ?? '';
     }
 }

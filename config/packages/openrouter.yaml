@@ -1,0 +1,9 @@
+parameters:
+    openrouter.api.url: 'https://openrouter.ai/api/v1'
+    openrouter.api.key: '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'
+
+services:
+    App\Service\OpenRouterService:
+        arguments:
+            $client: '@http_client'
+            $logger: '@logger'

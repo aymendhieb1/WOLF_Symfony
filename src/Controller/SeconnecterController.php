@@ -20,14 +20,13 @@ class SeconnecterController extends AbstractController
 
         return $this->render('seconnecter/index.html.twig', [
             'last_username' => $lastUsername,
-            'error'         => $error,
+            'error' => $error,
         ]);
     }
 
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
-        // Cette méthode est vide : Symfony interceptera la route pour la déconnexion.
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

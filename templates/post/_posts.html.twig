@@ -1,0 +1,298 @@
+{% for post in posts %}
+    <div class="forum-post-item" 
+         data-post-id="{{ post.postId }}"
+         data-type="{{ post.type }}"
+         data-announcement-title="{{ post.announcementTitle }}"
+         data-survey-question="{{ post.surveyQuestion }}"
+         data-announcement-content="{{ post.announcementContent }}"
+         data-announcement-tags="{{ post.announcementTags }}"
+         data-survey-tags="{{ post.surveyTags }}"
+         data-date-creation="{{ post.dateCreation|date('Y-m-d H:i:s') }}"
+         data-date-modification="{{ post.dateModification|date('Y-m-d H:i:s') }}"
+         data-chemin-fichier="{{ post.cheminFichier }}"
+         data-votes="{{ post.votes }}"
+         data-nbr-signal="{{ post.nbrSignal }}"
+         data-up-vote-list="{{ post.upVoteList }}"
+         data-down-vote-list="{{ post.downVoteList }}"
+         data-signal-list="{{ post.signalList }}"
+         data-user-email="{{ post.idUser.mail }}">
+        <div class="post-header">
+            <h2 class="post-title">
+                {% if post.type == 'announcement' %}
+                    {{ post.announcementTitle ?? 'No title' }}
+                {% elseif post.type == 'survey' %}
+                    {{ post.surveyQuestion ?? 'No question' }}
+                {% endif %}
+            </h2>
+            
+            <div class="post-meta">
+                <div class="post-tags">
+                    {% if post.type == 'announcement' %}
+                        {% for tag in post.announcementTags|split(',') %}
+                            {% if tag|trim is not empty %}
+                                <span class="tag-item">#{{ tag|trim }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% elseif post.type == 'survey' %}
+                        {% for tag in post.surveyTags|split(',') %}
+                            {% if tag|trim is not empty %}
+                                <span class="tag-item">#{{ tag|trim }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="post-date">
+                    {% if post.dateModification and post.dateModification != post.dateCreation %}
+                        Edited on: {{ post.dateModification|date('M d, Y') }}
+                    {% else %}
+                        Posted on: {{ post.dateCreation|date('M d, Y') }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if post.cheminFichier %}
+        <div class="post-image">
+            <img src="{{ asset('uploads/' ~ post.cheminFichier) }}" alt="Post image" class="post-image-preview">
+        </div>
+        {% endif %}
+
+        <div class="post-content">
+            {% if post.type == 'announcement' %}
+                {{ post.announcementContent|raw }}
+            {% elseif post.type == 'survey' %}
+                {{ post.surveyQuestion|raw }}
+            {% endif %}
+        </div>
+
+        <div class="post-footer">
+            <div class="vote-controls">
+                <button class="upvote-btn{% if app.user and app.user.mail in post.upVoteList|split(',') %} disabled{% endif %}"
+                        @click="handleVote($el.closest('.forum-post-item').dataset, 'up')"
+                        {% if not app.user or app.user.mail in post.upVoteList|split(',') %}disabled{% endif %}>
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+                <span class="vote-count">{{ post.votes ?? 0 }}</span>
+                <button class="downvote-btn{% if app.user and app.user.mail in post.downVoteList|split(',') %} disabled{% endif %}"
+                        @click="handleVote($el.closest('.forum-post-item').dataset, 'down')"
+                        {% if not app.user or app.user.mail in post.downVoteList|split(',') %}disabled{% endif %}>
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+            </div>
+
+            <div class="post-actions">
+                <button class="view-comments-btn" @click="loadPostDetails($el.closest('.forum-post-item').dataset)">
+                    <i class="fas fa-comments"></i> View Details
+                </button>
+                <button class="signal-btn{% if app.user and app.user.mail in post.signalList|split(',') %} disabled{% endif %}"
+                        @click="handleReport($el.closest('.forum-post-item').dataset)"
+                        {% if not app.user or app.user.mail in post.signalList|split(',') %}disabled{% endif %}>
+                    <i class="fas fa-flag"></i> Report <span class="report-count">({{ post.nbrSignal }})</span>
+                </button>
+                
+                {% if app.user and (app.user.mail == post.idUser.mail or app.user.role == 0) %}
+                    <button class="edit-post-btn">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="delete-post-btn">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="no-posts-message">
+        {% if searchTerm %}
+            No posts found matching "{{ searchTerm }}"
+        {% else %}
+            No posts in this forum yet. Be the first to create one!
+        {% endif %}
+    </div>
+{% endfor %}
+
+<style>
+    .forum-post-item {
+        background: #f5f5f5;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 0 20px 30px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+
+    .forum-post-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .post-header {
+        margin-bottom: 20px;
+    }
+
+    .post-title {
+        font-size: 18px;
+        color: #e78d1e;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+
+    .post-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tag-item {
+        background: #ffffff;
+        color: #e78d1e;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        border: 1px solid #e78d1e;
+    }
+
+    .post-date {
+        color: #666;
+        font-size: 12px;
+    }
+
+    .post-image {
+        margin: 20px 0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .post-image-preview {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .post-content {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        color: #495057;
+        line-height: 1.6;
+    }
+
+    .post-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .vote-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .vote-controls button {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #e78d1e;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .vote-controls button:hover:not(.disabled) {
+        background: #e78d1e;
+        color: white;
+    }
+
+    .vote-controls button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .vote-count {
+        font-size: 16px;
+        color: #e78d1e;
+        font-weight: bold;
+        min-width: 24px;
+        text-align: center;
+    }
+
+    .post-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .post-actions button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .view-comments-btn {
+        background: #e78d1e;
+        color: white;
+    }
+
+    .view-comments-btn:hover {
+        background: #ff9f2f;
+    }
+
+    .signal-btn {
+        background: #dc3545;
+        color: white;
+    }
+
+    .edit-post-btn {
+        background: #28a745;
+        color: white;
+    }
+
+    .delete-post-btn {
+        background: #dc3545;
+        color: white;
+    }
+
+    .post-actions button:hover:not(:disabled) {
+        transform: translateY(-2px);
+    }
+
+    .post-actions button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .no-posts-message {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 8px;
+        text-align: center;
+        color: #495057;
+        margin: 30px 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 768px) {
+        .forum-post-item {
+            margin: 0 10px 20px;
+        }
+    }
+</style> 

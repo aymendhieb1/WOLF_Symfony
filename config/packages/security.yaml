@@ -24,16 +24,16 @@ security:
         password_parameter: mdp
         enable_csrf: true
       custom_authenticators:
-        - App\Security\LoginAuthenticator # Authentificateur formulaire
+        - App\Security\LoginAuthenticator
       logout:
         path: /logout
         target: app_seconnecter
         csrf_token_id: logout
 
   access_control:
-    - { path: ^/app_back_office, roles: [ROLE_ADMIN] } # Accès Admin
-    - { path: ^/app_home, roles: ROLE_CLIENT } # Page réservée aux clients
-    - { path: ^/connect/google, roles: PUBLIC_ACCESS } # Permet à tout le monde d'utiliser Google Login
-    - { path: ^/seconnecter, roles: PUBLIC_ACCESS } # Page de connexion accessible à tous
-    - { path: ^/sinscrire, roles: PUBLIC_ACCESS } # Inscription accessible à tous
-    - { path: ^/, roles: PUBLIC_ACCESS } # Page d'accueil accessible à tous
+    - { path: ^/app_back_office, roles: [ROLE_ADMIN] }
+    - { path: ^/app_home, roles: ROLE_CLIENT }
+    - { path: ^/connect/google, roles: PUBLIC_ACCESS }
+    - { path: ^/seconnecter, roles: PUBLIC_ACCESS }
+    - { path: ^/sinscrire, roles: PUBLIC_ACCESS }
+    - { path: ^/, roles: PUBLIC_ACCESS }

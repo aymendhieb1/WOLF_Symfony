@@ -3,46 +3,58 @@
 namespace App\Entity;
 
 use App\Repository\ContratRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContratRepository::class)]
+#[ORM\Table(name: 'contrat')]
 class Contrat
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(name: "id_location", type: "integer")]
+    private ?int $id_location = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateD = null;
+    #[ORM\Column(name: "dateD", type: "string", length: 255)]
+    #[Assert\NotBlank(message: "La date de début est requise.")]
+    private ?string $dateD = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "dateF", type: "string", length: 255)]
+    #[Assert\NotBlank(message: "La date de fin est requise.")]
     private ?string $dateF = null;
 
-    #[ORM\Column]
-    private ?int $cinlocateur = null;
+    #[ORM\Column(name: "cinLocateur", type: "integer")]
+    #[Assert\NotBlank(message: "Le CIN est requis.")]
+    #[Assert\Regex(pattern: "/^\d{8}$/", message: "Le CIN doit contenir exactement 8 chiffres.")]
+    private ?int $cinLocateur = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "photo_permit", type: "string", length: 255, nullable: true)]
     private ?string $photo_permit = null;
 
-    #[ORM\Column]
-    private ?int $id_vehicule = null;
+    #[ORM\ManyToOne(inversedBy: 'contrats')]
+    #[ORM\JoinColumn(name: 'id_vehicule', referencedColumnName: 'id_vehicule', nullable: false)]
+    #[Assert\NotNull(message: "Le véhicule est requis.")]
+    private ?Vehicule $id_vehicule = null;
 
-    public function getId(): ?int
+    public function getIdLocation(): ?int
     {
-        return $this->id;
+        return $this->id_location;
     }
 
-    public function getDateD(): ?\DateTimeInterface
+    public function setIdLocation(int $id_location): static
+    {
+        $this->id_location = $id_location;
+        return $this;
+    }
+
+    public function getDateD(): ?string
     {
         return $this->dateD;
     }
 
-    public function setDateD(\DateTimeInterface $dateD): static
+    public function setDateD(?string $dateD): static
     {
         $this->dateD = $dateD;
-
         return $this;
     }
 
@@ -51,22 +63,20 @@ class Contrat
         return $this->dateF;
     }
 
-    public function setDateF(string $dateF): static
+    public function setDateF(?string $dateF): static
     {
         $this->dateF = $dateF;
-
         return $this;
     }
 
-    public function getCinlocateur(): ?int
+    public function getCinLocateur(): ?int
     {
-        return $this->cinlocateur;
+        return $this->cinLocateur;
     }
 
-    public function setCinlocateur(int $cinlocateur): static
+    public function setCinLocateur(int $cinLocateur): static
     {
-        $this->cinlocateur = $cinlocateur;
-
+        $this->cinLocateur = $cinLocateur;
         return $this;
     }
 
@@ -75,22 +85,20 @@ class Contrat
         return $this->photo_permit;
     }
 
-    public function setPhotoPermit(string $photo_permit): static
+    public function setPhotoPermit(?string $photo_permit): static
     {
         $this->photo_permit = $photo_permit;
-
         return $this;
     }
 
-    public function getIdVehicule(): ?int
+    public function getIdVehicule(): ?Vehicule
     {
         return $this->id_vehicule;
     }
 
-    public function setIdVehicule(int $id_vehicule): static
+    public function setIdVehicule(?Vehicule $id_vehicule): static
     {
         $this->id_vehicule = $id_vehicule;
-
         return $this;
     }
 }

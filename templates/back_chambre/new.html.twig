@@ -1,0 +1,98 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Nouvelle Chambre{% endblock %}
+
+{% block body %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">Nouvelle Chambre</h4>
+                        <p class="card-category">Ajoutez une nouvelle chambre</p>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group{% if form.type.vars.errors|length > 0 %} has-danger{% endif %}">
+                                    {{ form_label(form.type, 'Type de chambre', {'label_attr': {'class': 'bmd-label-floating'}}) }}
+                                    {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.type, {'attr': {'class': 'text-danger'}}) }}
+                                    <small class="form-text text-muted">Choisissez entre Simple, Double ou Suite</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group{% if form.prix.vars.errors|length > 0 %} has-danger{% endif %}">
+                                    {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'bmd-label-floating'}}) }}
+                                    {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.prix, {'attr': {'class': 'text-danger'}}) }}
+                                    <small class="form-text text-muted">Le prix doit être un nombre positif</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group{% if form.disponibilite.vars.errors|length > 0 %} has-danger{% endif %}">
+                                    {{ form_label(form.disponibilite, 'Disponibilité', {'label_attr': {'class': 'bmd-label-floating'}}) }}
+                                    {{ form_widget(form.disponibilite, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.disponibilite, {'attr': {'class': 'text-danger'}}) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group{% if form.hotel.vars.errors|length > 0 %} has-danger{% endif %}">
+                                    {{ form_label(form.hotel, 'Hôtel', {'label_attr': {'class': 'bmd-label-floating'}}) }}
+                                    {{ form_widget(form.hotel, {'attr': {'class': 'form-control select2'}}) }}
+                                    {{ form_errors(form.hotel, {'attr': {'class': 'text-danger'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group{% if form.description.vars.errors|length > 0 %} has-danger{% endif %}">
+                                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'bmd-label-floating'}}) }}
+                                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                                    {{ form_errors(form.description, {'attr': {'class': 'text-danger'}}) }}
+                                    <small class="form-text text-muted">La description doit contenir entre 10 et 500 caractères</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary pull-right">
+                                <i class="material-icons">save</i> Créer
+                            </button>
+                            <a href="{{ path('app_back_chambre') }}" class="btn btn-default">
+                                <i class="material-icons">arrow_back</i> Retour à la liste
+                            </a>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            // Initialize select2 for hotel selection
+            if ($().select2) {
+                $('.select2').select2();
+            }
+
+            // Add custom validation styling
+            $('.form-control').on('change', function() {
+                var $formGroup = $(this).closest('.form-group');
+                if ($(this).val()) {
+                    $formGroup.removeClass('has-danger').addClass('has-success');
+                } else {
+                    $formGroup.removeClass('has-success').addClass('has-danger');
+                }
+            });
+        });
+    </script>
+{% endblock %} 

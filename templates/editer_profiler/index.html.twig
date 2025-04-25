@@ -1,60 +1,88 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
 	<div class="signup-wrapper space">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-6">
+					{% for label, messages in app.flashes %}
+						{% for message in messages %}
+							<div class="alert alert-{{ label }}">
+								{{ message }}
+							</div>
+						{% endfor %}
+					{% endfor %}
 					{% if app.user %}
 
-						<form action="{{ path('app_editer_profiler') }}" class="signup-form bg-smoke" method="post">
-							<h2 class="form-title text-center mb-lg-35">Modifier votre profil</h2>
+						{{ form_start(form, {
+                    'attr': {
+                        'id': 'register-form',
+                        'class': 'signup-form bg-smoke',
+                        'novalidate': 'novalidate'
+                    }
+                }) }}
 
-							<div class="form-group text-center">
-								<div class="custom-file-input-container">
-									<label for="user-photo" class="custom-file-label">
-										{% if app.user.photoProfil %}
-											<img class="profile-pic" src="{{ asset('uploads/profile/' ~ app.user.photoProfil) }}" alt="Photo de profil">
-										{% else %}
-											<i class="fas fa-user" style="font-size:72px;color:#ccc;"></i>
-										{% endif %}
-									</label>
-									<input id="user-photo" type="file" name="photoProfil" class="hidden-file-input">
-								</div>
-							</div>
+						<h2 class="form-title text-center mb-lg-35">Modifier votre profil</h2>
 
-							<div class="form-group">
-								<input id="user-prenom" type="text" class="form-control" name="prenom" value="{{ app.user.prenom }}">
+						<div class="form-group text-center">
+							<div class="custom-file-input-container">
+								<label for="user-photo" class="custom-file-label">
+									{% if app.user.photoProfil %}
+										<img class="profile-pic" src="{{ asset('uploads/profile/' ~ app.user.photoProfil) }}" alt="Photo de profil">
+									{% else %}
+										<i class="fas fa-user" style="font-size:72px;color:#ccc;"></i>
+									{% endif %}
+								</label>
+								<input id="user-photo" type="file" name="photoProfil" class="hidden-file-input">
 							</div>
+						</div>
+						<div class="form-group">
+							{{ form_errors(form.prenom) }}
+						</div>
+						<div class="form-group">
+							{{ form_widget(form.prenom,{'attr': {'class': 'form-control', 'placeholder': 'Prenom*'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_errors(form.nom) }}
+						</div>
+						<div class="form-group">
+							{{ form_widget(form.nom,{'attr': {'class': 'form-control', 'placeholder': 'Nom*'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_errors(form.num_tel) }}
+						</div>
+						<div class="form-group">
+							{{ form_widget(form.num_tel,{'attr': {'class': 'form-control', 'placeholder': 'Numéro de téléphone*','readonly': 'readonly'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_errors(form.mail) }}
+						</div>
+						<div class="form-group">
+							{{ form_widget(form.mail,{'attr': {'class': 'form-control', 'placeholder': 'Email*','readonly': 'readonly'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_errors(form.mdp) }}
+						</div>
+						<div class="form-group">
+							{{ form_widget(form.mdp,{'attr': {'class': 'form-control', 'placeholder': 'Ancien mot de passe*'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_errors(form.newPassword) }}
+						</div>
+						<div class="form-group">
+							{{ form_widget(form.newPassword,{'attr': {'class': 'form-control', 'placeholder': 'Nouveau mot de passe*'}}) }}
+						</div>
 
-							<div class="form-group">
-								<input id="user-nom" type="text" class="form-control" name="nom" value="{{ app.user.nom}}">
-							</div>
+						<div class="form-group text-center mt-3">
+							<button type="submit" class="vs-btn w-100 style4">Enregistrer les modifications</button>
+						</div>
 
-							<div class="form-group">
-								<input id="user-numTel" type="text" class="form-control" name="numTel" value="{{ app.user.numTel }}">
-							</div>
+						<div class="form-group text-center mt-3">
+							<button type="button" id="cancelBtn" class="vs-btn w-100 style4">Annuler</button>
+						</div>
 
-							<div class="form-group">
-								<input id="user-mail" type="email" class="form-control" name="mail" value="{{ app.user.mail }}">
-							</div>
-							<div class="form-group">
-								<input id="old-password" type="password" class="form-control" name="oldPassword" placeholder="Ancien mot de passe">
-							</div>
-
-							<div class="form-group">
-								<input id="new-password" type="password" class="form-control" name="newPassword" placeholder="Nouveau mot de passe">
-							</div>
-
-							<div class="form-group text-center mt-3">
-								<button type="submit" class="vs-btn w-100 style4">Enregistrer les modifications</button>
-							</div>
-							<div class="form-group text-center mt-3">
-								<button type="button" id="cancelBtn" class="vs-btn w-100 style4">Annuler</button>
-							</div>
-
-						</form>
-
+						{{ form_end(form) }}
 
 					{% endif %}
 				</div>
@@ -78,10 +106,12 @@
 		.hidden-file-input {
 			display: none;
 		}
+
+		.form-group {
+			color: #ff681a;
+
+		}
 	</style>
-
-
-	{# Script pour mettre à jour la prévisualisation de l'image après sélection #}
 	<script>
 		document.getElementById('user-photo').addEventListener('change', function (event) {
 var previewContainer = document.querySelector('.custom-file-label');
@@ -90,6 +120,7 @@ var imageUrl = URL.createObjectURL(event.target.files[0]);
 previewContainer.innerHTML = '<img class="profile-pic" src="' + imageUrl + '" alt="Photo de profil">';
 }
 });
+
 document.getElementById('cancelBtn').addEventListener('click', function (e) {
 e.preventDefault();
 Swal.fire({
@@ -108,4 +139,11 @@ window.history.back();
 });
 });
 	</script>
+
+
 {% endblock %}
+
+{# Votre CSS et Javascript restent inchangés ci-dessous #}
+
+
+{# Script pour mettre à jour la prévisualisation de l'image après sélection #}

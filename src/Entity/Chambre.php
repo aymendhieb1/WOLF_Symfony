@@ -2,99 +2,107 @@
 
 namespace App\Entity;
 
+use App\Repository\ChambreRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
-
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ChambreRepository::class)]
+#[ORM\Table(name: 'chambre')]
 class Chambre
 {
-    public function __construct()
-    {
-    }
-
-
     #[ORM\Id]
-    #[ORM\Column(type: "integer")]
-    private int $id_Chambre;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: 'id_Chambre', type: Types::INTEGER)]
+    private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 100)]
-    private string $type_Chambre;
+    #[ORM\Column(name: 'type_Chambre', length: 100)]
+    #[Assert\NotBlank(message: 'Le type de chambre est obligatoire')]
+    #[Assert\Choice(choices: ['Simple', 'Double', 'Suite'], message: 'Veuillez choisir un type valide (Simple, Double ou Suite)')]
+    private ?string $type = null;
 
-    #[ORM\Column(type: "float")]
-    private float $prix_Chambre;
+    #[ORM\Column(name: 'prix_Chambre')]
+    #[Assert\NotBlank(message: 'Le prix est obligatoire')]
+    #[Assert\Positive(message: 'Le prix doit être supérieur à 0')]
+    #[Assert\Type(type: 'float', message: 'Le prix doit être un nombre')]
+    private ?float $prix = null;
 
-    #[ORM\Column(type: "string", length: 100)]
-    private string $disponibilite_Chambre;
+    #[ORM\Column(name: 'disponibilite_Chambre', length: 100)]
+    #[Assert\NotBlank(message: 'La disponibilité est obligatoire')]
+    private ?bool $disponibilite = true;
 
-    #[ORM\Column(type: "string", length: 300)]
-    private string $description_Chambre;
+    #[ORM\Column(name: 'description_Chambre', length: 300)]
+    #[Assert\NotBlank(message: 'La description est obligatoire')]
+    #[Assert\Length(
+        min: 10,
+        max: 500,
+        minMessage: 'La description doit faire au moins {{ limit }} caractères',
+        maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères'
+    )]
+    private ?string $description = null;
 
-    #[ORM\Column(type: "integer")]
-    private int $id_hotel_Chambre;
+    #[ORM\ManyToOne(targetEntity: Hotel::class)]
+    #[ORM\JoinColumn(name: 'id_hotel_Chambre', referencedColumnName: 'id_hotel')]
+    #[Assert\NotBlank(message: "L'hôtel est obligatoire")]
+    private ?Hotel $hotel = null;
 
-    public function getId_Chambre(): int
+    public function getId(): ?int
     {
-        return $this->id_Chambre;
+        return $this->id;
     }
 
-    public function setId_Chambre(int $value): self
+    public function getType(): ?string
     {
-        $this->id_Chambre = $value;
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
         return $this;
     }
 
-    public function getType_Chambre(): string
+    public function getPrix(): ?float
     {
-        return $this->type_Chambre;
+        return $this->prix;
     }
 
-    public function setType_Chambre(string $value): self
+    public function setPrix(float $prix): static
     {
-        $this->type_Chambre = $value;
+        $this->prix = $prix;
         return $this;
     }
 
-    public function getPrix_Chambre(): float
+    public function getDisponibilite(): ?bool
     {
-        return $this->prix_Chambre;
+        return $this->disponibilite;
     }
 
-    public function setPrix_Chambre(float $value): self
+    public function setDisponibilite(bool $disponibilite): static
     {
-        $this->prix_Chambre = $value;
+        $this->disponibilite = $disponibilite;
         return $this;
     }
 
-    public function getDisponibilite_Chambre(): string
+    public function getDescription(): ?string
     {
-        return $this->disponibilite_Chambre;
+        return $this->description;
     }
 
-    public function setDisponibilite_Chambre(string $value): self
+    public function setDescription(string $description): static
     {
-        $this->disponibilite_Chambre = $value;
+        $this->description = $description;
         return $this;
     }
 
-    public function getDescription_Chambre(): string
+    public function getHotel(): ?Hotel
     {
-        return $this->description_Chambre;
+        return $this->hotel;
     }
 
-    public function setDescription_Chambre(string $value): self
+    public function setHotel(?Hotel $hotel): static
     {
-        $this->description_Chambre = $value;
+        $this->hotel = $hotel;
         return $this;
     }
-
-    public function getId_hotel_Chambre(): int
-    {
-        return $this->id_hotel_Chambre;
-    }
-
-    public function setId_hotel_Chambre(int $value): self
-    {
-        $this->id_hotel_Chambre = $value;
-        return $this;
-    }
-}
+} 

@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<meta class="no-js" lang="fr">
+		<meta charset="UTF-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge"/>
 		<title>TripToGo - Agence de voyages et réservation de circuits</title>
 		<meta name="author" content="vecuro"/>
@@ -22,18 +23,154 @@
 
 		{% block stylesheets %}
 			<!--==============================
-																																																									        All CSS Files
-																																																									      ==============================-->
+																																																																																																																																																																																																																																																																																																			        All CSS Files
+																																																																																																																																																																																																																																																																																																			      ==============================-->
 			<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/slick.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"/>
 			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 
 
 			<style>
-				/* Loading screen styles */
+				/* Fond plein écran avec opacité */
+				.chat-overlay {
+					position: fixed;
+					inset: 0;
+					background: rgba(0, 0, 0, 0.85);
+					z-index: 9999;
+					display: flex; /* visible par défaut ici pour test, à cacher dynamiquement sinon */
+					justify-content: center;
+					align-items: flex-end; /* ancrer le chat en bas */
+					transition: all 0.3s ease-in-out;
+					padding-left: 20px;
+				}
+
+				/* === Fenêtre de chat en bas === */
+				.chat-window {
+					width: 100%;
+					border-radius: 20px 20px 0 0;
+					box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+					display: flex;
+					flex-direction: column;
+					padding: 15px;
+					margin-bottom: 20px;
+				}
+
+				/* === Messages === */
+				.chat-messages {
+					flex: 1;
+					max-height: 600px;
+					overflow-y: auto;
+					color: #eee;
+					padding: 100px 0 100px 250px;
+					margin-bottom: 10px;
+
+				}
+
+				.chat-message {
+					padding: 10px 15px;
+					border-radius: 20px;
+					margin-bottom: 10px;
+					max-width: 50%;
+					word-wrap: break-word;
+				}
+
+				.chat-message.user {
+					background: #ff681a;
+					color: #fff;
+					align-self: flex-end;
+					text-align: right;
+				}
+
+				.chat-message.bot {
+					background: #444;
+					color: #eee;
+					align-self: flex-start;
+					text-align: left;
+				}
+
+				/* === Formulaire === */
+				.chat-form {
+					display: flex;
+					gap: 10px;
+					justify-content: center;
+					align-items: center;
+				}
+
+				.chat-form input {
+					font-size: 14px;
+					height: 70px;
+					width: 100%;
+					border: 2px solid var(--theme-color);
+					background-color: transparent;
+					color: #fff;
+					border-radius: 50px;
+					position: fixed;
+					top: 120px;
+					left: 50%;
+					transform: translateX(-50%);
+					z-index: 10000 !important;
+				}
+
+
+				.chat-form button {
+					background: #ff681a;
+					color: white;
+					border: none;
+					padding: 10px 20px;
+					border-radius: 25px;
+					font-weight: bold;
+					cursor: pointer;
+					transition: background 0.3s ease;
+				}
+
+
+				/* === Responsive === */
+				@media(max-width: 600px) {
+					.chat-window {
+						width: 95%;
+					}
+				}
+
+
+				.input-group {
+					position: relative;
+					display: flex;
+					align-items: center;
+					width: 100%;
+				}
+
+				.input-group-append {
+					position: absolute;
+					right: 10px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+
+				.input-group-text {
+					cursor: pointer;
+					background-color: transparent;
+					border: none;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					padding: 0;
+					height: 100%;
+					width: 30px; /* Ajuster la largeur de l'icône pour être plus petite */
+				}
+
+				#eyeIcon {
+					font-size: 18px; /* Ajuste la taille de l'icône */
+					color: #ccc; /* Couleur de l'icône */
+				}
+
+
 				#loading-screen {
 					position: fixed;
 					top: 0;
@@ -79,8 +216,8 @@
 		{% block body %}{% endblock %}
 		{% block javascripts %}
 			<!--==============================
-																																																									        All JS Files
-																																																									      ==============================-->
+																																																																																																																																																																																																																																																																																																				        All JS Files
+																																																																																																																																																																																																																																																																																																				      ==============================-->
 			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
 			<script src="{{ asset('assets/js/slick.min.js') }}"></script>
 			<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
@@ -93,6 +230,26 @@
 			<script src="{{ asset('assets/js/main.js') }}"></script>
 			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+			<script>
+				window.addEventListener("load", function () {
+setTimeout(function () {
+fetch("{{ path('app_logout') }}", {
+method: 'POST',
+headers: {
+'X-Requested-With': 'XMLHttpRequest'
+}
+}).then(response => {
+if (response.ok) {
+window.location.href = "{{ path('app_home') }}";
+} else {
+console.log("Erreur lors de la déconnexion.");
+}
+}).catch(error => {
+console.error("Erreur de requête AJAX:", error);
+});
+}, 1800000);
+});
+			</script>
 			<script>
 				toastr.options = {
 "closeButton": true,
@@ -112,8 +269,75 @@ loadingScreen.style.display = 'none';
 }
 });
 			</script>
-		{% endblock %}
-		{{ include('includes/footer.html.twig')  }}
+			<script>
+				function toggleChatWindow() {
+const chatWindow = document.getElementById("chat-window");
+}
 
-	</body>
-</html>
+// Afficher un message dans la fenêtre de chat
+function appendMessage(sender, message) {
+const chatMessages = document.getElementById("chat-messages");
+const messageDiv = document.createElement("div");
+messageDiv.classList.add("chat-message", sender);
+messageDiv.textContent = message;
+chatMessages.appendChild(messageDiv);
+chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+let lastQuestion = "";
+
+async function sendMessage(event) {
+event.preventDefault();
+
+const input = document.getElementById("user-question");
+const message = input.value.trim();
+
+if (! message || message === lastQuestion) 
+return;
+
+
+
+lastQuestion = message;
+
+appendMessage("user", message);
+
+try {
+const response = await fetch("http://localhost:5000/ask-chatbot", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify(
+{question: message}
+)
+});
+
+if (response.ok) {
+const data = await response.json();
+appendMessage("bot", data.answer || "Je n’ai pas compris. Pouvez-vous reformuler ?");
+} else {
+appendMessage("bot", "Erreur serveur. Essayez plus tard.");
+}
+} catch (error) {
+console.error("Erreur:", error);
+appendMessage("bot", "Connexion impossible. Veuillez réessayer.");
+}
+
+input.value = "";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+appendMessage("bot", "👋 Bonjour ! Comment puis-je vous aider ?");
+});
+
+document.getElementById("chat-form").addEventListener("submit", sendMessage);
+document.getElementById("user-question").addEventListener("keypress", function (e) {
+if (e.key === "Enter") {
+sendMessage(e);
+}
+});
+			</script>
+
+		{% endblock %}
+		{{ include('includes/footer.html.twig')  }}</body>
+</html></body></html>

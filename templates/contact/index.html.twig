@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ContactController!
+{% endblock %}
+
+{% block body %}
+	<div class="breadcumb-wrapper" style="
+						        background-color: rgba(
+						          19,
+						          42,
+						          62
+						        ); /* Fond avec couleur #132a3e et opacité 0.5 */
+						        background-size: cover; /* Si vous voulez que l'arrière-plan couvre toute la zone */
+						        background-position: center; /* Centrer l'image de fond */
+						        background-repeat: no-repeat; /* Empêche la répétition de l'image */
+						      ">
+		<div class="container z-index-common">
+			<div class="breadcumb-content">
+				<h1 class="breadcumb-title">Contactez-nous</h1>
+				<div class="breadcumb-menu-wrap">
+					<ul class="breadcumb-menu">
+						<li>
+							<a href="{{path('app_home')}}">Acceuil</a>
+						</li>
+						<li>Contactez-nous</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--==============================
+			  Hero Area End
+			==============================-->
+
+	<!--==============================
+			  Contact box Area Start
+			==============================-->
+	<section class="space contact-box_wrapper">
+		<div class="outer-wrap">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-4 col-md-6">
+						<div class="contact-box">
+							<div class="contact-box_icon">
+								<i class="fas fa-map-marked-alt"></i>
+							</div>
+							<h3 class="contact-box__title h5">Adresse</h3>
+							<p class="contact-box__text">
+								Faculté ESPRIT, Rue Tunsi, 1003 Tunis, Tunisie
+							</p>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-6">
+						<div class="contact-box">
+							<div class="contact-box_icon">
+								<i class="fas fa-address-card"></i>
+							</div>
+							<h3 class="contact-box__title h5">Contact</h3>
+							<ul class="contact-box_list">
+								<li>
+									Téléphone mobile :
+									<a href="#123456789">+216 56 581 222</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-4 col-md-6">
+						<div class="contact-box">
+							<div class="contact-box_icon">
+								<i class="fas fa-clock"></i>
+							</div>
+							<h3 class="contact-box__title h5">Heures d'ouverture</h3>
+							<ul class="contact-box_list">
+								<li>Lundi - Vendredi : 8:30 - 20:00</li>
+								<li>Samedi & Dimanche : 9:30 - 18:30</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!--==============================
+			  Contact box Area End
+			==============================-->
+
+	<!--==============================
+			  Contact Form Area End
+			==============================-->
+	<div class="space bg-light">
+		<div class="container">
+			<div class="row justify-content-center text-center">
+				<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6">
+					<div class="title-area">
+						<span class="sec-subtitle">Contactez-nous</span>
+						<h2 class="sec-title h1">Prenez contact</h2>
+						<p class="sec-text">
+							Nous sommes ravis de vous offrir une expérience exceptionnelle.
+														                Notre équipe est dédiée à vous fournir les meilleures solutions
+														                et à répondre à toutes vos attentes. N'hésitez pas à nous
+														                contacter pour toute question ou demande d'information
+														                supplémentaire.
+						</p>
+					</div>
+				</div>
+			</div>
+			<form class="ajax-contact" action="mail.php" method="post" enctype="multipart/form-data">
+				<div class="row justify-content-center">
+					<div class="col-md-6 form-group">
+						<input type="text" placeholder="Entrez votre prénom" name="fname" id="fname" class="form-control" required/>
+					</div>
+					<div class="col-md-6 form-group">
+						<input type="text" placeholder="Entrez votre nom de famille" name="lname" id="lname" class="form-control" required/>
+					</div>
+					<div class="col-md-6 form-group">
+						<input type="email" placeholder="Votre email" name="email" id="email" class="form-control" required/>
+					</div>
+					<div class="col-md-6 form-group">
+						<input type="number" placeholder="Numéro de téléphone" name="phone" id="phone" class="form-control" required/>
+					</div>
+					<div class="form-group col-12">
+						<textarea placeholder="Écrivez votre message" name="message" id="message" class="form-control" required></textarea>
+					</div>
+					<div class="col-md-auto pt-lg-3">
+						<button type="submit" class="vs-btn style4">
+							Envoyer le message
+						</button>
+					</div>
+				</div>
+			</form>
+
+			<p class="form-messages text-center mb-0 mt-3"></p>
+		</div>
+	</div>
+{% endblock %}

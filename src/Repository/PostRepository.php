@@ -71,34 +71,35 @@ class PostRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByForumAndSearch(?int $forumId, ?string $search, ?int $userId)
+    public function findByForumAndSearch(?string $forumId, ?string $searchTerm, ?int $userId, string $sortBy = 'date'): array
     {
         $qb = $this->createQueryBuilder('p')
-            ->innerJoin('p.forumId', 'f') // Note: using 'forumId' as the association name
-            ->where('f.is_private = false');
-    
-        if ($userId !== null) {
-            $qb->orWhere(
-                $qb->expr()->andX(
-                    $qb->expr()->eq('f.is_private', true),
-                    $qb->expr()->like('f.list_members', ':userPattern')
-                )
-            )->setParameter('userPattern', '%,' . $userId . ',%');
-        }
-    
+            ->leftJoin('p.forumId', 'f')
+            ->leftJoin('p.idUser', 'u');
+
         if ($forumId) {
-            $qb->andWhere('p.forumId = :forumId') // Using forumId directly
-               ->setParameter('forumId', $forumId);
+            $qb->andWhere('f.forum_id = :forumId')
+               ->setParameter('forumId', (int)$forumId);
         }
-    
-        if ($search) {
-            $qb->andWhere('p.title LIKE :search OR p.content LIKE :search')
-               ->setParameter('search', '%' . $search . '%');
+
+        if ($searchTerm) {
+            $qb->andWhere('p.announcementTitle LIKE :searchTerm OR p.announcementContent LIKE :searchTerm OR p.surveyQuestion LIKE :searchTerm OR p.surveyTags LIKE :searchTerm OR p.announcementTags LIKE :searchTerm')
+               ->setParameter('searchTerm', '%' . $searchTerm . '%');
         }
-    
-        return $qb->orderBy('p.dateCreation', 'DESC')
-                  ->getQuery()
-                  ->getResult();
+
+        // Add sorting
+        switch ($sortBy) {
+            case 'votes':
+                $qb->orderBy('p.votes', 'DESC');
+                break;
+            case 'signals':
+                $qb->orderBy('p.nbrSignal', 'DESC');
+                break;
+            default: // date
+                $qb->orderBy('p.dateCreation', 'DESC');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function findWithFilters(?int $forumId = null, ?string $search = null, ?string $type = null, ?int $userId = null)

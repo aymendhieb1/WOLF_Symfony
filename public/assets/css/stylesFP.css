@@ -1,0 +1,236 @@
+/* Forum Container Styles */
+.forum-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+.forum-wrapper {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    max-width: 1400px;
+    width: 100%;
+    gap: 20px;
+}
+
+/* Forum Panes */
+.forum-left-pane, .forum-right-pane {
+    background: #18344C;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform 0.3s ease;
+}
+
+.forum-left-pane:hover, .forum-right-pane:hover {
+    transform: translateY(-5px);
+}
+
+/* Tab Styles */
+.forum-tab-buttons {
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+    background: rgb(112, 105, 105);
+}
+
+.forum-tab-buttons button {
+    padding: 12px 24px;
+    font-size: 16px;
+    color: #e0e0e0;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.forum-tab-buttons button.active-tab {
+    background: #e78d1e;
+    color: white;
+}
+
+/* Post Item Styles */
+.forum-post-item {
+    background: rgba(19, 42, 62, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+}
+
+.forum-post-item:hover {
+    transform: translateY(-2px);
+}
+
+.post-title {
+    font-size: 24px;
+    color: #e78d1e;
+    margin-bottom: 15px;
+}
+
+.post-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.post-tags {
+    color: #e78d1e;
+    font-size: 14px;
+}
+
+.post-date {
+    color: #888;
+    font-size: 14px;
+}
+
+/* Vote Controls */
+.vote-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vote-controls button {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    background: #e78d1e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vote-controls button:hover:not(.disabled) {
+    background: #ff9f2f;
+    transform: scale(1.1);
+}
+
+.vote-controls button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vote-count {
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Post Actions */
+.post-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.post-actions button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-comments-btn {
+    background: rgba(42, 131, 45, 0.6);
+    color: white;
+}
+
+.signal-btn {
+    background: #d80f5d;
+    color: white;
+}
+
+.edit-post-btn {
+    background: #4444ff;
+    color: white;
+}
+
+.delete-post-btn {
+    background: #ff4444;
+    color: white;
+}
+
+/* Search and Sort Controls */
+.forum-search-bar {
+    padding: 15px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-button {
+    background: #e78d1e;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.search-button:hover {
+    background: #ff9f2f;
+}
+
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.sort-controls label {
+    color: #e0e0e0;
+}
+
+.forum-combo-box {
+    background: #18344C;
+    color: #e0e0e0;
+    border: 1px solid #e78d1e;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(19, 42, 62, 0.8);
+    border-radius: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .forum-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .forum-right-pane {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .forum-tab-buttons {
+        flex-direction: column;
+    }
+    
+    .post-actions {
+        flex-wrap: wrap;
+    }
+} 
