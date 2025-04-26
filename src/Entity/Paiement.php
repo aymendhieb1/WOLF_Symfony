@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PaiementRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PaiementRepository::class)]
@@ -18,14 +19,14 @@ class Paiement
     private ?int $id_user = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'id_user', referencedColumnName: 'id_user', insertable: false, updatable: false)]
+    #[ORM\JoinColumn(name: 'id_user', referencedColumnName: 'id_user')]
     private ?User $user = null;
 
-    #[ORM\Column(name: 'numero_card', length: 50)]
-    private ?string $numeroCard = null;
+    #[ORM\Column(name: 'montant', type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?float $montant = null;
 
-    #[ORM\Column(name: 'montant')]
-    private ?int $montant = null;
+    #[ORM\Column(name: 'date_paiement', type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $datePaiement = null;
 
     public function getId(): ?int
     {
@@ -57,27 +58,25 @@ class Paiement
         return $this;
     }
 
-    public function getNumeroCard(): ?string
-    {
-        return $this->numeroCard;
-    }
-
-    public function setNumeroCard(string $numeroCard): self
-    {
-        // Mask the card number except last 4 digits
-        $maskedCard = preg_replace('/(\d{4} \d{4} \d{4} )(\d{4})/', '$1$2****', $numeroCard);
-        $this->numeroCard = $maskedCard;
-        return $this;
-    }
-
-    public function getMontant(): ?int
+    public function getMontant(): ?float
     {
         return $this->montant;
     }
 
-    public function setMontant(int $montant): self
+    public function setMontant(float $montant): self
     {
         $this->montant = $montant;
+        return $this;
+    }
+
+    public function getDatePaiement(): ?\DateTimeInterface
+    {
+        return $this->datePaiement;
+    }
+
+    public function setDatePaiement(\DateTimeInterface $datePaiement): self
+    {
+        $this->datePaiement = $datePaiement;
         return $this;
     }
 } 

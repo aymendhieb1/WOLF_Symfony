@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Paiement;
 use App\Entity\ReservationChambre;
 use App\Entity\Chambre;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Stripe;
 use Stripe\StripeClient;
@@ -63,8 +64,18 @@ class PaymentController extends AbstractController
                 throw new \Exception('Room is no longer available for these dates');
             }
 
-            // Create Stripe Checkout Session using the injected client
+            // Create Stripe Checkout Session
             try {
+                $successUrl = $this->generateUrl('app_reservation_success', [
+                    'chambreId' => $data['chambreId'],
+                    'dateDebut' => $data['dateDebut'],
+                    'dateFin' => $data['dateFin'],
+                    'amount' => $data['amount']
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
+                
+                // Append the session_id parameter
+                $successUrl .= (parse_url($successUrl, PHP_URL_QUERY) ? '&' : '?') . 'session_id={CHECKOUT_SESSION_ID}';
+
                 $session = $this->stripe->checkout->sessions->create([
                     'payment_method_types' => ['card'],
                     'line_items' => [[
@@ -79,12 +90,7 @@ class PaymentController extends AbstractController
                         'quantity' => 1,
                     ]],
                     'mode' => 'payment',
-                    'success_url' => $this->generateUrl('app_reservation_success', [
-                        'chambreId' => $data['chambreId'],
-                        'dateDebut' => $data['dateDebut'],
-                        'dateFin' => $data['dateFin'],
-                        'amount' => $data['amount']
-                    ], UrlGeneratorInterface::ABSOLUTE_URL),
+                    'success_url' => $successUrl,
                     'cancel_url' => $this->generateUrl('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 ]);
 
@@ -107,6 +113,17 @@ class PaymentController extends AbstractController
     public function success(Request $request, EntityManagerInterface $entityManager): Response
     {
         try {
+            // Verify the payment was successful with Stripe
+            $sessionId = $request->query->get('session_id');
+            if (!$sessionId) {
+                throw new \Exception('No session ID provided');
+            }
+
+            $session = $this->stripe->checkout->sessions->retrieve($sessionId);
+            if ($session->payment_status !== 'paid') {
+                throw new \Exception('Payment not completed');
+            }
+
             $chambreId = $request->query->get('chambreId');
             $dateDebut = new \DateTime($request->query->get('dateDebut'));
             $dateFin = new \DateTime($request->query->get('dateFin'));
@@ -117,10 +134,29 @@ class PaymentController extends AbstractController
                 throw new \Exception('User not authenticated');
             }
 
+            // Get the Chambre entity
+            $chambre = $entityManager->getRepository(Chambre::class)->find($chambreId);
+            if (!$chambre) {
+                throw new \Exception('Room not found');
+            }
+
+            // Double check the room is still available
+            $existingReservations = $entityManager->getRepository(ReservationChambre::class)->findOverlappingReservations(
+                $chambreId,
+                $dateDebut,
+                $dateFin
+            );
+
+            if (count($existingReservations) > 0) {
+                throw new \Exception('Room was reserved by someone else');
+            }
+
             // Create reservation
             $reservation = new ReservationChambre();
             $reservation->setIdChambre($chambreId);
+            $reservation->setChambre($chambre);
             $reservation->setIdUser($user->getId());
+            $reservation->setUser($user);
             $reservation->setDateDebut($dateDebut);
             $reservation->setDateFin($dateFin);
             $reservation->setDateReservation(new \DateTime());
@@ -128,19 +164,25 @@ class PaymentController extends AbstractController
             // Create payment record
             $payment = new Paiement();
             $payment->setIdUser($user->getId());
-            $payment->setMontant($amount);
+            $payment->setUser($user);
+            $payment->setMontant((float)$amount);
+            $payment->setDatePaiement(new \DateTime());
 
             // Save to database
             $entityManager->persist($reservation);
             $entityManager->persist($payment);
             $entityManager->flush();
 
+            // Add success message
+            $this->addFlash('success', 'Votre réservation a été confirmée avec succès !');
+
             return $this->render('hotel_chambre/reservation_success.html.twig', [
-                'reservation' => $reservation
+                'reservation' => $reservation,
+                'payment' => $payment
             ]);
 
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Une erreur est survenue lors de la finalisation de la réservation.');
+            $this->addFlash('error', 'Une erreur est survenue lors de la finalisation de la réservation: ' . $e->getMessage());
             return $this->redirectToRoute('app_home');
         }
     }

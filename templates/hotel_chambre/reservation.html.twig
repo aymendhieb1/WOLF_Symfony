@@ -417,7 +417,7 @@
             <form id="payment-form">
                 <div id="card-element"></div>
                 <div id="card-errors" role="alert"></div>
-                <button type="submit" class="pay-button">
+                <button type="submit" class="pay-button" id="confirmPaymentBtn">
                     <i class="fas fa-lock"></i>
                     Payer maintenant
                 </button>
@@ -441,7 +441,41 @@
 
             // Initialize Stripe with the public key
             const stripe = Stripe('{{ stripe_public_key }}');
-            console.log('Stripe initialized with key:', '{{ stripe_public_key }}');
+            
+            // Create an instance of Elements
+            const elements = stripe.elements();
+            
+            // Create and mount the Payment Element
+            const cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        color: '#32325d',
+                        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                        fontSmoothing: 'antialiased',
+                        fontSize: '16px',
+                        '::placeholder': {
+                            color: '#aab7c4'
+                        }
+                    },
+                    invalid: {
+                        color: '#fa755a',
+                        iconColor: '#fa755a'
+                    }
+                }
+            });
+            
+            // Mount the card Element to the card-element div
+            cardElement.mount('#card-element');
+            
+            // Handle real-time validation errors from the card Element
+            cardElement.addEventListener('change', function(event) {
+                const displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
 
             // Initialize Flatpickr
             const fp = flatpickr("#reservation-dates", {
@@ -487,19 +521,25 @@
                 selectedEndDate = endDate;
             }
 
-            // Handle payment
-            document.getElementById('confirm-btn').addEventListener('click', async function(e) {
+            // Show payment modal when confirm button is clicked
+            document.getElementById('confirm-btn').addEventListener('click', function() {
+                document.getElementById('payment-modal').style.display = 'flex';
+            });
+
+            // Handle payment form submission
+            document.getElementById('payment-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
-                const submitButton = this;
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement en cours...';
+                const button = document.getElementById('confirmPaymentBtn');
+                button.disabled = true;
+                const originalText = button.textContent;
+                button.textContent = 'Traitement en cours...';
 
                 try {
-                    console.log('Processing payment...');
-                    const response = await fetch('{{ path('app_process_payment') }}', {
+                    const response = await fetch('/process-payment', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: JSON.stringify({
                             chambreId: {{ room.id }},
@@ -510,31 +550,31 @@
                     });
 
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Une erreur est survenue lors du traitement du paiement');
                     }
 
                     const result = await response.json();
-                    console.log('Payment response:', result);
-
-                    if (result.error) {
-                        throw new Error(result.error);
+                    
+                    if (!result.sessionId) {
+                        throw new Error('Session de paiement invalide');
                     }
 
-                    // Redirect to Stripe Checkout
-                    console.log('Redirecting to Stripe Checkout...');
+                    // Use the session ID to redirect to Stripe Checkout
                     const { error } = await stripe.redirectToCheckout({
                         sessionId: result.sessionId
                     });
 
                     if (error) {
-                        throw new Error(error.message);
+                        throw error;
                     }
-
                 } catch (error) {
-                    console.error('Payment Error:', error);
-                    alert('Une erreur est survenue lors du traitement du paiement : ' + error.message);
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = '<i class="fas fa-check-circle"></i> Confirmer et procéder au paiement';
+                    console.error('Erreur:', error);
+                    const errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = error.message || 'Une erreur est survenue lors du traitement du paiement. Veuillez réessayer.';
+                } finally {
+                    button.disabled = false;
+                    button.textContent = originalText;
                 }
             });
 
