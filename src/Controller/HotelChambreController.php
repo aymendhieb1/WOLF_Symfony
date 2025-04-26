@@ -222,30 +222,23 @@ class HotelChambreController extends AbstractController
         Chambre $room,
         ReservationChambreRepository $reservationRepo
     ): Response {
-        // Get all reserved dates for this room
+        // Get all reservations for this room
         $reservations = $reservationRepo->findBy(['id_chambre' => $room->getId()]);
         
-        $reservedDates = [];
+        // Format the dates for the template
+        $unavailableDates = [];
         foreach ($reservations as $reservation) {
-            $start = $reservation->getDateDebut();
-            $end = $reservation->getDateFin();
-            
-            // Create array of all dates between start and end
-            $period = new \DatePeriod(
-                $start,
-                new \DateInterval('P1D'),
-                $end->modify('+1 day')
-            );
-            
-            foreach ($period as $date) {
-                $reservedDates[] = $date->format('Y-m-d');
-            }
+            $unavailableDates[] = [
+                'start' => $reservation->getDateDebut()->format('Y-m-d'),
+                'end' => $reservation->getDateFin()->format('Y-m-d')
+            ];
         }
 
         return $this->render('hotel_chambre/reservation.html.twig', [
             'room' => $room,
             'hotel' => $room->getHotel(),
-            'reserved_dates' => array_unique($reservedDates)
+            'unavailableDates' => $unavailableDates,
+            'stripe_public_key' => $this->getParameter('stripe_public_key')
         ]);
     }
 } 

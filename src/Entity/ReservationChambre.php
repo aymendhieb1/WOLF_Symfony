@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ReservationChambreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 #[ORM\Entity(repositoryClass: ReservationChambreRepository::class)]
 #[ORM\Table(name: 'reservation_chambre')]
@@ -123,5 +124,38 @@ class ReservationChambre
     {
         $this->dateReservation = $dateReservation;
         return $this;
+    }
+
+    public function overlapsWithPeriod(\DateTimeInterface $start, \DateTimeInterface $end): bool
+    {
+        return ($this->dateDebut <= $end && $this->dateFin >= $start);
+    }
+
+    public function getDurationInDays(): int
+    {
+        if (!$this->dateDebut || !$this->dateFin) {
+            return 0;
+        }
+        
+        $interval = $this->dateDebut->diff($this->dateFin);
+        return $interval->days + 1;
+    }
+
+    public function calculateTotalPrice(): float
+    {
+        if (!$this->chambre) {
+            return 0;
+        }
+
+        $days = $this->getDurationInDays();
+        $basePrice = $this->chambre->getPrix() * $days;
+        
+        // Apply hotel promotion if available
+        if ($this->chambre->getHotel() && $this->chambre->getHotel()->getPromotion() > 0) {
+            $discount = ($basePrice * $this->chambre->getHotel()->getPromotion()) / 100;
+            return $basePrice - $discount;
+        }
+
+        return $basePrice;
     }
 }

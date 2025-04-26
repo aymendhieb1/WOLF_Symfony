@@ -21,6 +21,19 @@ class ReservationChambreRepository extends ServiceEntityRepository
         parent::__construct($registry, ReservationChambre::class);
     }
 
+    public function findOverlappingReservations(int $chambreId, \DateTimeInterface $startDate, \DateTimeInterface $endDate): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.id_chambre = :chambreId')
+            ->andWhere('r.dateDebut <= :endDate')
+            ->andWhere('r.dateFin >= :startDate')
+            ->setParameter('chambreId', $chambreId)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return ReservationChambre[] Returns an array of ReservationChambre objects
 //     */

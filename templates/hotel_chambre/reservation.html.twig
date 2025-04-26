@@ -1,245 +1,549 @@
-{% extends 'base1.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation - {{ room.type }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .reservation-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .reservation-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .reservation-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .reservation-header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hotel-info {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .reservation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
         }
 
         .room-details {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .room-image {
-            width: 300px;
-            height: 200px;
+            background: #f8f9fa;
+            height: 250px;
             border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            position: relative;
             overflow: hidden;
         }
 
-        .room-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .room-type-icon {
+            font-size: 4rem;
+            color: #cfd8dc;
         }
 
-        .room-info {
-            flex: 1;
-        }
-
-        .room-type {
-            font-size: 1.5rem;
+        .price-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
             font-weight: 600;
-            color: #2f4858;
-            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .price-per-night {
-            font-size: 1.2rem;
-            color: #ff681a;
-            font-weight: 600;
-            margin-bottom: 1rem;
+        .room-info h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
         }
 
-        .date-picker-container {
-            margin-bottom: 2rem;
+        .room-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
         }
 
-        .date-inputs {
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            align-items: center;
+            gap: 10px;
+            color: #555;
+        }
+
+        .feature-item i {
+            color: #4CAF50;
+            font-size: 1.2rem;
+        }
+
+        .unavailable-dates {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .unavailable-dates h3 {
+            color: #856404;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .unavailable-dates ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .unavailable-dates li {
+            color: #856404;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+
+        .booking-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .booking-section h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .date-picker-wrapper {
+            margin-bottom: 30px;
         }
 
         .date-input {
-            flex: 1;
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .date-input:focus {
+            border-color: #4CAF50;
+            outline: none;
         }
 
         .price-summary {
             background: #f8f9fa;
             border-radius: 10px;
-            padding: 1.5rem;
+            padding: 20px;
+            margin-top: 30px;
         }
 
         .price-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.5rem;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
         }
 
-        .total-price {
-            font-size: 1.3rem;
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+        .price-label {
+            color: #666;
+        }
+
+        .price-value {
+            color: #333;
             font-weight: 600;
-            color: #ff681a;
-            border-top: 2px solid #dee2e6;
-            padding-top: 1rem;
-            margin-top: 1rem;
         }
 
-        .confirm-btn {
-            background: #ff681a;
+        .total-row {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+            font-size: 1.2rem;
+        }
+
+        .total-row .price-value {
+            color: #ff6b6b;
+            font-size: 1.3rem;
+        }
+
+        .confirm-button {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
+            border-radius: 10px;
+            font-size: 1.1rem;
             font-weight: 600;
-            width: 100%;
-            margin-top: 1rem;
+            margin-top: 20px;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .confirm-btn:hover {
-            background: #e55a0f;
+        .confirm-button:hover {
+            background: #43a047;
             transform: translateY(-2px);
         }
 
-        .flatpickr-calendar {
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        .confirm-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .unavailable-date {
-            background: #ffebee !important;
-            text-decoration: line-through;
-            color: #f44336 !important;
+        /* Payment Modal Styles */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-modal-content h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #card-element {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+
+        #card-errors {
+            color: #dc3545;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .pay-button {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pay-button:hover {
+            background: #43a047;
+        }
+
+        @media (max-width: 768px) {
+            .reservation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+{% endblock %}
+
+{% block body %}
+    <div class="main-container">
+        <div class="reservation-header">
+            <h1>Réservation de chambre</h1>
+            <div class="hotel-info">{{ hotel.nom }} - {{ room.type }}</div>
+        </div>
+
+        <div class="reservation-grid">
+            <div class="room-details">
+                <div class="room-image">
+                    {% if room.type == 'Simple' %}
+                        <i class="fas fa-bed room-type-icon"></i>
+                    {% elseif room.type == 'Double' %}
+                        <div style="display: flex; gap: 20px;">
+                            <i class="fas fa-bed room-type-icon"></i>
+                            <i class="fas fa-bed room-type-icon"></i>
+                        </div>
+                    {% else %}
+                        <i class="fas fa-star room-type-icon"></i>
+                    {% endif %}
+                    <div class="price-badge">
+                        {% if hotel.promotion > 0 %}
+                            <span style="text-decoration: line-through; margin-right: 10px; opacity: 0.7">
+                                {{ room.prix }} DT
+                            </span>
+                            {{ room.prix - (room.prix * hotel.promotion / 100) }} DT
+                        {% else %}
+                            {{ room.prix }} DT
+                        {% endif %}
+                        <span style="font-size: 0.8em">/nuit</span>
+                    </div>
+                </div>
+
+                <div class="room-info">
+                    <h2>{{ room.type }}</h2>
+                    <p class="room-description">{{ room.description }}</p>
+
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <i class="fas fa-users"></i>
+                            <span>{% if room.type == 'Simple' %}1 personne{% elseif room.type == 'Double' %}2 personnes{% else %}2-4 personnes{% endif %}</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-wifi"></i>
+                            <span>WiFi gratuit</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shower"></i>
+                            <span>Salle de bain privée</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-tv"></i>
+                            <span>TV écran plat</span>
+                        </div>
+                    </div>
+
+                    {% if unavailableDates|length > 0 %}
+                        <div class="unavailable-dates">
+                            <h3>
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Périodes non disponibles
+                            </h3>
+                            <ul>
+                                {% for date in unavailableDates %}
+                                    <li>Du {{ date.start|date('d/m/Y') }} au {{ date.end|date('d/m/Y') }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="booking-section">
+                <h2>Sélectionnez vos dates</h2>
+                <div class="date-picker-wrapper">
+                    <input type="text" id="reservation-dates" class="date-input" placeholder="Choisissez vos dates" required>
+                </div>
+
+                <div class="price-summary">
+                    <div class="price-row">
+                        <span class="price-label">Nombre de nuits</span>
+                        <span class="price-value" id="nights-count">0</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">Prix de base</span>
+                        <span class="price-value" id="base-price">0 DT</span>
+                    </div>
+                    {% if hotel.promotion > 0 %}
+                        <div class="price-row">
+                            <span class="price-label">Réduction ({{ hotel.promotion }}%)</span>
+                            <span class="price-value" id="discount-amount">0 DT</span>
+                        </div>
+                    {% endif %}
+                    <div class="price-row total-row">
+                        <span class="price-label">Prix total</span>
+                        <span class="price-value" id="total-price">0 DT</span>
+                    </div>
+                </div>
+
+                <button id="confirm-btn" class="confirm-button" disabled>
+                    <i class="fas fa-check-circle"></i>
+                    Confirmer et procéder au paiement
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-modal" id="payment-modal">
+        <div class="payment-modal-content">
+            <h3>Paiement sécurisé</h3>
+            <form id="payment-form">
+                <div id="card-element"></div>
+                <div id="card-errors" role="alert"></div>
+                <button type="submit" class="pay-button">
+                    <i class="fas fa-lock"></i>
+                    Payer maintenant
+                </button>
+            </form>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const roomPrice = {{ room.prix }};
             const hotelPromotion = {{ hotel.promotion }};
-            const unavailableDates = {{ reserved_dates|json_encode|raw }};
+            const unavailableDates = {{ unavailableDates|json_encode|raw }};
+            let selectedStartDate = null;
+            let selectedEndDate = null;
+            let totalAmount = 0;
 
-            // Initialize date pickers
-            const checkInPicker = flatpickr("#check_in", {
+            // Initialize Stripe with the public key
+            const stripe = Stripe('{{ stripe_public_key }}');
+            console.log('Stripe initialized with key:', '{{ stripe_public_key }}');
+
+            // Initialize Flatpickr
+            const fp = flatpickr("#reservation-dates", {
+                mode: "range",
                 minDate: "today",
-                disable: unavailableDates,
-                onChange: function(selectedDates, dateStr) {
-                    checkOutPicker.set('minDate', dateStr);
-                    calculatePrice();
+                disable: unavailableDates.map(date => ({
+                    from: date.start,
+                    to: date.end
+                })),
+                locale: {
+                    firstDayOfWeek: 1,
+                    weekdays: {
+                        shorthand: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+                        longhand: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
+                    },
+                    months: {
+                        shorthand: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'],
+                        longhand: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+                    }
+                },
+                onChange: function(selectedDates) {
+                    if (selectedDates.length === 2) {
+                        calculatePrice(selectedDates[0], selectedDates[1]);
+                    }
                 }
             });
 
-            const checkOutPicker = flatpickr("#check_out", {
-                minDate: "today",
-                disable: unavailableDates,
-                onChange: function() {
-                    calculatePrice();
+            function calculatePrice(startDate, endDate) {
+                const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                const basePrice = roomPrice * nights;
+                const discount = hotelPromotion > 0 ? (basePrice * hotelPromotion / 100) : 0;
+                totalAmount = basePrice - discount;
+
+                document.getElementById('nights-count').textContent = nights;
+                document.getElementById('base-price').textContent = basePrice.toFixed(2) + ' DT';
+                if (hotelPromotion > 0) {
+                    document.getElementById('discount-amount').textContent = '-' + discount.toFixed(2) + ' DT';
                 }
-            });
-
-            function calculatePrice() {
-                const checkIn = checkInPicker.selectedDates[0];
-                const checkOut = checkOutPicker.selectedDates[0];
-
-                if (checkIn && checkOut) {
-                    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
-                    const basePrice = roomPrice * nights;
-                    const discount = hotelPromotion > 0 ? (basePrice * hotelPromotion / 100) : 0;
-                    const totalPrice = basePrice - discount;
-
-                    document.getElementById('nights').textContent = nights;
-                    document.getElementById('base-price').textContent = basePrice.toFixed(2) + ' DT';
-                    document.getElementById('discount').textContent = '-' + discount.toFixed(2) + ' DT';
-                    document.getElementById('total-price').textContent = totalPrice.toFixed(2) + ' DT';
-
-                    document.getElementById('reservation-form').style.display = 'block';
-                }
+                document.getElementById('total-price').textContent = totalAmount.toFixed(2) + ' DT';
+                document.getElementById('confirm-btn').disabled = false;
+                
+                selectedStartDate = startDate;
+                selectedEndDate = endDate;
             }
 
-            // Handle form submission
-            document.getElementById('reservation-form').addEventListener('submit', function(e) {
+            // Handle payment
+            document.getElementById('confirm-btn').addEventListener('click', async function(e) {
                 e.preventDefault();
-                // Add your reservation submission logic here
-                alert('Réservation confirmée !');
+                const submitButton = this;
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement en cours...';
+
+                try {
+                    console.log('Processing payment...');
+                    const response = await fetch('{{ path('app_process_payment') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            chambreId: {{ room.id }},
+                            dateDebut: selectedStartDate.toISOString().split('T')[0],
+                            dateFin: selectedEndDate.toISOString().split('T')[0],
+                            amount: totalAmount
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const result = await response.json();
+                    console.log('Payment response:', result);
+
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+
+                    // Redirect to Stripe Checkout
+                    console.log('Redirecting to Stripe Checkout...');
+                    const { error } = await stripe.redirectToCheckout({
+                        sessionId: result.sessionId
+                    });
+
+                    if (error) {
+                        throw new Error(error.message);
+                    }
+
+                } catch (error) {
+                    console.error('Payment Error:', error);
+                    alert('Une erreur est survenue lors du traitement du paiement : ' + error.message);
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i class="fas fa-check-circle"></i> Confirmer et procéder au paiement';
+                }
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('payment-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
             });
         });
     </script>
-{% endblock %}
-
-{% block body %}
-    <div class="reservation-container">
-        <div class="reservation-card">
-            <div class="room-details">
-                <div class="room-image">
-                    <img src="{{ asset('assets/img/placeholder.jpg') }}" alt="{{ room.type }}">
-                </div>
-                <div class="room-info">
-                    <h2 class="room-type">{{ room.type }}</h2>
-                    <div class="price-per-night">
-                        {% if hotel.promotion > 0 %}
-                            <span class="original-price">{{ room.prix }} DT</span>
-                            <span class="discounted-price">{{ room.prix - (room.prix * hotel.promotion / 100) }} DT</span>
-                        {% else %}
-                            {{ room.prix }} DT
-                        {% endif %}
-                        <span class="text-muted">/ nuit</span>
-                    </div>
-                    <p>{{ room.description }}</p>
-                </div>
-            </div>
-
-            <div class="date-picker-container">
-                <h3 class="mb-3">Sélectionnez vos dates</h3>
-                <div class="date-inputs">
-                    <div class="date-input">
-                        <label class="form-label">Date d'arrivée</label>
-                        <input type="text" id="check_in" class="form-control" placeholder="Sélectionnez une date" required>
-                    </div>
-                    <div class="date-input">
-                        <label class="form-label">Date de départ</label>
-                        <input type="text" id="check_out" class="form-control" placeholder="Sélectionnez une date" required>
-                    </div>
-                </div>
-            </div>
-
-            <div class="price-summary">
-                <h4 class="mb-3">Résumé du prix</h4>
-                <div class="price-row">
-                    <span>Nombre de nuits</span>
-                    <span id="nights">0</span>
-                </div>
-                <div class="price-row">
-                    <span>Prix de base</span>
-                    <span id="base-price">0 DT</span>
-                </div>
-                {% if hotel.promotion > 0 %}
-                    <div class="price-row">
-                        <span>Réduction ({{ hotel.promotion }}%)</span>
-                        <span id="discount">0 DT</span>
-                    </div>
-                {% endif %}
-                <div class="price-row total-price">
-                    <span>Prix total</span>
-                    <span id="total-price">0 DT</span>
-                </div>
-            </div>
-
-            <form id="reservation-form" style="display: none;">
-                <button type="submit" class="confirm-btn">
-                    <i class="fas fa-check-circle me-2"></i>
-                    Confirmer la réservation
-                </button>
-            </form>
-        </div>
-    </div>
 {% endblock %} 
