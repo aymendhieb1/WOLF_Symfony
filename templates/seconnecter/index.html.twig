@@ -4,13 +4,13 @@
 {% block body %}
 
 	<!--********************************
-																																																																										  Code Start From Here 
-																																																																											******************************** -->
+																																																			  Code Start From Here 
+																																																				******************************** -->
 
 
 	<!--==============================
-																																																																										    Sidemenu
-																																																																										    ============================== -->
+																																																			    Sidemenu
+																																																			    ============================== -->
 		<div class="sidemenu-wrapper offcanvas-wrapper d-none d-lg-block"> <div class="sidemenu-content">
 			<button class="closeButton sideMenuCls">
 				<i class="far fa-times"></i>
@@ -22,8 +22,8 @@
 					</div>
 					<p class="footer-text">
 						Ut tellus dolor, dapibus eget, elementum ifend cursus eleifend,
-																																																																																																																																																																																																																																																																																																																																																																																																																																																												              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
-																																																																																																																																																																																																																																																																																																																																																																																																																																																												              end cursus eleifendrpis.
+																																																																																																																																																																																																																																																																																																																		              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
+																																																																																																																																																																																																																																																																																																																		              end cursus eleifendrpis.
 					</p>
 					<div class="info-social style2">
 						<a href="#">
@@ -92,8 +92,8 @@
 	</div>
 
 	<!--==============================
-																																																																										    Cart Side bar
-																																																																										  ============================== -->
+																																																			    Cart Side bar
+																																																			  ============================== -->
 	<div class="sideCart-wrapper offcanvas-wrapper d-none d-lg-block">
 		<div class="sidemenu-content">
 			<button class="closeButton border-theme bg-theme-hover sideMenuCls">
@@ -141,8 +141,8 @@
 	</div>
 
 	<!--==============================
-																																																																										    Popup Search Box
-																																																																										    ============================== -->
+																																																			    Popup Search Box
+																																																			    ============================== -->
 	<div class="popup-search-box d-none d-lg-block">
 		<button class="searchClose">
 			<i class="fal fa-times"></i>
@@ -159,6 +159,8 @@
 	<!-- Hero Area End -->
 
 	<!-- Sign Up Area Start -->
+
+
 	<section class="space space-extra-bottom bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
 		<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-20%" data-right="-8%">
 			<img src="assets/img/shape/circle1.png" alt="circle"/>
@@ -189,32 +191,13 @@
 									</div>
 								</div>
 							</div>
-
-							<div class="h-captcha" data-sitekey="ed883902-a6d6-424a-978a-1a5e36147308"></div>
+							<div class="form-group">
+								<input type="checkbox" name="loginRemember" id="loginRemember"/>
+							</div>
 							<div class="form-group mb-0 text-center">
 								<button class="vs-btn mask-style1 w-100 style4" type="submit">
 									Se connecter
 								</button>
-								<div class="text-center my-3">
-									<span style="display: inline-block; width: 100%; text-align: center; border-bottom: 1px solid #ccc; line-height: 0.1em; margin: 20px 0;">
-										<span style="background: #f8f9fa; padding: 0 10px; font-size: 20px; color: #ff681a;">
-											ou
-										</span>
-									</span>
-								</div>
-								<div class="form-group mb-3 text-center">
-									<button type="button" class="vs-btn w-100 style2" id="facial-login-btn">
-										<i class="fas fa-camera"></i>
-										Se connecter avec reconnaissance faciale
-									</button>
-								</div>
-								<div class="form-group mb-3 text-center">
-									<a href="{{ path('connect_google_start') }}" class="vs-btn w-100 style2" aria-label="Se connecter avec Google">
-										<i class="fab fa-google"></i>
-										Se connecter avec Google
-									</a>
-								</div>
-
 								<div class="bottom-links link-inherit d-md-flex justify-content-between mt-3">
 									<a href="#" class="recovery-link mb-2 mb-md-0">Mot de passe oublié ?</a>
 									<a href="{{ path('app_sinscrire') }}">Ou Créer un compte</a>
@@ -232,17 +215,19 @@
 
 
 	<!--********************************
-																																																																										  Code Ends Here 
-																																																																											******************************** -->
+																																																			  Code Ends Here 
+																																																				******************************** -->
 
 	<!-- Scroll To Top -->
 		<a href="#" class="scrollToTop scroll-btn"> <i class="far fa-arrow-up"></i>
 	</a>
 	<script>
-		document.getElementById("togglePassword").addEventListener("click", function () {
+		// Toggle Password visibility
+document.getElementById("togglePassword").addEventListener("click", function () {
 var passwordField = document.getElementById("loginUserPass");
 var eyeIcon = document.getElementById("eyeIcon");
 
+// Si le mot de passe est masqué, on le montre et inversement
 if (passwordField.type === "password") {
 passwordField.type = "text";
 eyeIcon.classList.remove("fa-eye");
@@ -252,26 +237,6 @@ passwordField.type = "password";
 eyeIcon.classList.remove("fa-eye-slash");
 eyeIcon.classList.add("fa-eye");
 }
-});
-	</script>
-	<script>
-		document.getElementById("facial-login-btn").addEventListener("click", function () {
-fetch("/facial-auth").then(res => {
-if (!res.ok) {
-throw new Error('Erreur HTTP ' + res.status);
-}
-return res.json();
-}).then(data => {
-if (data.success) {
-window.location.href = "/back/user";
-} else {
-alert("❌ Visage non reconnu");
-console.log("Sortie Python :", data.output);
-}
-}).catch(error => {
-alert("Erreur de communication avec le script Python.");
-console.error(error);
-});
 });
 	</script>
 

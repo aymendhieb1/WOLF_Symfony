@@ -1,0 +1,52 @@
+{{ form_start(form, {'attr': {'class': 'signup-form', 'novalidate': 'novalidate'}}) }}
+<div class="modal-body">
+    <div class="form-group">
+        {{ form_label(form.nomHotel, 'Nom') }}
+        {{ form_widget(form.nomHotel, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'hôtel'}}) }}
+        {{ form_errors(form.nomHotel) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.localisationHotel, 'Localisation') }}
+        {{ form_widget(form.localisationHotel, {'attr': {'class': 'form-control', 'placeholder': 'Localisation de l\'hôtel'}}) }}
+        {{ form_errors(form.localisationHotel) }}
+        <div id="addMap"></div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.numTelephoneHotel, 'Téléphone') }}
+        {{ form_widget(form.numTelephoneHotel, {'attr': {'class': 'form-control', 'placeholder': 'Numéro de téléphone'}}) }}
+        {{ form_errors(form.numTelephoneHotel) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.emailHotel, 'Email') }}
+        {{ form_widget(form.emailHotel, {'attr': {'class': 'form-control', 'placeholder': 'Adresse email'}}) }}
+        {{ form_errors(form.emailHotel) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.descriptionHotel, 'Description') }}
+        {{ form_widget(form.descriptionHotel, {'attr': {'class': 'form-control', 'placeholder': 'Description de l\'hôtel'}}) }}
+        {{ form_errors(form.descriptionHotel) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.promotionHotel, 'Promotion') }}
+        {{ form_widget(form.promotionHotel, {'attr': {'class': 'form-control', 'placeholder': 'Promotion en %'}}) }}
+        {{ form_errors(form.promotionHotel) }}
+    </div>
+
+    <div class="form-group">
+        <div class="custom-file-input-container">
+            {{ form_label(form.imageHotel, 'Image') }}
+            {{ form_widget(form.imageHotel, {'attr': {'class': 'custom-file-input'}}) }}
+            {{ form_errors(form.imageHotel) }}
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+</div>
+{{ form_end(form) }} 

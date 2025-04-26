@@ -1,0 +1,234 @@
+{% extends 'base1.html.twig' %}
+
+{% block body %}
+<div class="wrapper">
+    <div class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
+        <div class="logo">
+            <a href="javascript:;" class="simple-text logo-normal">
+                TripToGo
+            </a>
+        </div>
+        <div class="sidebar-wrapper">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_back_hotel_index') }}">
+                        <i class="material-icons">hotel</i>
+                        <p>Hôtels</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_back_chambre') }}">
+                        <i class="material-icons">meeting_room</i>
+                        <p>Chambres</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_back_activite') }}">
+                        <i class="material-icons">local_activity</i>
+                        <p>Activités</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-panel">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-wrapper">
+                    <a class="navbar-brand" href="javascript:;">Modifier l'Hôtel</a>
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title">Modifier l'hôtel</h4>
+                            </div>
+                            <div class="card-body">
+                                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'hotel-form'}}) }}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.nom) }}
+                                            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="nom-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.localisation) }}
+                                            {{ form_widget(form.localisation, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="localisation-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.telephone) }}
+                                            {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="telephone-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.email) }}
+                                            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="email-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.image) }}
+                                            {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="image-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.promotion) }}
+                                            {{ form_widget(form.promotion, {'attr': {'class': 'form-control', 'min': '0', 'max': '100'}}) }}
+                                            <div class="invalid-feedback" id="promotion-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.description) }}
+                                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                                            <div class="invalid-feedback" id="description-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary">Modifier</button>
+                                        <a href="{{ path('app_back_hotel_index') }}" class="btn btn-default">Retour</a>
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('hotel-form').addEventListener('submit', function(event) {
+    let isValid = true;
+
+    // Reset previous error states
+    document.querySelectorAll('.invalid-feedback').forEach(function(el) {
+        el.style.display = 'none';
+    });
+    document.querySelectorAll('.form-control').forEach(function(el) {
+        el.classList.remove('is-invalid');
+    });
+
+    // Validate nom
+    const nomInput = document.getElementById('{{ form.nom.vars.id }}');
+    if (!nomInput.value) {
+        nomInput.classList.add('is-invalid');
+        document.getElementById('nom-error').textContent = 'Le nom est obligatoire';
+        document.getElementById('nom-error').style.display = 'block';
+        isValid = false;
+    } else if (nomInput.value.length < 3) {
+        nomInput.classList.add('is-invalid');
+        document.getElementById('nom-error').textContent = 'Le nom doit contenir au moins 3 caractères';
+        document.getElementById('nom-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate localisation
+    const localisationInput = document.getElementById('{{ form.localisation.vars.id }}');
+    if (!localisationInput.value) {
+        localisationInput.classList.add('is-invalid');
+        document.getElementById('localisation-error').textContent = 'La localisation est obligatoire';
+        document.getElementById('localisation-error').style.display = 'block';
+        isValid = false;
+    } else if (localisationInput.value.length < 5) {
+        localisationInput.classList.add('is-invalid');
+        document.getElementById('localisation-error').textContent = 'La localisation doit contenir au moins 5 caractères';
+        document.getElementById('localisation-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate telephone
+    const telephoneInput = document.getElementById('{{ form.telephone.vars.id }}');
+    if (!telephoneInput.value) {
+        telephoneInput.classList.add('is-invalid');
+        document.getElementById('telephone-error').textContent = 'Le numéro de téléphone est obligatoire';
+        document.getElementById('telephone-error').style.display = 'block';
+        isValid = false;
+    } else if (!telephoneInput.value.match(/^[0-9+\s-]{8,20}$/)) {
+        telephoneInput.classList.add('is-invalid');
+        document.getElementById('telephone-error').textContent = 'Le numéro de téléphone n\'est pas valide';
+        document.getElementById('telephone-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate email
+    const emailInput = document.getElementById('{{ form.email.vars.id }}');
+    if (!emailInput.value) {
+        emailInput.classList.add('is-invalid');
+        document.getElementById('email-error').textContent = 'L\'email est obligatoire';
+        document.getElementById('email-error').style.display = 'block';
+        isValid = false;
+    } else if (!emailInput.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        emailInput.classList.add('is-invalid');
+        document.getElementById('email-error').textContent = 'L\'email n\'est pas valide';
+        document.getElementById('email-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate description
+    const descriptionInput = document.getElementById('{{ form.description.vars.id }}');
+    if (!descriptionInput.value) {
+        descriptionInput.classList.add('is-invalid');
+        document.getElementById('description-error').textContent = 'La description est obligatoire';
+        document.getElementById('description-error').style.display = 'block';
+        isValid = false;
+    } else if (descriptionInput.value.length < 10) {
+        descriptionInput.classList.add('is-invalid');
+        document.getElementById('description-error').textContent = 'La description doit contenir au moins 10 caractères';
+        document.getElementById('description-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate promotion
+    const promotionInput = document.getElementById('{{ form.promotion.vars.id }}');
+    if (promotionInput.value) {
+        const promotionValue = parseFloat(promotionInput.value);
+        if (isNaN(promotionValue) || promotionValue < 0 || promotionValue > 100) {
+            promotionInput.classList.add('is-invalid');
+            document.getElementById('promotion-error').textContent = 'La promotion doit être entre 0 et 100';
+            document.getElementById('promotion-error').style.display = 'block';
+            isValid = false;
+        }
+    }
+
+    if (!isValid) {
+        event.preventDefault();
+    }
+});
+
+// Style the error messages
+document.querySelectorAll('.invalid-feedback').forEach(function(el) {
+    el.style.color = '#dc3545';
+    el.style.display = 'none';
+    el.style.marginTop = '0.25rem';
+    el.style.fontSize = '80%';
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,784 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="modal fade" id="newPostModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ include('post/_Post.html.twig', {form: create_form}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="forum-container">
+    <div class="forum-wrapper" 
+         x-data="{ 
+             activeLeftTab: 'posts',
+             activeRightTab: 'forum-info',
+             selectedPost: null,
+             postComments: [],
+             newComment: '',
+             commentError: '',
+             currentUserEmail: '{{ app.user ? app.user.mail : null }}',
+             loadPostDetails(postElement) {
+                 // Debug the incoming data
+                 console.log('Raw post data:', postElement);
+                 
+                 // Get all the post data from the element's dataset and attributes
+                 const post = {
+                     postId: postElement.postId,
+                     type: postElement.type,
+                     announcementTitle: postElement.announcementTitle,
+                     surveyQuestion: postElement.surveyQuestion,
+                     announcementContent: postElement.announcementContent,
+                     announcementTags: postElement.announcementTags,
+                     surveyTags: postElement.surveyTags,
+                     dateCreation: postElement.dateCreation,
+                     dateModification: postElement.dateModification,
+                     cheminFichier: postElement.cheminFichier,
+                     votes: parseInt(postElement.votes) || 0,
+                     nbrSignal: parseInt(postElement.nbrSignal) || 0,
+                     upVoteList: postElement.upVoteList || '',
+                     downVoteList: postElement.downVoteList || '',
+                     signalList: postElement.signalList || '',
+                     userEmail: postElement.userEmail
+                 };
+                 
+                 // Debug the processed data
+                 console.log('Processed post data:', post);
+                 
+                 this.selectedPost = post;
+                 this.activeLeftTab = 'comments';
+             },
+             async handleVote(post, type) {
+                 if (!{{ app.user ? 'true' : 'false' }}) return;
+                 
+                 try {
+                     const response = await fetch(`/front/post/${post.postId}/vote/${type}`, {
+                         method: 'POST',
+                         headers: {
+                             'X-Requested-With': 'XMLHttpRequest'
+                         }
+                     });
+                     
+                     const data = await response.json();
+                     if (data.success) {
+                         post.votes = data.votes;
+                         post.upVoteList = data.upVoteList;
+                         post.downVoteList = data.downVoteList;
+                         
+                         // Update the selected post if we're viewing it
+                         if (this.selectedPost && this.selectedPost.id === post.postId) {
+                             this.selectedPost = { ...this.selectedPost, ...post };
+                         }
+                     }
+                 } catch (error) {
+                     console.error('Error voting:', error);
+                 }
+             },
+             async handleReport(post) {
+                 if (!{{ app.user ? 'true' : 'false' }}) return;
+                 
+                 try {
+                     const response = await fetch(`/front/post/${post.postId}/report`, {
+                         method: 'POST',
+                         headers: {
+                             'X-Requested-With': 'XMLHttpRequest'
+                         }
+                     });
+                     
+                     const data = await response.json();
+                     if (data.success) {
+                         post.signalList = data.signalList;
+                         post.nbrSignal = data.reports;
+                         
+                         // Update the selected post if we're viewing it
+                         if (this.selectedPost && this.selectedPost.id === post.postId) {
+                             this.selectedPost = { ...this.selectedPost, ...post };
+                         }
+                     }
+                 } catch (error) {
+                     console.error('Error reporting:', error);
+                 }
+             },
+             addComment() {
+                 if (!this.newComment.trim()) {
+                     this.commentError = 'Comment cannot be empty';
+                     return;
+                 }
+                 fetch('/api/comments', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify({
+                         postId: this.selectedPost.postId,
+                         content: this.newComment
+                     })
+                 })
+                 .then(response => response.json())
+                 .then(comment => {
+                     this.postComments.unshift(comment);
+                     this.newComment = '';
+                     this.commentError = '';
+                 });
+             },
+             formatDate(dateString) {
+                 const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                 return new Date(dateString).toLocaleDateString(undefined, options);
+             }
+         }">
+        
+        <!-- Left Pane -->
+        <div class="forum-left-pane">
+            <div class="forum-tab-container">
+                <!-- Tab Buttons -->
+                <div class="forum-tab-buttons">
+                    <button @click="activeLeftTab = 'posts'" 
+                            :class="{ 'active-tab': activeLeftTab === 'posts' }">
+                        Posts
+                    </button>
+                    <button @click="activeLeftTab = 'comments'" 
+                            :class="{ 'active-tab': activeLeftTab === 'comments' }">
+                        Comments
+                    </button>
+                </div>
+
+                <!-- Posts Tab Content -->
+                <div x-show="activeLeftTab === 'posts'" class="forum-tab-content">
+                    <div class="forum-search-bar">
+                        <input type="text" placeholder="Search posts..." class="forum-search-field">
+                        <br><br>
+                        <select class="forum-combo-box">
+                            <option value="date">Date</option>
+                            <option value="votes">Votes</option>
+                        </select>
+                    </div>
+                    <br><br>
+                    <div class="forum-scroll-container">
+                        {% if currentForum %}
+                            {% set forumPosts = posts|filter(post => post.forumId.forumId == currentForum.forumId) %}
+                            {% if forumPosts|length > 0 %}
+                                {% for post in forumPosts %}
+                                    <div class="forum-post-item" 
+                                         data-post-id="{{ post.postId }}"
+                                         data-type="{{ post.type }}"
+                                         data-announcement-title="{{ post.announcementTitle }}"
+                                         data-survey-question="{{ post.surveyQuestion }}"
+                                         data-announcement-content="{{ post.announcementContent }}"
+                                         data-announcement-tags="{{ post.announcementTags }}"
+                                         data-survey-tags="{{ post.surveyTags }}"
+                                         data-date-creation="{{ post.dateCreation|date('Y-m-d H:i:s') }}"
+                                         data-date-modification="{{ post.dateModification|date('Y-m-d H:i:s') }}"
+                                         data-chemin-fichier="{{ post.cheminFichier }}"
+                                         data-votes="{{ post.votes }}"
+                                         data-nbr-signal="{{ post.nbrSignal }}"
+                                         data-up-vote-list="{{ post.upVoteList }}"
+                                         data-down-vote-list="{{ post.downVoteList }}"
+                                         data-signal-list="{{ post.signalList }}"
+                                         data-user-email="{{ post.idUser.mail }}">
+                                        <div class="post-header">
+                                            <h2 class="post-title">
+                                                {% if post.type == 'announcement' %}
+                                                    {{ post.announcementTitle ?? 'No title' }}
+                                                {% elseif post.type == 'survey' %}
+                                                    {{ post.surveyQuestion ?? 'No question' }}
+                                                {% endif %}
+                                            </h2>
+                                            
+                                            <div class="post-meta">
+                                                <span class="post-tags">
+                                                    Tags: 
+                                                    {% if post.type == 'announcement' %}
+                                                        {% for tag in post.announcementTags|split(',') %}
+                                                            {% if tag|trim is not empty %}
+                                                                #{{ tag|trim }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% elseif post.type == 'survey' %}
+                                                        {% for tag in post.surveyTags|split(',') %}
+                                                            {% if tag|trim is not empty %}
+                                                                #{{ tag|trim }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </span>
+                                                <span class="post-date">
+                                                    {% if post.dateModification and post.dateModification != post.dateCreation %}
+                                                        Edited on: {{ post.dateModification|date('Y-m-d H:i') }}
+                                                    {% else %}
+                                                        Posted on: {{ post.dateCreation|date('Y-m-d H:i') }}
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {% if post.cheminFichier %}
+                                        <div class="post-image">
+                                            <img src="{{ asset('uploads/' ~ post.cheminFichier) }}" alt="Post image" class="post-image-preview">
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="post-footer">
+                                            <div class="vote-controls">
+                                                <button class="upvote-btn{% if app.user and app.user.mail in post.upVoteList|split(',') %} disabled{% endif %}"
+                                                        @click="handleVote($el.closest('.forum-post-item').dataset, 'up')"
+                                                        {% if not app.user or app.user.mail in post.upVoteList|split(',') %}disabled{% endif %}>
+                                                    ↑
+                                                </button>
+                                                <span class="vote-count">{{ post.votes ?? 0 }}</span>
+                                                <button class="downvote-btn{% if app.user and app.user.mail in post.downVoteList|split(',') %} disabled{% endif %}"
+                                                        @click="handleVote($el.closest('.forum-post-item').dataset, 'down')"
+                                                        {% if not app.user or app.user.mail in post.downVoteList|split(',') %}disabled{% endif %}>
+                                                    ↓
+                                                </button>
+                                            </div>
+
+                                            <div class="post-actions">
+                                                <button class="view-comments-btn" @click="loadPostDetails($el.closest('.forum-post-item').dataset)">
+                                                    View Details
+                                                </button>
+                                                <button class="signal-btn{% if app.user and app.user.mail in post.signalList|split(',') %} disabled{% endif %}"
+                                                        @click="handleReport($el.closest('.forum-post-item').dataset)"
+                                                        {% if not app.user or app.user.mail in post.signalList|split(',') %}disabled{% endif %}>
+                                                    Report
+                                                </button>
+                                                
+                                                {% if app.user and (app.user.mail == post.idUser.mail or app.user.role == 0) %}
+                                                    <button class="edit-post-btn">Edit</button>
+                                                    <button class="delete-post-btn">Delete</button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="no-posts-message">
+                                    No posts in this forum yet. Be the first to create one!
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="no-forum-selected">
+                                Please select a forum to view posts
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div x-show="activeLeftTab === 'comments'" class="forum-tab-content">
+                    <button @click="activeLeftTab = 'posts'" class="forum-back-button">
+                        <i class="fas fa-arrow-left"></i> Back to Posts
+                    </button>
+                    
+                    <template x-if="selectedPost">
+                        <div class="forum-post-item">
+                            <div class="post-header">
+                                <h2 class="post-title" x-text="selectedPost.type === 'announcement' ? 
+                                    selectedPost.announcementTitle : selectedPost.surveyQuestion"></h2>
+                                
+                                <div class="post-meta">
+                                    <span class="post-date" x-text="
+                                        selectedPost.dateModification && selectedPost.dateModification !== selectedPost.dateCreation
+                                            ? 'Edited on: ' + new Date(selectedPost.dateModification).toLocaleString()
+                                            : 'Posted on: ' + new Date(selectedPost.dateCreation).toLocaleString()
+                                    "></span>
+                                </div>
+                            </div>
+
+                            <template x-if="selectedPost.cheminFichier">
+                                <div class="post-image-container">
+                                    <img :src="'/uploads/' + selectedPost.cheminFichier" 
+                                         alt="Post image" class="post-image-preview">
+                                </div>
+                            </template>
+
+                            <!-- Announcement Content -->
+                            <template x-if="selectedPost.type === 'announcement'">
+                                <div class="post-content">
+                                    <div class="content-section">
+                                        <h3 class="section-title">Content</h3>
+                                        <p class="content-text" x-text="selectedPost.announcementContent || 'No content available'"></p>
+                                    </div>
+                                    <div class="content-section">
+                                        <h3 class="section-title">Tags</h3>
+                                        <div class="tags-container">
+                                            <template x-if="selectedPost.announcementTags">
+                                                <template x-for="tag in selectedPost.announcementTags.split(',').filter(t => t.trim())">
+                                                    <span class="tag" x-text="tag.trim()"></span>
+                                                </template>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Survey Content -->
+                            <template x-if="selectedPost.type === 'survey'">
+                                <div class="post-content">
+                                    <div class="content-section">
+                                        <h3 class="section-title">Question</h3>
+                                        <p class="content-text" x-text="selectedPost.surveyQuestion || 'No question available'"></p>
+                                    </div>
+                                    <div class="content-section">
+                                        <h3 class="section-title">Tags</h3>
+                                        <div class="tags-container">
+                                            <template x-if="selectedPost.surveyTags">
+                                                <template x-for="tag in selectedPost.surveyTags.split(',').filter(t => t.trim())">
+                                                    <span class="tag" x-text="tag.trim()"></span>
+                                                </template>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div class="content-section">
+                                        <h3 class="section-title">Participants</h3>
+                                        <p class="content-text" x-text="selectedPost.surveyUserList ? 
+                                            selectedPost.surveyUserList.split(',').filter(u => u.trim()).length + ' participants' : 
+                                            'No participants yet'"></p>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <div class="post-footer">
+                                <div class="post-stats">
+                                    <span class="votes" x-text="'Votes: ' + (selectedPost.votes || 0)"></span>
+                                    <span class="signals" x-text="'Signals: ' + (selectedPost.nbrSignal || 0)"></span>
+                                </div>
+                                <div class="post-actions">
+                                    <button @click="handleVote(selectedPost, 'up')" 
+                                            class="btn btn-sm btn-success"
+                                            :disabled="selectedPost.upVoteList && selectedPost.upVoteList.includes(currentUserEmail)">
+                                        <i class="material-icons">thumb_up</i>
+                                    </button>
+                                    <button @click="handleVote(selectedPost, 'down')" 
+                                            class="btn btn-sm btn-danger"
+                                            :disabled="selectedPost.downVoteList && selectedPost.downVoteList.includes(currentUserEmail)">
+                                        <i class="material-icons">thumb_down</i>
+                                    </button>
+                                    <button @click="handleReport(selectedPost)" 
+                                            class="btn btn-sm btn-warning"
+                                            :disabled="selectedPost.signalList && selectedPost.signalList.includes(currentUserEmail)">
+                                        <i class="material-icons">report</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <!-- Comments section -->
+                    <div class="comments-section" x-show="selectedPost">
+                        <!-- Add your comments section here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Pane -->
+        <div class="forum-right-pane">
+            <div class="forum-tab-container">
+                <!-- Tab Buttons -->
+                <div class="forum-tab-buttons">
+                    <button @click="activeRightTab = 'forum-info'" 
+                            :class="{ 'active-tab': activeRightTab === 'forum-info' }">
+                        Forum Info
+                    </button>
+                </div>
+
+                <!-- Forum Info Content -->
+                <div x-show="activeRightTab === 'forum-info'" class="forum-tab-content">
+                    <!-- Forum Selector -->
+                    <select class="forum-select" x-model="selectedForumId"
+                            @change="window.location.href = '?forum=' + selectedForumId">
+                        <option value="">Select Forum</option>
+                        {% for forum in forums %}
+                            <option value="{{ forum.ForumId|default('') }}" 
+                                    {% if currentForum is not null and currentForum.ForumId == forum.ForumId %}selected{% endif %}>
+                                {{ forum.name|default('Unnamed Forum') }}
+                            </option>
+                        {% else %}
+                            <option value="">No forums available</option>
+                        {% endfor %}
+                    </select>
+                    <br><br>
+                    
+                    {% if currentForum is defined and currentForum is not null %}
+                    <h3>{{ currentForum.name }}</h3>
+                    {% endif %}
+
+                    <div class="forum-details">
+                        <!-- Forum Description -->
+                        <textarea class="forum-description" readonly>
+                            {{- currentForum.description|default('No description available') -}}
+                        </textarea>
+                        <br><br>
+                        
+                        {% if currentForum is defined and currentForum is not null %}
+                        <button type="button" class="forum-submit-button" data-toggle="modal" data-target="#newPostModal">
+                            Create Post
+                        </button>
+                        {% else %}
+                        <button class="forum-submit-button" disabled>Create Post</button>
+                        {% endif %}
+                        <br><br>
+                        
+                        <!-- Forum Statistics -->
+                        <div class="forum-stats">
+                            {% if currentForum is defined and currentForum is not null and currentForum.isPrivate %}
+                            <span class="stat-item">
+                                Members: {{ currentForum.memberCount|default(0) }}
+                            </span>
+                            {% endif %}
+                            
+                            {% if currentForum is defined and currentForum is not null %}
+                            <span class="stat-item">
+                                Created: {{ currentForum.DateCreation|date('Y-m-d') }}
+                            </span>
+                            <span class="stat-item">
+                                Posts: {{ currentForum.postCount|default(0) }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="{{ asset('assets/css/stylesFP.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<style>
+    .forum-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background-color: #f5f7fa;
+        min-height: 100vh;
+    }
+    
+    .forum-wrapper {
+        display: grid;
+        grid-template-columns: 70% 30%;
+        max-width: 1400px;
+        width: 100%;
+        gap: 20px;
+    }
+    
+    .forum-left-pane, .forum-right-pane {
+        background: #18344C;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        transition: transform 0.3s ease;
+    }
+    
+    .forum-left-pane:hover, .forum-right-pane:hover {
+        transform: translateY(-5px);
+    }
+    
+    .forum-tab-buttons {
+        display: flex;
+        padding: 15px;
+        gap: 10px;
+        background:rgb(112, 105, 105);
+    }
+    
+    .forum-tab-buttons button {
+        padding: 12px 24px;
+        font-size: 16px;
+        color: #e0e0e0;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .forum-tab-buttons button.active-tab {
+        background: #e78d1e;
+        color: white;
+    }
+    
+    .forum-post-item {
+        background: rgba(19, 42, 62, 0.8);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.2s ease;
+    }
+    
+    .forum-post-item:hover {
+        transform: translateY(-2px);
+    }
+    
+    .post-title {
+        font-size: 24px;
+        color: #e78d1e;
+        margin-bottom: 15px;
+    }
+    
+    .post-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .post-tags {
+        color: #e78d1e;
+        font-size: 14px;
+    }
+    
+    .post-date {
+        color: #888;
+        font-size: 14px;
+    }
+    
+    .post-image img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 15px 0;
+    }
+    
+    .vote-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .vote-controls button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        background: #e78d1e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .vote-controls button:hover:not(.disabled) {
+        background: #ff9f2f;
+        transform: scale(1.1);
+    }
+    
+    .vote-controls button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .vote-count {
+        font-size: 20px;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .post-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .post-actions button {
+        padding: 8px 16px;
+        font-size: 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .view-comments-btn {
+        background: rgba(42, 131, 45, 0.6);
+        color: white;
+    }
+    
+    .signal-btn {
+        background: #d80f5d;
+        color: white;
+    }
+    
+    .edit-post-btn {
+        background: #4444ff;
+        color: white;
+    }
+    
+    .delete-post-btn {
+        background: #ff4444;
+        color: white;
+    }
+    
+    .post-actions button:hover:not(.disabled) {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+    }
+    
+    .post-actions button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .forum-back-button {
+        background: none;
+        border: none;
+        color: #e78d1e;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 10px 0;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .forum-back-button:hover {
+        color: #ff9f2f;
+    }
+    
+    .no-posts-message, .no-forum-selected {
+        background: rgba(105, 101, 101, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        color: #e0e0e0;
+        margin: 20px;
+    }
+
+    .post-image-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    .post-image-preview {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+    .post-content {
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+    }
+
+    .content-section {
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        color: #e78d1e;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .content-text {
+        color: #ffffff;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .tag {
+        background: #e78d1e;
+        color: #ffffff;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 14px;
+    }
+
+    .post-stats {
+        display: flex;
+        gap: 20px;
+        color: #e78d1e;
+        font-size: 14px;
+    }
+
+    .post-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .post-actions button {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .post-actions button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Store the current forum ID in localStorage when changed
+    const forumSelect = document.querySelector('.forum-select');
+    if (forumSelect) {
+        forumSelect.addEventListener('change', function() {
+            localStorage.setItem('selectedForumId', this.value);
+        });
+        
+        // Restore the selected forum on page load
+        const storedForumId = localStorage.getItem('selectedForumId');
+        if (storedForumId) {
+            forumSelect.value = storedForumId;
+        }
+    }
+});
+
+// After creating a post
+function handlePostCreation(response) {
+    if (response.success) {
+        // Refresh only the posts list, not the entire page
+        fetch(window.location.pathname + '?forum=' + localStorage.getItem('selectedForumId'))
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newPosts = doc.querySelector('.forum-scroll-container');
+                document.querySelector('.forum-scroll-container').innerHTML = newPosts.innerHTML;
+            });
+    }
+}
+</script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- jQuery, Popper.js, and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+{% endblock %}

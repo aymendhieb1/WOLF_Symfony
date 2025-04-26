@@ -1,0 +1,72 @@
+{% extends 'base1.html.twig' %}
+
+{% block body %}
+<div class="wrapper ">
+    <div class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
+        <!-- Sidebar content -->
+        <div class="logo">
+            <a href="http://www.creative-tim.com/" class="simple-text logo-mini">
+                Picture
+            </a>
+            <a href="http://www.creative-tim.com/" class="simple-text logo-normal">
+                Logo
+            </a>
+        </div>
+        <div class="sidebar-wrapper">
+            <!-- Your sidebar menu items here -->
+        </div>
+    </div>
+    <div class="main-panel">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+            <div class="container-fluid">
+                <div class="navbar-wrapper">
+                    <a class="navbar-brand" href="javascript:;">Détails de l'Activité</a>
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title">Détails de l'activité</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <td>{{ activite.nom }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Description</th>
+                                            <td>{{ activite.description }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Type</th>
+                                            <td>{{ activite.type }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Prix</th>
+                                            <td>{{ activite.prix }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <a href="{{ path('app_activite_edit', {'id': activite.id}) }}" class="btn btn-primary">Modifier</a>
+                                        <a href="{{ path('app_back_activite') }}" class="btn btn-default">Retour</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

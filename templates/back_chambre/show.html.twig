@@ -1,0 +1,60 @@
+{% extends 'base1.html.twig' %}
+
+{% block title %}Détails de la Chambre{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <div id="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Détails de la Chambre</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Type</th>
+                                        <td>{{ chambre.type }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Prix</th>
+                                        <td>{{ chambre.prix }} DT</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Disponibilité</th>
+                                        <td>
+                                            <span class="badge badge-{{ chambre.disponibilite ? 'success' : 'danger' }}">
+                                                {{ chambre.disponibilite ? 'DISPONIBLE' : 'NON DISPONIBLE' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td>{{ chambre.description }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Hôtel</th>
+                                        <td>{{ chambre.hotel.nom }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="mt-3">
+                                <a href="{{ path('app_back_chambre') }}" class="btn btn-secondary">Retour à la liste</a>
+                                <a href="{{ path('app_back_chambre_edit', {'id': chambre.id}) }}" class="btn btn-primary">Modifier</a>
+                                <form method="post" action="{{ path('app_back_chambre_delete', {'id': chambre.id}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette chambre?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chambre.id) }}">
+                                    <button class="btn btn-danger">Supprimer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

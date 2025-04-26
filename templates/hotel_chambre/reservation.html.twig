@@ -1,0 +1,245 @@
+{% extends 'base1.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .reservation-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .reservation-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .room-details {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .room-image {
+            width: 300px;
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .room-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .room-info {
+            flex: 1;
+        }
+
+        .room-type {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2f4858;
+            margin-bottom: 1rem;
+        }
+
+        .price-per-night {
+            font-size: 1.2rem;
+            color: #ff681a;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .date-picker-container {
+            margin-bottom: 2rem;
+        }
+
+        .date-inputs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .date-input {
+            flex: 1;
+        }
+
+        .price-summary {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-price {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #ff681a;
+            border-top: 2px solid #dee2e6;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .confirm-btn {
+            background: #ff681a;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn:hover {
+            background: #e55a0f;
+            transform: translateY(-2px);
+        }
+
+        .flatpickr-calendar {
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .unavailable-date {
+            background: #ffebee !important;
+            text-decoration: line-through;
+            color: #f44336 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const roomPrice = {{ room.prix }};
+            const hotelPromotion = {{ hotel.promotion }};
+            const unavailableDates = {{ reserved_dates|json_encode|raw }};
+
+            // Initialize date pickers
+            const checkInPicker = flatpickr("#check_in", {
+                minDate: "today",
+                disable: unavailableDates,
+                onChange: function(selectedDates, dateStr) {
+                    checkOutPicker.set('minDate', dateStr);
+                    calculatePrice();
+                }
+            });
+
+            const checkOutPicker = flatpickr("#check_out", {
+                minDate: "today",
+                disable: unavailableDates,
+                onChange: function() {
+                    calculatePrice();
+                }
+            });
+
+            function calculatePrice() {
+                const checkIn = checkInPicker.selectedDates[0];
+                const checkOut = checkOutPicker.selectedDates[0];
+
+                if (checkIn && checkOut) {
+                    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+                    const basePrice = roomPrice * nights;
+                    const discount = hotelPromotion > 0 ? (basePrice * hotelPromotion / 100) : 0;
+                    const totalPrice = basePrice - discount;
+
+                    document.getElementById('nights').textContent = nights;
+                    document.getElementById('base-price').textContent = basePrice.toFixed(2) + ' DT';
+                    document.getElementById('discount').textContent = '-' + discount.toFixed(2) + ' DT';
+                    document.getElementById('total-price').textContent = totalPrice.toFixed(2) + ' DT';
+
+                    document.getElementById('reservation-form').style.display = 'block';
+                }
+            }
+
+            // Handle form submission
+            document.getElementById('reservation-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Add your reservation submission logic here
+                alert('Réservation confirmée !');
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="reservation-container">
+        <div class="reservation-card">
+            <div class="room-details">
+                <div class="room-image">
+                    <img src="{{ asset('assets/img/placeholder.jpg') }}" alt="{{ room.type }}">
+                </div>
+                <div class="room-info">
+                    <h2 class="room-type">{{ room.type }}</h2>
+                    <div class="price-per-night">
+                        {% if hotel.promotion > 0 %}
+                            <span class="original-price">{{ room.prix }} DT</span>
+                            <span class="discounted-price">{{ room.prix - (room.prix * hotel.promotion / 100) }} DT</span>
+                        {% else %}
+                            {{ room.prix }} DT
+                        {% endif %}
+                        <span class="text-muted">/ nuit</span>
+                    </div>
+                    <p>{{ room.description }}</p>
+                </div>
+            </div>
+
+            <div class="date-picker-container">
+                <h3 class="mb-3">Sélectionnez vos dates</h3>
+                <div class="date-inputs">
+                    <div class="date-input">
+                        <label class="form-label">Date d'arrivée</label>
+                        <input type="text" id="check_in" class="form-control" placeholder="Sélectionnez une date" required>
+                    </div>
+                    <div class="date-input">
+                        <label class="form-label">Date de départ</label>
+                        <input type="text" id="check_out" class="form-control" placeholder="Sélectionnez une date" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-summary">
+                <h4 class="mb-3">Résumé du prix</h4>
+                <div class="price-row">
+                    <span>Nombre de nuits</span>
+                    <span id="nights">0</span>
+                </div>
+                <div class="price-row">
+                    <span>Prix de base</span>
+                    <span id="base-price">0 DT</span>
+                </div>
+                {% if hotel.promotion > 0 %}
+                    <div class="price-row">
+                        <span>Réduction ({{ hotel.promotion }}%)</span>
+                        <span id="discount">0 DT</span>
+                    </div>
+                {% endif %}
+                <div class="price-row total-price">
+                    <span>Prix total</span>
+                    <span id="total-price">0 DT</span>
+                </div>
+            </div>
+
+            <form id="reservation-form" style="display: none;">
+                <button type="submit" class="confirm-btn">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Confirmer la réservation
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %} 

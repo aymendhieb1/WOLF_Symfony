@@ -1,0 +1,318 @@
+{% extends 'base1.html.twig' %}
+
+{% block body %}
+    <style>
+        :root {
+            --theme-color: #ff681a;
+            --secondary-color: #2f4858;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333;
+        }
+
+        .hotel-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset("assets/img/placeholder.jpg") }}');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .hotel-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hotel-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .hotel-location {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hotel-description {
+            font-size: 1rem;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        .promotion-badge {
+            background: #ff0000;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .room-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .room-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .room-card:hover .room-image img {
+            transform: scale(1.05);
+        }
+
+        .room-content {
+            padding: 25px;
+        }
+
+        .room-type {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .availability-badge {
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .available {
+            background: #4caf50;
+            color: white;
+        }
+
+        .unavailable {
+            background: #f44336;
+            color: white;
+        }
+
+        .room-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .room-feature {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .room-feature i {
+            color: var(--theme-color);
+            margin-right: 8px;
+        }
+
+        .room-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .room-price {
+            margin-bottom: 20px;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+
+        .discounted-price {
+            color: #ff0000;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .book-btn {
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .book-btn:hover:not(:disabled) {
+            background: #e55a0f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 104, 26, 0.2);
+        }
+
+        .book-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            background: #1d3644;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(47, 72, 88, 0.2);
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hotel-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+
+    <div class="hotel-header" {% if hotel.image %}style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('uploads/hotels/' ~ hotel.image) }}')"{% endif %}>
+        <div class="container">
+            <div class="hotel-info">
+                <h1 class="hotel-title">{{ hotel.nom }}</h1>
+                <div class="hotel-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    {{ hotel.localisation }}
+                </div>
+                <p class="hotel-description">{{ hotel.description }}</p>
+                {% if hotel.promotion > 0 %}
+                    <div class="promotion-badge">
+                        <i class="fas fa-tag"></i>
+                        Promotion -{{ hotel.promotion }}%
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="{{ path('app_hotel_chambre') }}" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Retour aux hôtels
+        </a>
+
+        {% if chambres is empty %}
+            <div class="text-center py-5">
+                <i class="fas fa-bed fa-3x mb-3" style="color: #666;"></i>
+                <h3>Aucune chambre disponible</h3>
+                <p>Il n'y a pas de chambres disponibles dans cet hôtel pour le moment.</p>
+            </div>
+        {% else %}
+            <div class="rooms-grid">
+                {% for chambre in chambres %}
+                    <div class="room-card">
+                        <div class="room-image">
+                            <img src="{{ asset('assets/img/placeholder.jpg') }}" alt="{{ chambre.type }}">
+                        </div>
+                        <div class="room-content">
+                            <div class="room-type">
+                                {{ chambre.type }}
+                                <span class="availability-badge {% if chambre.disponibilite %}available{% else %}unavailable{% endif %}">
+                                    {% if chambre.disponibilite %}Disponible{% else %}Complet{% endif %}
+                                </span>
+                            </div>
+                            <div class="room-features">
+                                <div class="room-feature">
+                                    <i class="fas fa-user"></i>
+                                    {% if chambre.type == 'Simple' %}1 personne
+                                    {% elseif chambre.type == 'Double' %}2 personnes
+                                    {% else %}2-4 personnes{% endif %}
+                                </div>
+                                <div class="room-feature">
+                                    <i class="fas fa-wifi"></i>
+                                    WiFi gratuit
+                                </div>
+                                <div class="room-feature">
+                                    <i class="fas fa-shower"></i>
+                                    Salle de bain privée
+                                </div>
+                            </div>
+                            <p class="room-description">{{ chambre.description }}</p>
+                            <div class="room-price">
+                                {% if hotel.promotion > 0 %}
+                                    <span class="original-price">{{ chambre.prix }} DT</span>
+                                    <span class="discounted-price">{{ chambre.prix - (chambre.prix * hotel.promotion / 100) }} DT</span>
+                                {% else %}
+                                    <span class="discounted-price">{{ chambre.prix }} DT</span>
+                                {% endif %}
+                            </div>
+                            {% if chambre.disponibilite %}
+                                <a href="{{ path('app_room_reservation', {'id': chambre.id}) }}" class="book-btn">
+                                    <i class="fas fa-calendar-check"></i>
+                                    Réserver maintenant
+                                </a>
+                            {% else %}
+                                <button class="book-btn" disabled>
+                                    <i class="fas fa-ban"></i>
+                                    Indisponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %} 

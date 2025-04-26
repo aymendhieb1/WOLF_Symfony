@@ -1,0 +1,10 @@
+# config/packages/knp_snappy.yaml
+knp_snappy:
+    pdf:
+        binary: '"C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe"'  # Enclose path in quotes
+        enabled: true
+        options: []
+    image:
+        enabled: true
+        binary: '%env(WKHTMLTOIMAGE_PATH)%'  # Keep this if using an environment variable for images
+        options: []

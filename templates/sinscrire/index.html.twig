@@ -15,13 +15,8 @@
 					</div>
 					<p class="footer-text">
 						Ut tellus dolor, dapibus eget, elementum ifend cursus eleifend,
-<<<<<<< HEAD
-																																																																																																																																																																																																																																																																																																																																																																																																																																																						              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
-																																																																																																																																																																																																																																																																																																																																																																																																																																																						              end cursus eleifendrpis.
-=======
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																								              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																								              end cursus eleifendrpis.
->>>>>>> c10d64b (Third commit projet)
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		              elit. Aenea ifen dn tor wisi Aliquam er at volutpat. Dui ac tui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		              end cursus eleifendrpis.
 					</p>
 					<div class="info-social style2">
 						<a href="#">
@@ -90,13 +85,8 @@
 	</div>
 
 	<!--==============================
-<<<<<<< HEAD
-																																																																									    Cart Side bar
-																																																																									  ============================== -->
-=======
-																																																																																																																																												    Cart Side bar
-																																																																																																																																												  ============================== -->
->>>>>>> c10d64b (Third commit projet)
+																																																																																																																																											    Cart Side bar
+																																																																																																																																											  ============================== -->
 	<div class="sideCart-wrapper offcanvas-wrapper d-none d-lg-block">
 		<div class="sidemenu-content">
 			<button class="closeButton border-theme bg-theme-hover sideMenuCls">
@@ -144,13 +134,8 @@
 	</div>
 
 	<!--==============================
-<<<<<<< HEAD
-																																																																									    Popup Search Box
-																																																																									    ============================== -->
-=======
-																																																																																																																																												    Popup Search Box
-																																																																																																																																												    ============================== -->
->>>>>>> c10d64b (Third commit projet)
+																																																																																																																																											    Popup Search Box
+																																																																																																																																											    ============================== -->
 	<div class="popup-search-box d-none d-lg-block">
 		<button class="searchClose">
 			<i class="fal fa-times"></i>
@@ -164,31 +149,6 @@
 	</div>
 
 
-	<!-- Hero Area Start -->
-	<div class="breadcumb-wrapper" style="
-																																																																																																																																																																																																																											        background-color: rgba(
-																																																																																																																																																																																																																											          19,
-																																																																																																																																																																																																																											          42,
-																																																																																																																																																																																																																											          62
-																																																																																																																																																																																																																											        ); /* Fond avec couleur #132a3e et opacité 0.5 */
-																																																																																																																																																																																																																											        background-size: cover; /* Si vous voulez que l'arrière-plan couvre toute la zone */
-																																																																																																																																																																																																																											        background-position: center; /* Centrer l'image de fond */
-																																																																																																																																																																																																																		        background-repeat: no-repeat; /* Empêche la répétition de l'image */
-																																																																																																																																																																																																																											      ">
-		<div class="container z-index-common">
-			<div class="breadcumb-content">
-				<h1 class="breadcumb-title">S'inscrire</h1>
-				<div class="breadcumb-menu-wrap">
-					<ul class="breadcumb-menu">
-						<li>
-							<a href="{{path('app_home')}}">Accueil</a>
-						</li>
-						<li>S'inscrire</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
 	<!-- Hero Area End -->
 
 	<!-- Sign Up Area Start -->
@@ -207,7 +167,13 @@
 								</div>
 							{% endfor %}
 						{% endfor %}
-						{{ form_start(form, {'attr': {'class': 'signup-form bg-smoke', 'novalidate': 'novalidate'}}) }}
+						{{ form_start(form, {
+  'attr': {
+    'id': 'register-form',
+    'class': 'signup-form bg-smoke',
+    'novalidate': 'novalidate'
+  }
+}) }}
 						<h2 class="form-title text-center mb-lg-35">Créer un compte</h2>
 
 						<div class="form-group">
@@ -217,10 +183,25 @@
 						<div class="form-group">
 							{{ form_row(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom*'}}) }}
 						</div>
-
 						<div class="form-group">
-							{{ form_row(form.num_tel, {'attr': {'class': 'form-control', 'placeholder': 'Numéro de téléphone*'}}) }}
+							{{ form_errors(form.num_tel) }}
 						</div>
+						<div class="form-group d-flex">
+							<select id="country-code" class="form-select me-2" style="max-width: 150px;">
+								<option disabled selected>Chargement...</option>
+							</select>
+
+
+							{{ form_widget(form.num_tel, {
+        'attr': {
+            'class': 'form-control',
+            'placeholder': 'Numéro de téléphone*',
+            'id': 'num_tel_input'
+        }
+    }) }}
+
+						</div>
+
 
 						<div class="form-group">
 							{{ form_row(form.mail, {'attr': {'class': 'form-control', 'placeholder': 'Adresse e-mail*'}}) }}
@@ -234,6 +215,7 @@
 							{{ form_row(form.confirmPassword, {'attr': {'class': 'form-control', 'placeholder': 'Confirmer votre mot de passe*'}}) }}
 						</div>
 
+						<!-- Afficher les erreurs ici -->
 
 						<div class="form-group">
 							<div class="custom-file-input-container">
@@ -258,9 +240,6 @@
 							</div>
 						</div>
 						{{ form_end(form) }}
-<<<<<<< HEAD
-=======
-
 						<script>
 							document.getElementById('{{ form.photo_profil.vars.id }}').addEventListener('change', function (event) {
 var previewContainer = document.getElementById('profile-preview').parentElement;
@@ -329,7 +308,6 @@ console.error('Erreur lors du chargement des pays :', error);
 });
 });
 						</script>
->>>>>>> c10d64b (Third commit projet)
 
 					</div>
 				</div>
@@ -357,7 +335,7 @@ console.error('Erreur lors du chargement des pays :', error);
 			border: 2px dashed #ccc;
 			cursor: pointer;
 			transition: border-color 0.3s ease;
-			overflow: hidden; /* Cela garantit que l'image respecte la forme circulaire */
+			overflow: hidden;
 
 		}
 
@@ -366,8 +344,8 @@ console.error('Erreur lors du chargement des pays :', error);
 		}
 
 		.custom-file-label i {
-			font-size: 72px; /* Taille de l'icône */
-			color: #ccc; /* Couleur de l'icône */
+			font-size: 72px;
+			color: #ccc;
 		}
 		.custom-file-label img {
 			width: 100%;
@@ -375,7 +353,7 @@ console.error('Erreur lors du chargement des pays :', error);
 			object-fit: cover;
 		}
 
-		/* Masquer le champ file natif */
+
 		.hidden-file-input {
 			display: none;
 		}
@@ -385,32 +363,21 @@ console.error('Erreur lors du chargement des pays :', error);
 			color: #ff681a;
 
 		}
+		.form-group.d-flex {
+			color: #ff681a;
+
+		}
+
 		.form-group2 {
 			color: black;
 
 		}
 	</style>
-	<script>
-		document.getElementById('{{ form.photo_profil.vars.id }}').addEventListener('change', function (event) {
-var previewContainer = document.getElementById('profile-preview').parentElement;
-if (event.target.files && event.target.files[0]) { // Crée une URL temporaire pour le fichier sélectionné
-var imageUrl = URL.createObjectURL(event.target.files[0]);
-// Crée l'élément image pour la prévisualisation
-previewContainer.innerHTML = '<img id="profile-preview" src="' + imageUrl + '" alt="Photo de profil" />';
-}
-});
-	</script>
 
-
-	<!-- Sign Up Area End -->
-
-
-	<!--********************************
-																																																																										  Code Ends Here 
-																																																																											******************************** -->
 
 	<!-- Scroll To Top -->
-		<a href="#" class="scrollToTop scroll-btn"> <i class="far fa-arrow-up"></i>
+	<a href="#" class="scrollToTop scroll-btn">
+		<i class="far fa-arrow-up"></i>
 	</a>
 
 {% endblock %}
