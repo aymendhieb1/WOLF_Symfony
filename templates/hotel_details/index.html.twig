@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	<section class="space">
+		<div class="container-info">
+			<div class="col-lg-8">
+				<div class="destination-details">
+					<h2 class="ds-title">{{ hotel.nom }}</h2>
+					<div style="  height:  728.63px;
+																																																																																																	    width:1102.66 px;
+																																																																																																	    background-image: url('{{ asset('uploads/hotels/' ~ hotel.image) }}');
+																																																																																																	    background-size: cover;
+																																																																																																	    background-position: center;
+																																																																																																	    background-repeat: no-repeat;"></div>
+					<h2 class="ds-title">Description</h2>
+
+					<p class="ds-text">
+						{{hotel.description}}
+					</p>
+
+
+					<h2 class="ds-title">Destination Pictures</h2>
+
+					<div class="mt-4">
+						<div class="row">
+							<div class="col-lg-8 col-md-12 col-sm-12 col-auto">
+								<div class="gallery-img5">
+									<img src="{{ asset('assets/img/destinations/destination-s-1-4.jpg') }}" alt="images"/>
+									<div class="gallery-content">
+										<a href="{{ asset('assets/img/destinations/destination-s-1-4.jpg') }}" class="popup-image">
+											<i class="fas fa-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-6 col-auto">
+								<div class="gallery-img5">
+									<img src="{{ asset('assets/img/destinations/destination-s-1-5.jpg') }}" alt="images"/>
+									<div class="gallery-content">
+										<a href="{{ asset('assets/img/destinations/destination-s-1-5.jpg') }}" class="popup-image">
+											<i class="fas fa-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-6 col-auto">
+								<div class="gallery-img5">
+									<img src="{{ asset('assets/img/destinations/destination-s-1-6.jpg') }}" alt="images"/>
+									<div class="gallery-content">
+										<a href="{{ asset('assets/img/destinations/destination-s-1-6.jpg') }}" class="popup-image">
+											<i class="fas fa-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-6 col-auto">
+								<div class="gallery-img5">
+									<img src="{{ asset('assets/img/destinations/destination-s-1-7.jpg') }}" alt="images"/>
+									<div class="gallery-content">
+										<a href="{{ asset('assets/img/destinations/destination-s-1-7.jpg') }}" class="popup-image">
+											<i class="fas fa-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-6 col-auto">
+								<div class="gallery-img5">
+									<img src="{{ asset('assets/img/destinations/destination-s-1-8.jpg') }}" alt="images"/>
+									<div class="gallery-content">
+										<a href="{{ asset('assets/img/destinations/destination-s-1-8.jpg') }}" class="popup-image">
+											<i class="fas fa-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-6 col-sm-6 col-auto">
+								<div class="gallery-img5">
+									<img src="{{ asset('assets/img/destinations/destination-s-1-9.jpg') }}" alt="images"/>
+									<div class="gallery-content">
+										<a href="{{ asset('assets/img/destinations/destination-s-1-9.jpg') }}" class="popup-image">
+											<i class="fas fa-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-8 col-md-12 col-sm-12 col-auto">
+								<div class="gallery-img5">
+									<img src="{{ asset('assets/img/destinations/destination-s-1-10.jpg') }}" alt="images"/>
+									<div class="gallery-content">
+										<a href="{{ asset('assets/img/destinations/destination-s-1-10.jpg') }}" class="popup-image">
+											<i class="fas fa-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<button class="vs-btn mask-style1 w-100 style4">
+						Voir les chambres
+					</button>
+
+
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

@@ -1,75 +1,60 @@
-{% extends 'base1.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Session List{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/weather-styles.css') }}">
+{% endblock %}
 
 {% block body %}
-<div class="wrapper">
-    <!-- Sidebar -->
-    {{ include('sidebar.html.twig') }}
-
-    <!-- Main Panel -->
-    <div id="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Sessions</h3>
-                            <div class="card-tools">
-                                <a href="{{ path('app_session_new') }}" class="btn btn-primary">Create New Session</a>
-                            </div>
-                        </div>
+    <div class="container">
+        <h1>Sessions</h1>
+        <div class="row">
+            {% for session in sessions %}
+                <div class="col-md-4 mb-4">
+                    <div class="card session-card" data-session-date="{{ session.date|date('Y-m-d') }}">
                         <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th>Activity</th>
-                                        <th>Capacity</th>
-                                        <th>Available Places</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for session in sessions %}
-                                    <tr>
-                                        <td>{{ session.id }}</td>
-                                        <td>{{ session.date ? session.date|date('Y-m-d') : '' }}</td>
-                                        <td>{{ session.heure ? session.heure|date('H:i') : '' }}</td>
-                                        <td>{{ session.activite.nom }}</td>
-                                        <td>{{ session.capacite }}</td>
-                                        <td>{{ session.nbPlace }}</td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="{{ path('app_session_show', {'id': session.id}) }}" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-eye"></i> Show
-                                                </a>
-                                                <a href="{{ path('app_session_edit', {'id': session.id}) }}" class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a>
-                                                <form method="post" action="{{ path('app_session_delete', {'id': session.id}) }}" style="display: inline-block" onsubmit="return confirm('Are you sure you want to delete this session?');">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ session.id) }}">
-                                                    <button class="btn btn-danger btn-sm">
-                                                        <i class="fas fa-trash"></i> Delete
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="7">No sessions found</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
+                            <h5 class="card-title">{{ session.activite.nom }}</h5>
+                            <p class="card-text">
+                                <strong>Date:</strong> {{ session.date ? session.date|date('Y-m-d') : '' }}<br>
+                                <strong>Time:</strong> {{ session.heure ? session.heure|date('H:i:s') : '' }}<br>
+                                <strong>Capacity:</strong> {{ session.capacite }}<br>
+                                <strong>Available Places:</strong> {{ session.nbPlace }}
+                            </p>
+                            <div class="weather-info">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="sr-only">Loading weather...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{{ path('app_session_show', {'id': session.id}) }}" class="btn btn-info">View</a>
+                                <a href="{{ path('app_session_edit', {'id': session.id}) }}" class="btn btn-warning">Edit</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="col-12">
+                    <p>No sessions found</p>
+                </div>
+            {% endfor %}
         </div>
+        
+        <a href="{{ path('app_session_new') }}" class="btn btn-primary">Create New Session</a>
     </div>
-</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/weather-api.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize weather for all session cards
+            document.querySelectorAll('.session-card').forEach(card => {
+                const sessionDate = card.dataset.sessionDate;
+                updateSessionCardWeather(card, sessionDate);
+            });
+        });
+    </script>
 {% endblock %} 

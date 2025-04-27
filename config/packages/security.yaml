@@ -43,6 +43,7 @@ security:
 
   access_control:
     - { path: ^/back/, roles: [ROLE_ADMIN] }
+    - { path: ^/dash/, roles: [ROLE_ADMIN] }
     - { path: ^/app_home, roles: ROLE_CLIENT }
     - { path: ^/connect/google/, roles: PUBLIC_ACCESS }
     - { path: ^/seconnecter, roles: PUBLIC_ACCESS }

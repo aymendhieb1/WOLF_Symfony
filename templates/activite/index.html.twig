@@ -1,5 +1,190 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		/* Add these styles for weather display */
+		.weather-info {
+			margin-top: 10px;
+			padding: 12px;
+			border-radius: 8px;
+			background: rgba(255, 255, 255, 0.05);
+			border: 1px solid rgba(0, 0, 0, 0.1);
+		}
+		
+		.weather-container {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		
+		.weather-icon {
+			width: 40px;
+			height: 40px;
+			object-fit: contain;
+		}
+		
+		.weather-details {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+		
+		.weather-temp {
+			font-size: 1.2em;
+			font-weight: 600;
+			color: var(--theme-color);
+		}
+		
+		.weather-desc {
+			font-size: 0.9em;
+			color: #666;
+			text-transform: capitalize;
+		}
+		
+		.weather-indeterminate {
+			color: #666;
+			font-style: italic;
+			text-align: center;
+			padding: 8px;
+		}
+		
+		/* Updated share button styles */
+		.share-btn {
+			background: #1877f2;
+			color: #fff;
+			border: none;
+			padding: 8px 15px;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-size: 14px;
+			width: 100%;
+			margin-top: 10px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+		}
+		
+		.share-btn:hover {
+			background: #166fe5;
+			transform: translateY(-2px);
+		}
+		
+		.package-footer {
+			display: flex;
+			flex-direction: column;
+			margin-top: auto;
+		}
+	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<!-- Facebook SDK with error handling -->
+	<div id="fb-root"></div>
+	<script>
+		// Initialize Facebook SDK
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId: '654796463732563',
+				xfbml: true,
+				version: 'v18.0'
+			});
+		};
+
+		// Load Facebook SDK
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s);
+			js.id = id;
+			js.src = "https://connect.facebook.net/fr_FR/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+
+		// Simpler Facebook Share Function
+		function shareOnFacebook(activityName, activityType, activityPrice) {
+			console.log('Share function called with:', { activityName, activityType, activityPrice });
+			
+			try {
+				// Base URL for sharing
+				const baseUrl = 'http://127.0.0.1:8000/circuit';
+				
+				// Construct Facebook share URL directly
+				const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseUrl)}`;
+				
+				console.log('Opening share URL:', fbShareUrl);
+				
+				// Open the share dialog
+				const width = 600;
+				const height = 400;
+				const left = (window.innerWidth - width) / 2;
+				const top = (window.innerHeight - height) / 2;
+				
+				const popup = window.open(
+					fbShareUrl,
+					'facebook-share-dialog',
+					`width=${width},height=${height},left=${left},top=${top},toolbar=0,status=0`
+				);
+				
+				if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+					console.error('Popup blocked or failed to open');
+					alert('Le popup de partage a été bloqué. Veuillez autoriser les popups pour ce site.');
+				}
+				
+			} catch (error) {
+				console.error('Error in shareOnFacebook:', error);
+				alert('Une erreur est survenue lors du partage. Veuillez réessayer.');
+			}
+		}
+
+		const WEATHER_API_KEY = "1bca0ccc6c06a3ec4663f2baa688aa0d";
+		const WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/forecast";
+
+		async function getWeatherForDate(date) {
+			const targetDate = new Date(date);
+			const today = new Date();
+			const diffTime = Math.abs(targetDate - today);
+			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+			// If date is more than 5 days away, return indeterminate
+			if (diffDays > 5) {
+				return {
+					status: 'indeterminate',
+					icon: '',
+					temp: '',
+					description: 'Météo non disponible pour cette date'
+				};
+			}
+
+			const response = await fetch(`${WEATHER_API_URL}?q=${targetDate.toLocaleDateString()}&appid=${WEATHER_API_KEY}`);
+			const data = await response.json();
+
+			if (data.cod === '404') {
+				return {
+					status: 'indeterminate',
+					icon: '',
+					temp: '',
+					description: 'Météo non disponible pour cette date'
+				};
+			}
+
+			const weather = data.list[0].main;
+			const weatherDescription = data.list[0].weather[0].description;
+			const weatherIcon = data.list[0].weather[0].icon;
+
+			return {
+				status: 'success',
+				icon: weatherIcon,
+				temp: weather.temp,
+				description: weatherDescription
+			};
+		}
+	</script>
+{% endblock %}
+
 {% block body %}
 	<style>:root
 	{
@@ -394,6 +579,10 @@
 													<i class="fas fa-calendar-alt"></i>
 													Sessions
 												</button>
+												<button class="share-btn" onclick="shareOnFacebook('{{ activite.nom }}', '{{ activite.type }}', '{{ activite.prix }} DT')">
+													<i class="fab fa-facebook-f"></i>
+													Partager sur Facebook
+												</button>
 											</div>
 										</div>
 									</div>
@@ -525,61 +714,84 @@ price: activityCard.querySelector('.package-meta a:nth-child(2)').textContent
 };
 
 // Fetch sessions for this activity
-fetch (`/session/api/sessions/activity/${activityId}`).then(response => {
-if (!response.ok) {
-throw new Error('Network response was not ok');
-}
-return response.json();
-}).then(sessions => {
-if (sessions && sessions.length > 0) {
-sessions.forEach(session => {
-const sessionCard = document.createElement('div');
-sessionCard.className = 'session-card';
-sessionCard.style.cssText = `
-                            background: #fff;
-                            border-radius: 10px;
-                            padding: 15px;
-                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                            cursor: pointer;
-                            transition: transform 0.3s ease;
-                        `;
+fetch(`/session/api/sessions/activity/${activityId}`).then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+}).then(async sessions => {
+    if (sessions && sessions.length > 0) {
+        for (const session of sessions) {
+            const sessionCard = document.createElement('div');
+            sessionCard.className = 'session-card';
+            sessionCard.style.cssText = `
+                background: #fff;
+                border-radius: 10px;
+                padding: 15px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                cursor: pointer;
+                transition: transform 0.3s ease;
+            `;
 
-const date = new Date(session.date);
-const formattedDate = date.toLocaleDateString('fr-FR');
-const formattedTime = session.heure;
+            const date = new Date(session.date);
+            const formattedDate = date.toLocaleDateString('fr-FR');
+            const formattedTime = session.heure;
 
-sessionCard.innerHTML = `
-                            <div class="session-info" style="margin-bottom: 10px;">
-                                <div style="margin-bottom: 5px;"><i class="fas fa-calendar"></i> ${formattedDate}</div>
-                                <div style="margin-bottom: 5px;"><i class="fas fa-clock"></i> ${formattedTime}</div>
-                                <div><i class="fas fa-users"></i> ${
-session.nbPlace
-} places disponibles</div>
+            // Get weather for this session's date
+            const weather = await getWeatherForDate(session.date);
+            let weatherHtml = '';
+
+            if (weather.status === 'success') {
+                weatherHtml = `
+                    <div class="weather-info">
+                        <div class="weather-container">
+                            <img src="http://openweathermap.org/img/w/${weather.icon}.png" class="weather-icon" alt="Weather">
+                            <div class="weather-details">
+                                <span class="weather-temp">${weather.temp}°C</span>
+                                <span class="weather-desc">${weather.description}</span>
                             </div>
-                        `;
+                        </div>
+                    </div>
+                `;
+            } else if (weather.status === 'indeterminate') {
+                weatherHtml = `
+                    <div class="weather-info">
+                        <div class="weather-indeterminate">
+                            Météo non disponible pour cette date
+                        </div>
+                    </div>
+                `;
+            }
 
-sessionCard.addEventListener('click', () => { // Show the session details modal
-document.getElementById('modal-date').textContent = `Date: ${formattedDate}`;
-document.getElementById('modal-time').textContent = `Heure: ${formattedTime}`;
-document.getElementById('modal-available').textContent = `Places disponibles: ${
-session.nbPlace
-}`;
-document.getElementById('modal-activity').textContent = 'Activité: ' + activityData.name;
-document.getElementById('modal-type').textContent = activityData.type;
-document.getElementById('modal-price').textContent = activityData.price;
+            sessionCard.innerHTML = `
+                <div class="session-info" style="margin-bottom: 10px;">
+                    <div style="margin-bottom: 5px;"><i class="fas fa-calendar"></i> ${formattedDate}</div>
+                    <div style="margin-bottom: 5px;"><i class="fas fa-clock"></i> ${formattedTime}</div>
+                    <div style="margin-bottom: 10px;"><i class="fas fa-users"></i> ${session.nbPlace} places disponibles</div>
+                    ${weatherHtml}
+                </div>
+            `;
 
-modal.style.display = 'block';
-sessionsModal.style.display = 'none';
-});
+            sessionCard.addEventListener('click', () => {
+                document.getElementById('modal-date').textContent = `Date: ${formattedDate}`;
+                document.getElementById('modal-time').textContent = `Heure: ${formattedTime}`;
+                document.getElementById('modal-available').textContent = `Places disponibles: ${session.nbPlace}`;
+                document.getElementById('modal-activity').textContent = 'Activité: ' + activityData.name;
+                document.getElementById('modal-type').textContent = activityData.type;
+                document.getElementById('modal-price').textContent = activityData.price;
 
-sessionsGrid.appendChild(sessionCard);
-});
-} else {
-sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Aucune session disponible pour le moment</p>';
-}
+                modal.style.display = 'block';
+                sessionsModal.style.display = 'none';
+            });
+
+            sessionsGrid.appendChild(sessionCard);
+        }
+    } else {
+        sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Aucune session disponible pour le moment</p>';
+    }
 }).catch(error => {
-console.error('Error fetching sessions:', error);
-sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Erreur lors du chargement des sessions</p>';
+    console.error('Error fetching sessions:', error);
+    sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Erreur lors du chargement des sessions</p>';
 });
 
 sessionsModal.style.display = 'block';

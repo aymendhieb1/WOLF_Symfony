@@ -147,32 +147,5 @@
 
 {% block javascripts %}
 	{{ parent() }}
-	<script>
-		$(document).ready(function () {
-$('#datatables').DataTable({
-"pagingType": "full_numbers",
-"lengthMenu": [
-[
-10, 25, 50, -1
-],
-[
-10, 25, 50, "Tout"
-]
-],
-responsive: true,
-language: {
-search: "_INPUT_",
-searchPlaceholder: "Chercher",
-info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-lengthMenu: "Afficher _MENU_ entrées",
-paginate: {
-first: "Premier",
-last: "Dernier",
-next: "Suivant",
-previous: "Précédent"
-}
-}
-});
-});
-	</script>
+
 {% endblock %}

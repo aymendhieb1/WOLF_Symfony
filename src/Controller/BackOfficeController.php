@@ -34,18 +34,14 @@ class BackOfficeController extends AbstractController
             throw $this->createNotFoundException('Utilisateur introuvable');
         }
 
-        // Ici, vous changez le statut de 0 à 1
         if ($user->getStatus() === 0) {
             $user->setStatus(1);
         }
 
-        // Persistez la modification
         $entityManager->flush();
 
 
-        // Optionnel : Ajout d'un message flash pour notifier l'utilisateur
 
-        // Rediriger vers une page (par exemple la liste des utilisateurs)
         return $this->redirectToRoute('app_back_office');
     }
     #[Route('/back/user/{id}/update-status-debloquer', name: 'user_update_debloquer')]
@@ -58,16 +54,13 @@ class BackOfficeController extends AbstractController
             throw $this->createNotFoundException('Utilisateur introuvable');
         }
 
-        // Ici, vous changez le statut de 0 à 1
         if ($user->getStatus() === 1) {
             $user->setStatus(0);
         }
 
-        // Persistez la modification
         $entityManager->flush();
 
 
-        // Rediriger vers une page (par exemple la liste des utilisateurs)
         return $this->redirectToRoute('app_back_office');
     }
     #[Route('/back/user/{id}/delete', name: 'user_delete')]
@@ -86,5 +79,6 @@ class BackOfficeController extends AbstractController
 
         return $this->redirectToRoute('app_back_office');
     }
+
 
 }

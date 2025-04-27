@@ -6,7 +6,7 @@
 					<ul class="header-contact">
 						<li>
 							<i class="fas fa-envelope"></i>
-							<a href="mailto:info@travolo.com">TripToGo2025@gmail.com</a>
+							<a href="mailto:triptogo2025@gmail.com">TripToGo2025@gmail.com</a>
 						</li>
 						<li>
 							<i class="fas fa-phone-alt"></i>
@@ -83,13 +83,9 @@
 										<li>
 											<a>Liste des pages 1</a>
 											<ul></li>
-											{% if app.user %}
-												<a href="{{ path('app_about_us') }}">À propos de nous</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													À propos de nous
-												</a>
-											{% endif %}
+
+											<a href="{{ path('app_about_us') }}">À propos de nous</a>
+
 										</li>
 										<li></li>
 										<li>
@@ -161,19 +157,10 @@
 						</li>
 
 						<li>
-							{% if app.user %}
-								<a href="{{path('app_about_us')}}">à propos de nous
-								</a>
-							{% else %}
-								<a href="{{ path('app_seconnecter') }}">
-									à propos de nous
-
-								</a>
-							{% endif %}
+							<a href="{{path('app_about_us')}}">à propos de nous
+							</a>
+							<!-- Toujours afficher Contact -->
 						</li>
-
-
-						<!-- Toujours afficher Contact -->
 						<li>
 							<a href="{{path('app_contact')}}">Contact</a>
 						</li>

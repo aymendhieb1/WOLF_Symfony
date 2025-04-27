@@ -23,8 +23,8 @@
 
 		{% block stylesheets %}
 			<!--==============================
-																																																																																																																																																																																																																																																																																																									        All CSS Files
-																																																																																																																																																																																																																																																																																																									      ==============================-->
+																																																																																																																																																																																																																																																																																																																																																																																													        All CSS Files
+																																																																																																																																																																																																																																																																																																																																																																																													      ==============================-->
 			<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}"/>
@@ -162,42 +162,54 @@
 					align-items: center;
 					padding: 0;
 					height: 100%;
-					width: 30px; /* Ajuster la largeur de l'icône pour être plus petite */
+					width: 30px;
 				}
 
 				#eyeIcon {
-					font-size: 18px; /* Ajuste la taille de l'icône */
-					color: #ccc; /* Couleur de l'icône */
+					font-size: 18px;
+					color: #ccc;
 				}
 
 
 				#loading-screen {
 					position: fixed;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
-					background-color: #fff;
-					z-index: 9999;
+					inset: 0;
+					background: linear-gradient(135deg, #ff681a, #ffffff);
 					display: flex;
-					align-items: center;
+					flex-direction: column;
 					justify-content: center;
+					align-items: center;
+					z-index: 9999;
+					font-family: 'Jost', sans-serif;
+					color: #333;
 				}
+
+				.loading-message {
+					font-size: 20px;
+					font-weight: 600;
+					margin-bottom: 20px;
+					text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+				}
+
 				.spinner {
-					border: 8px solid #f3f3f3;
-					border-top: 8px solid #ff681a;
+					width: 48px;
+					height: 48px;
+					border: 5px solid rgba(255, 255, 255, 0.4);
+					border-top-color: #ff681a;
 					border-radius: 50%;
-					width: 60px;
-					height: 60px;
-					animation: spin 1s linear infinite;
+					animation: spin 1s ease-in-out infinite;
 				}
+
 				@keyframes spin {
-					0% {
-						transform: rotate(0deg);
-					}
-					100% {
+					to {
 						transform: rotate(360deg);
 					}
+				}
+
+				.container-info {
+					display: flex;
+					justify-content: center; /* horizontal center */
+					align-items: center; /* vertical center */
 				}
 			</style>
 
@@ -209,30 +221,42 @@
 
 	<body>
 		<div id="loading-screen">
+			<div class="loading-message">Chargement...</div>
 			<div class="spinner"></div>
 		</div>
-		{{ include('includes/header.html.twig')  }}
+	</body>
+</html></div>{{ include('includes/header.html.twig')  }}{% block body %}{% endblock %}{% block javascripts %}
+<!--==============================
+																																																																																																																																																																																																																																																																																																																																																																	        All JS Files
+																																																																																																																																																																																																																																																																																																																																																																	      ==============================-->
+<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ asset('assets/js/slick.min.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
+<script src="{{ asset('assets/js/circle-progress.min.js') }}"></script>
+<script src="{{ asset('assets/js/imagesLoaded.js') }}"></script>
+<script src="{{ asset('assets/js/isotope.js') }}"></script>
+<script src="{{ asset('assets/js/wow.min.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}"></script>
+<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+<script src="{{ asset('assets/js/weather-api.js') }}"></script>
 
-		{% block body %}{% endblock %}
-		{% block javascripts %}
-			<!--==============================
-																																																																																																																																																																																																																																																																																																										        All JS Files
-																																																																																																																																																																																																																																																																																																										      ==============================-->
-			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
-			<script src="{{ asset('assets/js/slick.min.js') }}"></script>
-			<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-			<script src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
-			<script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
-			<script src="{{ asset('assets/js/circle-progress.min.js') }}"></script>
-			<script src="{{ asset('assets/js/imagesLoaded.js') }}"></script>
-			<script src="{{ asset('assets/js/isotope.js') }}"></script>
-			<script src="{{ asset('assets/js/wow.min.js') }}"></script>
-			<script src="{{ asset('assets/js/main.js') }}"></script>
-			<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-			<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-			<script>
-				window.addEventListener("load", function () {
+
+<script>
+	window.addEventListener('load', function () {
+const loadingScreen = document.getElementById('loading-screen');
+if (loadingScreen) {
+loadingScreen.style.display = 'none';
+}
+});
+</script>
+
+<script>
+
+	window.addEventListener("load", function () {
 setTimeout(function () {
 fetch("{{ path('app_logout') }}", {
 method: 'POST',
@@ -250,28 +274,28 @@ console.error("Erreur de requête AJAX:", error);
 });
 }, 1800000);
 });
-			</script>
-			<script>
-				toastr.options = {
+</script>
+<script>
+	toastr.options = {
 "closeButton": true,
 "progressBar": true,
 "positionClass": "toast-top-right",
 "timeOut": "5000"
 };{% for label, messages in app.flashes %}{% for message in messages %}toastr["{{ label }}"]("{{ message }}");{% endfor %}{% endfor %}
-			</script>
+</script>
 
 
-			<script>
-				// Hide the loading screen when the page has loaded
+<script>
+	// Hide the loading screen when the page has loaded
 window.addEventListener('load', function () {
 var loadingScreen = document.getElementById('loading-screen');
 if (loadingScreen) {
 loadingScreen.style.display = 'none';
 }
 });
-			</script>
-			<script>
-				function toggleChatWindow() {
+</script>
+<script>
+	function toggleChatWindow() {
 const chatWindow = document.getElementById("chat-window");
 }
 
@@ -337,8 +361,4 @@ if (e.key === "Enter") {
 sendMessage(e);
 }
 });
-			</script>
-
-		{% endblock %}
-		{{ include('includes/footer.html.twig')  }}</body>
-</html></body></html>
+</script>{% endblock %}{{ include('includes/footer.html.twig')  }}</body></html></body></html>

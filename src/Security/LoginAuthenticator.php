@@ -71,6 +71,8 @@ class LoginAuthenticator extends AbstractAuthenticator
             ]);
 
             $captchaData = json_decode($response->getBody()->getContents(), true);
+
+
         } catch (\Exception $e) {
             $session?->getFlashBag()->add('warning', 'Erreur de validation du captcha.');
             throw new CustomUserMessageAuthenticationException('Erreur hCaptcha');

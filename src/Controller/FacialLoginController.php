@@ -16,23 +16,17 @@ class FacialLoginController extends AbstractController
     #[Route('/facial-auth', name: 'facial_auth')]
     public function facialAuth(AuthenticationManagerInterface $authenticationManager): JsonResponse
     {
-        // 🔁 Chemin complet vers le script Python
         $pythonScript = 'C:\Users\Dhib\Desktop\face_id_test\login.py';
 
-        // 🧠 Utilise le chemin absolu vers Python
         $pythonPath = '"C:\Program Files\Python311\python.exe"';
 
-        // ✅ Construire la commande
         $command = $pythonPath . ' ' . escapeshellarg($pythonScript);
 
-        // 📤 Exécuter et récupérer la sortie
         exec($command, $output, $returnCode);
 
-        // 🔍 Pour debug (tu peux enlever ça quand tu n'as plus besoin)
-        // dd($output, $returnCode);
+
 
         if ($returnCode === 0 && in_array("True", $output)) {
-            // 📥 Si le visage est reconnu, nous récupérons l'utilisateur
             $user = $this->getUserFromFacialRecognition();
 
             if ($user) {
@@ -63,7 +57,7 @@ class FacialLoginController extends AbstractController
     {
         // Ici, tu utilises ta méthode de reconnaissance faciale pour récupérer l'utilisateur
         // Exemple fictif : on suppose que l'utilisateur est authentifié après la reconnaissance
-        return $this->getDoctrine()->getRepository(User::class)->findOneBy(['mail' => 'youssef.dhib@esprit.tn']); // Ex: l'email de l'admin
+        return $this->getDoctrine()->getRepository(User::class)->findOneBy(['mail' => 'triptogo2025@gmail.com']); // Ex: l'email de l'admin
     }
 }
 

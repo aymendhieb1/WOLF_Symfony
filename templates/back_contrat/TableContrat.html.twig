@@ -638,25 +638,9 @@
 	<!-- Sharrre library -->
 	<script src="{{ asset('assets/demo/jquery.sharrre.js') }}"></script>
 	<script>
-		$(document).ready(function () { // Initialize DataTable
-var table = $('#datatables').DataTable({
-pagingType: "full_numbers",
-lengthMenu: [
-[
-10, 25, 50, -1
-],
-[
-10, 25, 50, "All"
-]
-],
-responsive: true,
-language: {
-search: "",
-searchPlaceholder: "Chercher"
-}
-});
 
-// Initialize date pickers
+
+		// Initialize date pickers
 $('.datepicker').datetimepicker({
 format: 'YYYY-MM-DD',
 icons: {
