@@ -54,7 +54,7 @@
                             <div class="form-group mb-4">
                                 <label for="phone">Numéro de téléphone</label>
                                 <input type="tel" class="form-control" id="phone" name="phone" required 
-                                       placeholder="Ex: +33612345678">
+                                       placeholder="Ex: +21612345678">
                                 <small class="form-text text-muted">Format international requis (ex: +33612345678)</small>
                             </div>
 
@@ -104,7 +104,7 @@
                 proceedBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Envoi en cours...';
 
                 // Send verification code
-                fetch('/verification/send', {
+               fetch('/verification/send', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

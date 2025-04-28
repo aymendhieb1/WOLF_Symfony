@@ -52,15 +52,17 @@ class VerificationController extends AbstractController
         }
         
         try {
-            $code = $this->twilioService->sendVerificationCode($this->getParameter('admin_phone_number')); // Always send to admin
+            // Note: SMS is disabled to save costs. The code will be returned in the response for testing.
+            $code = $this->twilioService->sendVerificationCode($this->getParameter('admin_phone_number'));
             return $this->json([
                 'success' => true,
-                'message' => 'Code de vérification envoyé avec succès'
+                'message' => 'Code de vérification généré avec succès',
+                'code' => $code // Only for testing while SMS is disabled
             ]);
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false,
-                'message' => 'Erreur lors de l\'envoi du code de vérification'
+                'message' => 'Erreur lors de la génération du code de vérification'
             ], 500);
         }
     }
