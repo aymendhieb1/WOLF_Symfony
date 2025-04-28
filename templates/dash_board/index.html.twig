@@ -1,6 +1,24 @@
 {% extends 'base1.html.twig' %}
 
+{% block css %}
+	{{parent()}}
+	<style>
+		#sticky-todo {
+			position: sticky;
+			top: 90px;
+			z-index: 10;
+			opacity: 0;
+			transform: translateY(20px);
+			transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+		}
 
+		#sticky-todo.visible {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	</style>
+
+{% endblock %}
 {% block body %}
 	<div class="wrapper ">
 		<div class="sidebar" data-color="green" data-background-color="white" data-image="../assets/img/sidebar-1.jpg" style="color: black;">
@@ -220,7 +238,7 @@
 									<i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
 								</button>
 							</div>
-							<a class="navbar-brand" href="javascript:;">Dashboard</a>
+							<a class="navbar-brand" href="{{path('app_dash_board')}}">Dashboard</a>
 						</div>
 						<button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
 							<span class="sr-only">Toggle navigation</span>
@@ -229,18 +247,10 @@
 							<span class="navbar-toggler-icon icon-bar"></span>
 						</button>
 						<div class="collapse navbar-collapse justify-content-end">
-							<form class="navbar-form">
-								<div class="input-group no-border">
-									<input type="text" value="" class="form-control" placeholder="Search...">
-									<button type="submit" class="btn btn-white btn-round btn-just-icon">
-										<i class="material-icons">search</i>
-										<div class="ripple-container"></div>
-									</button>
-								</div>
-							</form>
+
 							<ul class="navbar-nav">
 								<li class="nav-item">
-									<a class="nav-link" href="javascript:;">
+									<a class="nav-link" href="{{path('app_dash_board')}}">
 										<i class="material-icons">dashboard</i>
 										<p class="d-lg-none d-md-block">
 											Stats
@@ -248,19 +258,16 @@
 									</a>
 								</li>
 								<li class="nav-item dropdown">
-									<a class="nav-link" href="http://example.com/" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<a class="nav-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										<i class="material-icons">notifications</i>
-										<span class="notification">5</span>
-										<p class="d-lg-none d-md-block">
-											Some Actions
-										</p>
+										<span id="notification-count" class="notification" style="display:none;">0</span>
+										<p class="d-lg-none d-md-block">Notifications</p>
 									</a>
-									<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-										<a class="dropdown-item" href="#">Mike John responded to your email</a>
-										<a class="dropdown-item" href="#">You have 5 new tasks</a>
-										<a class="dropdown-item" href="#">You're now friend with Andrew</a>
-										<a class="dropdown-item" href="#">Another Notification</a>
-										<a class="dropdown-item" href="#">Another One</a>
+
+									<div id="notification-menu" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+										<div id="notification-items">
+											<a class="dropdown-item text-muted" href="#">Aucune notification</a>
+										</div>
 									</div>
 								</li>
 								<li class="nav-item dropdown">
@@ -342,23 +349,71 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-6">
-									<div class="card">
-										<div class="card-header card-header-primary">
-											<h4 class="card-title">Statut des Utilisateurs</h4>
-											<p class="card-category">
-												Actifs:
-												{{ userStatusStats.data[0] }}
-												| 
-																																																																																																																																																																																																																																				                    Bloqués:
-												{{ userStatusStats.data[1] }}
-											</p>
+								<div class="col-md-9" style="border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); overflow: hidden;">
+									<div class="card-header" style="background: linear-gradient(60deg, #ab47bc, #8e24aa); color: white; padding: 20px;">
+										<h4 class="card-title" style="font-weight: bold;color:white;">Statut des Utilisateurs</h4>
+										<p class="card-category" style="margin-top: 10px;">Actifs :
+											<strong>{{ userStatusStats.data[0] }}</strong>
+											| Bloqués :
+											<strong>{{ userStatusStats.data[1] }}</strong>
+										</p>
+									</div>
+									<div class="card-body" style="background: #fafafa;">
+										<div class="chart-container" style="position: relative; height: 300px;">
+											<canvas id="userStatusChart"></canvas>
+										</div>
+
+
+									</div>
+
+								</div>
+
+
+								<!-- To-Do List améliorée -->
+								<div class="col-md-3">
+									<div id="sticky-todo" class="card" style="top: 100px;">
+										<div class="card-header card-header-success">
+											<h4 class="card-title">Ma To-Do List</h4>
+											<p class="card-category">Organisez vos tâches efficacement</p>
 										</div>
 										<div class="card-body">
-											<div class="chart-container" style="position: relative; height: 300px;">
-												<canvas id="userStatusChart" width="1000" height="700"></canvas>
-											</div>
+											<form id="todo-form" action="{{ path('app_todo_add') }}" method="POST" class="d-flex mb-4">
+												<input type="text" id="todo-input" name="title" class="form-control mr-2" placeholder="Ajouter une nouvelle tâche..." required>
+												<button type="submit" class="btn btn-success btn-round">
+													<i class="material-icons">add</i>
+													Ajouter
+												</button>
+											</form>
 
+											<ul id="todo-list" class="list-group list-group-flush">
+												{% for todo in todos %}
+													<li class="list-group-item d-flex justify-content-between align-items-center">
+														<div class="d-flex align-items-center">
+															{% if todo.status %}
+																<i class="material-icons text-success mr-2">check_circle</i>
+																<s>{{ todo.title }}</s>
+															{% else %}
+																<i class="material-icons text-warning mr-2">pending</i>
+																{{ todo.title }}
+															{% endif %}
+														</div>
+														<div>
+															{% if not todo.status %}
+																<a href="{{ path('app_todo_done', {id: todo.id}) }}" class="btn btn-sm btn-outline-success" title="Terminer">
+																	<i class="material-icons" style="font-size:18px;">done</i>
+																</a>
+															{% endif %}
+															<a href="{{ path('app_todo_delete', {id: todo.id}) }}" class="btn btn-sm btn-outline-danger" title="Supprimer">
+																<i class="material-icons" style="font-size:18px;">delete</i>
+															</a>
+														</div>
+													</li>
+												{% else %}
+													<li class="list-group-item text-center text-muted">
+														Aucune tâche pour l'instant
+													</li>
+												{% endfor %}
+											</ul>
 										</div>
 									</div>
 								</div>
@@ -367,54 +422,257 @@
 
 						{% endblock %}
 
+
 						{% block javascripts %}
+
 							{{ parent() }}
-							{{ parent() }}
-							<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+							<script>
+								function updateTaskCount() {
+const countElement = document.getElementById('task-count');
+const totalTasks = document.querySelectorAll('#todo-list li').length;
+countElement.textContent = totalTasks + ' tâches';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+updateTaskCount(); // Appeler une fois au début
+
+document.querySelectorAll('.btn-outline-danger, .btn-outline-success').forEach(function (btn) {
+btn.addEventListener('click', function () {
+setTimeout(updateTaskCount, 800); // Mettre à jour après suppression/validation
+});
+});
+});
+							</script>
+							<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+							<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+							<!-- SortableJS pour le drag and drop -->
+							<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 							<script>
 								document.addEventListener('DOMContentLoaded', function () {
-const chartData = {
-labels: {{ userStatusStats.labels|json_encode|raw }},
-datasets: [
-{
-data: {{ userStatusStats.data|json_encode|raw }},
-backgroundColor: {{ userStatusStats.colors|json_encode|raw }},
-borderColor: {{ userStatusStats.borderColors|json_encode|raw }},
-borderWidth: 1
+const todo = document.getElementById('sticky-todo');
+
+function handleScroll() {
+const rect = todo.getBoundingClientRect();
+if (rect.top<window.innerHeight - 100) {
+            todo.classList.add('visible');
+            window.removeEventListener('scroll', handleScroll); // Animation une seule fois
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Au cas où il est déjà visible
+});
+
+
+								document.addEventListener('DOMContentLoaded', function () {
+const todoForm = document.getElementById('todo-form');
+const todoInput = document.getElementById('todo-input');
+const listGroup = document.getElementById('todo-list');
+
+if (listGroup) {
+new Sortable(listGroup, {
+animation: 150, ghostClass: 'bg-light'
+});
 }
-]
-};
 
-const ctx = document.getElementById('userStatusChart');
+todoForm.addEventListener('submit', function (e) {
+if (! todoInput.value.trim()) {
+e.preventDefault();
+Swal.fire({icon: 'error', title: 'Oops...', text: 'Veuillez saisir une tâche valide !'});
+return;
+}
 
-if (ctx) {
+Swal.fire({
+position: 'top-end', icon: 'success', title: 'Tâche ajoutée avec succès !', showConfirmButton: false, timer: 1500
+});
+});
+
+document.querySelectorAll('.btn-outline-danger').forEach(function (deleteBtn) {
+deleteBtn.addEventListener('click', function (e) {
+e.preventDefault();
+const listItem = this.closest('li');
+
+Swal.fire({
+title: 'Êtes-vous sûr ?', text: "Cette action est irréversible !", icon: 'warning', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'Oui, supprimer'
+}).then((result) => {
+if (result.isConfirmed) {
+listItem.style.transition = "opacity 0.6s, transform 0.6s";
+listItem.style.opacity = 0;
+listItem.style.transform = "translateX(50px)";
+setTimeout(() => {
+window.location.href = this.href;
+}, 600);
+}
+}) 
+
+
+
+
+
+}
+);
+}
+);
+
+document.querySelectorAll('.btn-outline-success').forEach(function (doneBtn) {
+doneBtn.addEventListener('click', function (e) {
+e.preventDefault();
+const listItem = this.closest('li');
+
+listItem.style.transition = "background-color 0.5s";
+listItem.style.backgroundColor = "#d4edda";
+
+setTimeout(() => {
+window.location.href = this.href;
+}, 600);
+});
+});
+
+// ✅ Hover animation
+document.querySelectorAll('.list-group-item').forEach(function (item) {
+item.addEventListener('mouseover', function () {
+item.style.backgroundColor = "#f9f9f9";
+});
+item.addEventListener('mouseout', function () {
+item.style.backgroundColor = "transparent";
+});
+});
+});
+							</script>
+
+							<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+							<script>
+								document.addEventListener('DOMContentLoaded', function () {
+const ctx = document.getElementById('userStatusChart').getContext('2d');
+
 new Chart(ctx, {
 type: 'doughnut',
-data: chartData,
+data: {
+labels: [
+'Comptes Actifs', 'Comptes Bloqués'
+],
+datasets: [
+{
+data: [
+{{ userStatusStats.data[0] }}, {{ userStatusStats.data[1] }}
+],
+backgroundColor: [
+'#66BB6A', '#EF5350'
+],
+borderColor: '#ffffff',
+borderWidth: 5
+}
+]
+},
 options: {
+cutout: '70%', // trou au milieu plus grand
 responsive: true,
 maintainAspectRatio: false,
 plugins: {
 legend: {
-position: 'bottom'
+position: 'bottom',
+labels: {
+padding: 20,
+color: '#444',
+font: {
+size: 14
+}
+}
 },
 tooltip: {
-callbacks: {
-label: function (context) {
-const label = context.label || '';
-const value = context.raw || 0;
-return `${label}: ${value}`;
-}
-}
+enabled: true,
+backgroundColor: '#333',
+titleColor: '#fff',
+bodyColor: '#fff'
 }
 },
-cutout: '60%'
+animation: {
+animateRotate: true,
+animateScale: true
+}
 }
 });
-} else {
-console.warn('Canvas avec ID #userStatusChart non trouvé.');
-}
 });
 							</script>
+
+							<script>
+								document.addEventListener('DOMContentLoaded', function () {
+const url = new URL('http://localhost:3000/.well-known/mercure');
+url.searchParams.append('topic', 'http://localhost/notifications');
+
+const eventSource = new EventSource(url);
+
+eventSource.onmessage = function (event) {
+const data = JSON.parse(event.data);
+const menu = document.getElementById('notification-menu');
+const count = document.getElementById('notification-count');
+
+// Supprimer "Aucune notification" UNIQUEMENT une fois
+const noNotif = menu.querySelector('.text-muted');
+if (noNotif) {
+noNotif.remove();
+}
+
+// Créer un nouvel élément notification
+const notifItem = document.createElement('a');
+notifItem.href = "#";
+notifItem.className = "dropdown-item d-flex align-items-center";
+
+notifItem.innerHTML = `
+            <i class="material-icons mr-2" style="font-size:18px;">email</i>
+            <div>
+                ${
+data.text
+}<br>
+                <small class="text-muted" style="font-size:10px;">(${
+data.time
+})</small>
+            </div>
+        `;
+
+// Quand l'utilisateur clique sur une notification
+notifItem.addEventListener('click', function (e) {
+e.preventDefault();
+
+window.open('https://mail.google.com/mail/u/0/#inbox', '_blank');
+
+// Supprimer cette notification
+notifItem.nextElementSibling ?. remove(); // Supprimer la ligne de séparation aussi
+notifItem.remove();
+
+// Décrémenter compteur
+const currentCount = parseInt(count.innerText) || 0;
+if (currentCount > 1) {
+count.innerText = currentCount - 1;
+} else {
+count.style.display = 'none';
+// Ajouter "Aucune notification"
+const noNotifMessage = document.createElement('a');
+noNotifMessage.className = "dropdown-item text-muted";
+noNotifMessage.href = "#";
+noNotifMessage.innerText = "Aucune notification";
+menu.appendChild(noNotifMessage);
+}
+});
+
+menu.prepend(notifItem);
+
+// Ajouter une séparation après chaque notification
+const divider = document.createElement('div');
+divider.className = "dropdown-divider";
+menu.insertBefore(divider, notifItem.nextSibling);
+
+// Mettre à jour compteur
+const currentCount = parseInt(count.innerText) || 0;
+count.innerText = currentCount + 1;
+count.style.display = 'inline-block';
+};
+});
+							</script>
+							<!-- SweetAlert2 pour des alertes stylées -->
+
 						{% endblock %}

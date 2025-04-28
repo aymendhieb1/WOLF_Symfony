@@ -8,6 +8,8 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 
 class ContactController extends AbstractController
 {
@@ -18,7 +20,7 @@ class ContactController extends AbstractController
     }
 
     #[Route('/contact/send', name: 'contact_send', methods: ['POST'])]
-    public function sendMessage(Request $request, MailerInterface $mailer): Response
+    public function sendMessage(Request $request, MailerInterface $mailer, HubInterface $hub): Response
     {
         $prenom = $request->request->get('fname');
         $nom = $request->request->get('lname');
@@ -33,14 +35,15 @@ class ContactController extends AbstractController
             ->text("Prénom: $prenom\nNom: $nom\nEmail: $emailUser\nTéléphone: $phone\n\nMessage:\n$messageContent");
 
         $mailer->send($email);
-        $session = $request->getSession();
-        $notifications = $session->get('notifications', []);
-        $notifications[] = [
-            'title' => 'Nouveau message de contact',
-            'text' => "Message de $prenom $nom",
-            'time' => (new \DateTime())->format('H:i'),
-        ];
-        $session->set('notifications', $notifications);
+        $update = new Update(
+            'http://localhost/notifications', // DOIT être EXACTEMENT le même que ton EventSource
+            json_encode([
+                'text' => "Message de $prenom $nom",
+                'time' => (new \DateTime())->format('H:i'),
+            ])
+        );
+
+        $hub->publish($update);
 
         $this->addFlash('success', 'Votre message a été envoyé avec succès !');
         return $this->redirectToRoute('app_contact');
