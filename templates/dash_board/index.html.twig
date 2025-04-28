@@ -10,6 +10,7 @@
 			opacity: 0;
 			transform: translateY(20px);
 			transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+			min-height: 0;
 		}
 
 		#sticky-todo.visible {
@@ -371,12 +372,12 @@
 
 								<!-- To-Do List améliorée -->
 								<div class="col-md-3">
-									<div id="sticky-todo" class="card" style="top: 100px;">
+									<div id="sticky-todo" class="card flex-grow-1" style="top: 100px;">
 										<div class="card-header card-header-success">
 											<h4 class="card-title">Ma To-Do List</h4>
 											<p class="card-category">Organisez vos tâches efficacement</p>
 										</div>
-										<div class="card-body">
+										<div class="card-body d-flex flex-column">
 											<form id="todo-form" action="{{ path('app_todo_add') }}" method="POST" class="d-flex mb-4">
 												<input type="text" id="todo-input" name="title" class="form-control mr-2" placeholder="Ajouter une nouvelle tâche..." required>
 												<button type="submit" class="btn btn-success btn-round">
@@ -385,7 +386,7 @@
 												</button>
 											</form>
 
-											<ul id="todo-list" class="list-group list-group-flush">
+											<ul id="todo-list" class="list-group list-group-flush flex-grow-1 overflow-auto">
 												{% for todo in todos %}
 													<li class="list-group-item d-flex justify-content-between align-items-center">
 														<div class="d-flex align-items-center">
@@ -419,6 +420,26 @@
 								</div>
 							</div>
 
+							<div class="row mt-4">
+								<div class="col-md-9" style="border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); overflow: hidden;">
+									<div class="card" style="border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.15);">
+										<div class="card-header" style="background:linear-gradient(60deg,#26c6da,#00acc1); color:white; padding:20px;">
+											<div class="d-flex justify-content-between">
+												<h4 class="card-title">Statistiques Véhicules (Cylindres)</h4>
+												<select id="chartTypeSelect" class="form-control w-auto">
+													<option value="pie">Pie</option>
+													<option value="bar">Bar</option>
+													<option value="line">Line</option>
+													<option value="wavy">onde</option>
+												</select>
+											</div>
+										</div>
+										<div class="card-body" style="background:#fafafa;">
+											<canvas id="vehicleCylinderChart" style="height:320px;"></canvas>
+										</div>
+									</div>
+								</div>
+							</div>
 
 						{% endblock %}
 
@@ -641,7 +662,7 @@ e.preventDefault();
 window.open('https://mail.google.com/mail/u/0/#inbox', '_blank');
 
 // Supprimer cette notification
-notifItem.nextElementSibling ?. remove(); // Supprimer la ligne de séparation aussi
+notifItem.nextElementSibling ?. remove();
 notifItem.remove();
 
 // Décrémenter compteur
@@ -673,6 +694,130 @@ count.style.display = 'inline-block';
 };
 });
 							</script>
-							<!-- SweetAlert2 pour des alertes stylées -->
+							<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+							<script>
+								document.addEventListener('DOMContentLoaded', function () {
+const ctx = document.getElementById('vehicleCylinderChart').getContext('2d');
+
+// Données dynamiques pour véhicules (venant de Symfony Controller)
+const cylinderStats = {
+labels: {{ vehicleCylinderStats.labels|json_encode|raw }},
+datasets: [
+{
+label: 'Nombre de véhicules',
+data: {{ vehicleCylinderStats.data|json_encode|raw }},
+backgroundColor: {{ vehicleCylinderStats.colors|json_encode|raw }},
+borderColor: "#ffffff",
+borderWidth: 2
+}
+]
+};
+
+// Données fixes pour onde sinusoïdale
+const waveLabels = [];
+const waveData = [];
+for (let x = 0; x <= 360; x += 10) { // 0° to 360° par pas de 10°
+waveLabels.push(x + '°');
+waveData.push(Math.sin(x * Math.PI / 180) * 100); // Amplitude 100
+}
+const wavyStats = {
+labels: waveLabels,
+datasets: [
+{
+label: 'Onde Sinusoïdale',
+data: waveData,
+borderColor: 'orange',
+backgroundColor: 'rgba(255,165,0,0.3)',
+tension: 0.4, // effet courbé
+fill: true,
+pointRadius: 0,
+borderWidth: 2
+}
+]
+};
+
+// Initialiser avec Pie Chart des cylindres
+let currentChart = new Chart(ctx, {
+type: 'pie',
+data: cylinderStats,
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+position: 'bottom',
+labels: {
+color: '#333',
+font: {
+size: 14
+}
+}
+}
+}
+}
+});
+
+// Gestion du changement de type
+document.getElementById('chartTypeSelect').addEventListener('change', function () {
+const selectedType = this.value;
+
+// Détruire ancien graphique
+currentChart.destroy();
+
+if (selectedType === 'wavy') { // Afficher la fonction onde
+currentChart = new Chart(ctx, {
+type: 'line',
+data: wavyStats,
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animations: {
+tension: {
+duration: 1000,
+easing: 'easeInOutQuart',
+from: 0.5,
+to: 0.5,
+loop: true
+}
+},
+scales: {
+y: {
+suggestedMin: -100,
+suggestedMax: 100
+}
+},
+plugins: {
+legend: {
+display: false
+}
+}
+}
+});
+} else { // Normal pour pie/bar/line sur cylindres
+currentChart = new Chart(ctx, {
+type: selectedType,
+data: cylinderStats,
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+position: 'bottom',
+labels: {
+color: '#333',
+font: {
+size: 14
+}
+}
+}
+}
+}
+});
+}
+});
+});
+							</script>
+
 
 						{% endblock %}

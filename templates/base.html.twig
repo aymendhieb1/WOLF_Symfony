@@ -23,8 +23,8 @@
 
 		{% block stylesheets %}
 			<!--==============================
-																																																																																																																																																																																																																																																																																																																																																																																													        All CSS Files
-																																																																																																																																																																																																																																																																																																																																																																																													      ==============================-->
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																        All CSS Files
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																      ==============================-->
 			<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}"/>
@@ -37,7 +37,16 @@
 
 
 			<style>
-				/* Fond plein écran avec opacité */
+				#user-question {
+					width: 100%;
+					padding-right: 50px;
+					height: 70px;
+					border: 2px solid var(--theme-color);
+					background-color: transparent;
+					color: #fff;
+					border-radius: 50px;
+					font-size: 14px;
+				}
 				.chat-overlay {
 					position: fixed;
 					inset: 0;
@@ -55,10 +64,7 @@
 					width: 100%;
 					border-radius: 20px 20px 0 0;
 					box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-					display: flex;
-					flex-direction: column;
-					padding: 15px;
-					margin-bottom: 20px;
+
 				}
 
 				/* === Messages === */
@@ -67,7 +73,7 @@
 					max-height: 600px;
 					overflow-y: auto;
 					color: #eee;
-					padding: 100px 0 100px 250px;
+					padding: 100px 0 100px 630px;
 					margin-bottom: 10px;
 
 				}
@@ -100,6 +106,8 @@
 					gap: 10px;
 					justify-content: center;
 					align-items: center;
+					position: relative;
+
 				}
 
 				.chat-form input {
@@ -135,6 +143,10 @@
 					.chat-window {
 						width: 95%;
 					}
+				}
+				.input-wrapper {
+					position: relative;
+					width: 100%;
 				}
 
 
@@ -210,6 +222,21 @@
 					display: flex;
 					justify-content: center; /* horizontal center */
 					align-items: center; /* vertical center */
+				}
+
+				#start-record-btn {
+					position: absolute;
+					top: 120px;
+					background: none;
+					border: none;
+					font-size: 22px;
+					cursor: pointer;
+					color: #ff5722;
+					z-index: 10000;
+				}
+
+				#start-record-btn:hover {
+					color: #e64a19;
 				}
 			</style>
 

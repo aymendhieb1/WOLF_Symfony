@@ -4,13 +4,13 @@
 {% block body %}
 
 	<!--********************************
-																																																																														    Code Start From Here 
-																																																																														    ******************************** -->
+																																																																																														    Code Start From Here 
+																																																																																														    ******************************** -->
 
 
 	<!--==============================
-																																																																														      Popup Search Box
-																																																																														    ============================== -->
+																																																																																														      Popup Search Box
+																																																																																														    ============================== -->
 		<div class="popup-search-box d-none d-lg-block"> <button class="searchClose" onclick="toggleChatWindow()">
 			<i class="fal fa-times"></i>
 		</button>
@@ -21,18 +21,25 @@
 				<div id="chat-messages" class="chat-messages"></div>
 
 				<!-- Barre de saisie fixée en bas -->
-				<form id="chat-form" class="chat-form" onsubmit="return sendMessage(event)">
-					<input type="text" id="user-question" name="question" placeholder="Écrivez un message..." required/>
-					<button type="submit"></button>
+				<form id="chat-form" class="chat-form" onsubmit="return sendMessage(event)" style="position: relative;">
+					<div class="input-wrapper" style="position: relative; width: 100%;">
+						<input type="text" id="user-question" name="question" placeholder="Écrivez un message..." required style="padding-right: 50px;"/>
+						<button type="button" id="start-record-btn" title="Parler 🎤">
+							<i class="fas fa-microphone"></i>
+						</button>
+					</div>
+					<button type="submit" style="display: none;"></button>
+					<!-- Ton submit classique caché -->
 				</form>
+
 			</div>
 		</div>
 	</div>
 
 
 	<!--==============================
-																																																																														    Hero Area Start 
-																																																																														  ==============================-->
+																																																																																												    Hero Area Start 
+																																																																																												  ==============================-->
 	<section class="hero-layout" data-bg-src="{{ asset('assets/img/banner/banner-bg-1.png') }}">
 		<div class="hero-mask">
 			<div class="vs-carousel" id="hero-slider" data-slide-show="1" autoplay="false">
@@ -47,11 +54,11 @@
 									</h1>
 									<p class="hero-text">
 										Partez à l'aventure à travers les paysages les plus
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      magnifiques de la planète. Que ce soit en montagne, au
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      bord de la mer ou en pleine nature, chaque endroit a une
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      histoire à raconter. Osez découvrir de nouveaux horizons
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      et laissez-vous émerveiller par la richesse du monde qui
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      vous entoure.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      magnifiques de la planète. Que ce soit en montagne, au
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      bord de la mer ou en pleine nature, chaque endroit a une
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      histoire à raconter. Osez découvrir de nouveaux horizons
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      et laissez-vous émerveiller par la richesse du monde qui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      vous entoure.
 									</p>
 
 									{% if app.user %}
@@ -82,9 +89,9 @@
 									<h1 class="hero-title">Lancez votre aventure imaginaire</h1>
 									<p class="hero-text">
 										Partez à la découverte d’un monde rempli de mystères et de
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      merveilles. Chaque pas vous rapproche d’une nouvelle
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      expérience, d’une légende à vivre et d’un rêve à réaliser.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      Laissez votre imagination vous guider.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      merveilles. Chaque pas vous rapproche d’une nouvelle
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      expérience, d’une légende à vivre et d’un rêve à réaliser.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      Laissez votre imagination vous guider.
 									</p>
 									{% if app.user %}
 										<a href="about.html" class="vs-btn style4">En savoir plus</a>
@@ -115,9 +122,9 @@
 									</h1>
 									<p class="hero-text">
 										Chaque destination cache un récit unique qui n’attend qu’à
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      être exploré. Partez à la rencontre de cultures
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      fascinantes, de paysages inoubliables et d’expériences qui
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												                      marquent une vie. Le monde regorge d’histoires à vivre.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      être exploré. Partez à la rencontre de cultures
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      fascinantes, de paysages inoubliables et d’expériences qui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                      marquent une vie. Le monde regorge d’histoires à vivre.
 									</p>
 									{% if app.user %}
 										<a href="about.html" class="vs-btn style4">En savoir plus</a>
@@ -207,12 +214,12 @@
 		</div>
 	</section>
 	<!-- ============================
-																																																																														      Hero Area End 
-																																																																														    ==============================-->
+																																																																																												      Hero Area End 
+																																																																																												    ==============================-->
 
 	<!--==============================
-																																																																														    About Blog Area Start 
-																																																																														  ==============================-->
+																																																																																												    About Blog Area Start 
+																																																																																												  ==============================-->
 	<div class="space-top space-extra-bottom blog-wrapper1 shape-mockup-wrap">
 		<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-5%" data-left="-5%">
 			<img src="assets/img/shape/circle1.png" alt="circle"/>
@@ -247,7 +254,7 @@
 						Planifiez à l’avance</a>
 					<h3 class="blog-title">
 						<a href="blog-details.html">Réservez vos billets, logements et activités tôt pour éviter
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		                les mauvaises surprises.</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                les mauvaises surprises.</a>
 					</h3>
 
 					{% if app.user %}
@@ -271,10 +278,10 @@
 					<a class="blog-date" href="blog-details.html">
 						<i class="far fa-calendar-alt"></i>
 						Faites une liste de
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				              vérification (checklist)</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		              vérification (checklist)</a>
 					<h3 class="blog-title">
 						<a href="blog-details.html">Notez ce que vous devez emporter : passeport, argent,
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		                chargeurs, vêtements, etc.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                chargeurs, vêtements, etc.
 						</a>
 					</h3>
 
@@ -290,12 +297,12 @@
 		</div>
 	</div>
 	<!--==============================
-																																																																														    About Blog Area End 
-																																																																														  ==============================-->
+																																																																																												    About Blog Area End 
+																																																																																												  ==============================-->
 
 	<!--==============================
-																																																																														      Tour Package Area Start 
-																																																																														    ==============================-->
+																																																																																												      Tour Package Area Start 
+																																																																																												    ==============================-->
 	<section class="space bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
 		<div class="shape-mockup d-none d-xl-block jump z-index-negative" data-bottom="20%" data-left="5%">
 			<img src="assets/img/shape/Dot.png" alt="Dots"/>
@@ -314,9 +321,9 @@
 						<h2 class="sec-title h1">Meilleur forfait vacances</h2>
 						<p class="sec-text">
 							Découvrez nos offres exceptionnelles pour vivre des vacances
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		                inoubliables. Que ce soit pour l'aventure, la détente ou la
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		                découverte culturelle, nous avons le forfait idéal pour vous.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		                Préparez-vous à explorer le monde autrement.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                inoubliables. Que ce soit pour l'aventure, la détente ou la
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                découverte culturelle, nous avons le forfait idéal pour vous.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																                Préparez-vous à explorer le monde autrement.
 						</p>
 					</div>
 				</div>
@@ -494,15 +501,11 @@
 			</a>
 		</div>
 	</div>
-</section>
-<!--==============================
-											      Tour Package Area End 
-											    ==============================-->
-
-<!--==============================
-											      Gallery Area Start 
-											    ==============================-->
-<section class="space space-extra-bottom gallery-style1">
+</section><!--==============================
+																										      Tour Package Area End 
+																										    ==============================--><!--==============================
+																										      Gallery Area Start 
+																										    ==============================--><section class="space space-extra-bottom gallery-style1">
 	<div class="container">
 		<div class="row">
 			<div class="col-xl-6">
@@ -512,28 +515,28 @@
 					<h2 class="sec-title h1">Villes à couper le souffle</h2>
 					<p class="sec-text">
 						Explorez des destinations incroyables autour du monde. Chaque
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                ville vous réserve une expérience unique et mémorable.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                ville vous réserve une expérience unique et mémorable.
 					</p>
 				</div>
 			</div>
 
 			<div class="col-xl-6">
 				<div style="
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                position: relative;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                width: 100%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                padding-top: 100%; /* ratio 1:1 = 100% */
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                overflow: hidden;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                border-radius: 20px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															              ">
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                position: relative;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                width: 100%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                padding-top: 100%; /* ratio 1:1 = 100% */
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                overflow: hidden;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                border-radius: 20px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													              ">
 					<video autoplay muted loop playsinline style="
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  position: absolute;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  top: 0;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  left: 0;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  width: 100%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  height: 100%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  object-fit: cover;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                ">
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  position: absolute;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  top: 0;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  left: 0;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  width: 100%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  height: 100%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  object-fit: cover;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                ">
 						<source src="assets/img/0303.mp4" type="video/mp4"/>
 						Votre navigateur ne prend pas en charge la lecture de la vidéo.
 					</video>
@@ -541,16 +544,11 @@
 			</div>
 		</div>
 	</div>
-</section>
-
-<!--==============================
-											      Gallery Area End 
-											    ==============================-->
-
-<!--==============================
-											      Features Area Start 
-											    ==============================-->
-<section class="space-extra-bottom">
+</section><!--==============================
+																										      Gallery Area End 
+																										    ==============================--><!--==============================
+																										      Features Area Start 
+																										    ==============================--><section class="space-extra-bottom">
 	<div class="container">
 		<div class="row">
 			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
@@ -563,8 +561,8 @@
 						<h3 class="features-title">Activités Spéciales</h3>
 						<p class="features-text">
 							Profitez d’activités uniques et inoubliables lors de votre
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  voyage. Que ce soit des aventures en plein air, des ateliers
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  culturels ou des expériences locales.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  voyage. Que ce soit des aventures en plein air, des ateliers
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  culturels ou des expériences locales.
 						</p>
 					</div>
 				</div>
@@ -579,8 +577,8 @@
 						<h3 class="features-title">Guide Pratique</h3>
 						<p class="features-text">
 							Suivez nos conseils avisés pour profiter pleinement de chaque
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  destination. Nos guides vous accompagnent pas à pas pour une
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  expérience sans stress et enrichissante.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  destination. Nos guides vous accompagnent pas à pas pour une
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  expérience sans stress et enrichissante.
 						</p>
 					</div>
 				</div>
@@ -595,8 +593,8 @@
 						<h3 class="features-title">Organisation du Voyage</h3>
 						<p class="features-text">
 							Nous nous occupons de tous les détails de votre voyage :
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  transport, hébergement et activités. Voyagez l'esprit
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  tranquille, tout est déjà planifié pour vous.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  transport, hébergement et activités. Voyagez l'esprit
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  tranquille, tout est déjà planifié pour vous.
 						</p>
 					</div>
 				</div>
@@ -611,23 +609,19 @@
 						<h3 class="features-title">Responsable des Lieux</h3>
 						<p class="features-text">
 							Un expert local veille à ce que chaque site soit prêt à vous
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  accueillir dans les meilleures conditions. Profitez de chaque
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                  lieu sans vous soucier de l’organisation.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  accueillir dans les meilleures conditions. Profitez de chaque
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                  lieu sans vous soucier de l’organisation.
 						</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</section>
-<!--==============================
-											      Features Area End 
-											    ==============================-->
-
-<!--==============================
-											      Special Offer Area Start 
-											    ==============================-->
-<section class="space position-relative" data-bg-src="assets/img/bg/offer-bg.jpg">
+</section><!--==============================
+																										      Features Area End 
+																										    ==============================--><!--==============================
+																										      Special Offer Area Start 
+																										    ==============================--><section class="space position-relative" data-bg-src="assets/img/bg/offer-bg.jpg">
 	<div class="container">
 		<div class="row align-items-center justify-content-between">
 			<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-6">
@@ -636,8 +630,8 @@
 					<h2 class="sec-title h1">Profitez d'une offre spéciale</h2>
 					<p class="sec-text">
 						Explorez de nouvelles destinations à des prix exceptionnels.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                Vivez une expérience unique avec nos offres limitées et partez à
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                l’aventure dès aujourd’hui.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                Vivez une expérience unique avec nos offres limitées et partez à
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                l’aventure dès aujourd’hui.
 					</p>
 
 					{% if app.user %}
@@ -656,15 +650,11 @@
 			</div>
 		</div>
 	</div>
-</section>
-<!--==============================
-											      Special Offer Area End 
-											    ==============================-->
-
-<!--==============================
-											      Destiniations Area Start 
-											  ==============================-->
-<section class="space space-extra-bottom bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
+</section><!--==============================
+																										      Special Offer Area End 
+																										    ==============================--><!--==============================
+																										      Destiniations Area Start 
+																										  ==============================--><section class="space space-extra-bottom bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
 	<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-20%" data-right="-8%">
 		<img src="assets/img/shape/circle1.png" alt="circle"/>
 	</div>
@@ -679,8 +669,8 @@
 					<h2 class="sec-title h1">Des villes inoubliables</h2>
 					<p class="sec-text">
 						Découvrez des lieux qui marquent les esprits. Chaque ville a son
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                charme unique, prête à vous offrir des souvenirs mémorables et
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                des aventures exceptionnelles.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                charme unique, prête à vous offrir des souvenirs mémorables et
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                des aventures exceptionnelles.
 					</p>
 				</div>
 			</div>
@@ -774,15 +764,11 @@
 			</div>
 		</div>
 	</div>
-</section>
-<!--==============================
-											      Destinations Area End 
-											  ==============================-->
-
-<!--==============================
-											      Testimonial Area Start 
-											    ==============================-->
-<section class="space testimonial-style1" data-bg-src="assets/img/bg/testimonial-bg.jpg">
+</section><!--==============================
+																										      Destinations Area End 
+																										  ==============================--><!--==============================
+																										      Testimonial Area Start 
+																										    ==============================--><section class="space testimonial-style1" data-bg-src="assets/img/bg/testimonial-bg.jpg">
 	<div class="container">
 		<div class="row justify-content-between align-items-center">
 			<div class="col-xxl-5 col-xl-5">
@@ -791,8 +777,8 @@
 					<h2 class="sec-title h1">Ce que disent nos clients</h2>
 					<p class="sec-text">
 						Découvrez les avis authentiques de nos voyageurs satisfaits.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                Leurs expériences témoignent de la qualité de nos services et de
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                la magie des destinations proposées.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                Leurs expériences témoignent de la qualité de nos services et de
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                la magie des destinations proposées.
 					</p>
 					{% if app.user %}
 						<a href="about.html" class="vs-btn style3">Voir plus</a>
@@ -815,20 +801,20 @@
 
 							<p class="testi-text">
 								"En tant que client de TripToGo, je suis extrêmement
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    satisfait de la plateforme. L'application est intuitive et
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    facile à utiliser, ce qui m'a permis de planifier mes
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    voyages en toute simplicité. Chaque fonctionnalité semble
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    parfaitement adaptée aux besoins des voyageurs, et
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    l'ensemble de l'expérience est vraiment fluide."
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    satisfait de la plateforme. L'application est intuitive et
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    facile à utiliser, ce qui m'a permis de planifier mes
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    voyages en toute simplicité. Chaque fonctionnalité semble
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    parfaitement adaptée aux besoins des voyageurs, et
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    l'ensemble de l'expérience est vraiment fluide."
 							</p>
 
 							<div class="testi-avater">
 								<img src="assets/img/youssef.jpg" alt="customer image" style="
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                        border-radius: 50%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                        width: 100px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                        height: 100px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                        object-fit: cover;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                      "/>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        border-radius: 50%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        width: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        height: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        object-fit: cover;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                      "/>
 							</div>
 
 							<h3 class="testi-name">Youssef Dhib</h3>
@@ -841,19 +827,19 @@
 
 							<p class="testi-text">
 								"TripToGo a transformé mes voyages ! Grâce à leur service
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    personnalisé et à la qualité de leur plateforme, chaque
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    étape de mon voyage a été simplifiée. Que ce soit pour
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    réserver des hôtels, des vols ou planifier des activités,
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                    tout est facile et efficace.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    personnalisé et à la qualité de leur plateforme, chaque
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    étape de mon voyage a été simplifiée. Que ce soit pour
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    réserver des hôtels, des vols ou planifier des activités,
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    tout est facile et efficace.
 							</p>
 
 							<div class="testi-avater">
 								<img src="assets/img/aymen.jpg" alt="customer image" style="
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                        border-radius: 50%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                        width: 100px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                        height: 100px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                        object-fit: cover;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											                      "/>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        border-radius: 50%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        width: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        height: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        object-fit: cover;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                      "/>
 							</div>
 							<h3 class="testi-name">Aymen Dhieb</h3>
 						</div>
@@ -862,15 +848,11 @@
 			</div>
 		</div>
 	</div>
-</section>
-<!--==============================
-											    Testimonial Area End 
-											  ==============================-->
-
-<!--==============================
-											      Blogs Area Start 
-											  ==============================-->
-<div class="sidemenu-wrapper offcanvas-wrapper d-none d-lg-block">
+</section><!--==============================
+																										    Testimonial Area End 
+																										  ==============================--><!--==============================
+																										      Blogs Area Start 
+																										  ==============================--><div class="sidemenu-wrapper offcanvas-wrapper d-none d-lg-block">
 	<div class="sidemenu-content">
 		<button class="closeButton sideMenuCls">
 			<i class="far fa-times"></i>
@@ -882,8 +864,8 @@
 				</div>
 				<p class="footer-text">
 					Ut tellus dolor, dapibus eget, elementum iifend cursus eleifend,
-																																																																																																																																																																																																																																																																																																																		              elit. Aenean iifend tor wisi Aliquam er at volutpat. Dui ac tui
-																																																																																																																																																																																																																																																																																																																		              end cursus eleifendrpis.
+																																																																																																																																																																																																																																																																																																																																																																																																              elit. Aenean iifend tor wisi Aliquam er at volutpat. Dui ac tui
+																																																																																																																																																																																																																																																																																																																																																																																																              end cursus eleifendrpis.
 				</p>
 				<div class="info-social style2">
 					<a href="#">
@@ -949,51 +931,39 @@
 			</div>
 		</div>
 	</div>
-</div><!--==============================
-																																																															    Cart Side bar
-																																																															  ============================== --><div class="sideCart-wrapper offcanvas-wrapper d-none d-lg-block">
-	<div class="sidemenu-content">
-		<button class="closeButton border-theme bg-theme-hover sideMenuCls">
-			<i class="far fa-times"></i>
-		</button>
-		<div class="widget widget_shopping_cart">
-			<h3 class="widget_title">Shopping cart</h3>
-			<div class="widget_shopping_cart_content">
-				<ul class="cart_list">
-					<li class="mini_cart_item">
-						<a href="shop.html" class="remove">
-							<i class="fal fa-trash-alt"></i>
-						</a>
-						<a href="shop.html"><img src="assets/img/products/p-1-1.png" alt="Cart Image"/>Modern Cow Boy Hat</a>
-						<span class="quantity">
-							1 ×
-							<span class="amount">
-								<span>$</span>100.00</span>
-						</span>
-					</li>
-					<li class="mini_cart_item">
-						<a href="shop.html" class="remove">
-							<i class="fal fa-trash-alt"></i>
-						</a>
-						<a href="shop.html"><img src="assets/img/products/p-1-2.png" alt="Cart Image"/>Cat Eye Sunglasses</a>
-						<span class="quantity">
-							1 ×
-							<span class="amount">
-								<span>$</span>10.00</span>
-						</span>
-					</li>
-				</ul>
-				<div class="total">
-					<strong>Subtotal:</strong>
-					<span class="amount">
-						<span>$</span>110.00</span>
-				</div>
-				<div class="buttons">
-					<a href="cart.html" class="vs-btn style4">View cart</a>
-					<a href="checkout.html" class="vs-btn style4">Checkout</a>
-				</div>
-			</div>
-		</div>
-	</div>
+</div>{% endblock %}{% block javascripts %}
+{{parent()}}
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+const inputField = document.getElementById('user-question');
+const recordButton = document.getElementById('start-record-btn');
+const chatForm = document.getElementById('chat-form');
 
-</div>{% endblock %}
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.lang = 'fr-FR';
+recognition.continuous = false;
+recognition.interimResults = false;
+
+recordButton.addEventListener('click', function () {
+recognition.start();
+});
+
+recognition.onresult = function (event) {
+const transcript = event.results[0][0].transcript;
+inputField.value = transcript;
+
+// ✅ Dès que la reconnaissance est terminée, envoyer automatiquement
+chatForm.requestSubmit(); // envoie directement le formulaire
+};
+
+recognition.onerror = function (event) {
+console.error('Erreur de reconnaissance vocale :', event.error);
+};
+} else {
+recordButton.disabled = true;
+recordButton.innerText = 'Non supporté';
+}
+});
+</script>{% endblock %}
