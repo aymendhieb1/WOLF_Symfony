@@ -50,7 +50,6 @@ class HotelChambreController extends AbstractController
             ['value' => 'Suite', 'name' => 'Suite'],
             ['value' => 'Suite', 'name' => 'Deluxe'],
             ['value' => 'Suite', 'name' => 'Executive Room'],
-
         ];
 
         // Define filters for the filter section
@@ -62,6 +61,7 @@ class HotelChambreController extends AbstractController
 
         return $this->render('hotel_chambre/index.html.twig', [
             'hotels' => $pagination,
+            'hotelRepository' => $hotelRepository,
             'totalPages' => ceil($pagination->getTotalItemCount() / 9),
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,

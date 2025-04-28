@@ -1,0 +1,202 @@
+{% block stylesheets %}
+<style>
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+
+    .rating > input {
+        display: none;
+    }
+
+    .rating > label {
+        position: relative;
+        width: 1.1em;
+        font-size: 25px;
+        color: #FFD700;
+        cursor: pointer;
+    }
+
+    .rating > label::before {
+        content: "★";
+        position: absolute;
+        opacity: 0;
+    }
+
+    .rating > label:hover:before,
+    .rating > label:hover ~ label:before {
+        opacity: 1 !important;
+    }
+
+    .rating > input:checked ~ label:before {
+        opacity: 1;
+    }
+
+    .rating:hover > input:checked ~ label:before {
+        opacity: 0.4;
+    }
+
+    .average-rating {
+        color: #FFD700;
+        font-size: 18px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .rating-disabled {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .star-display {
+        color: #FFD700;
+    }
+
+    .stars-outer {
+        display: inline-block;
+        position: relative;
+        font-size: 20px;
+    }
+
+    .stars-outer::before {
+        content: "☆☆☆☆☆";
+    }
+
+    .stars-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        color: #FFD700;
+    }
+
+    .stars-inner::before {
+        content: "★★★★★";
+    }
+</style>
+{% endblock %}
+
+<div class="card hotel-card">
+    <img src="{{ asset('uploads/hotels/' ~ hotel.image) }}" class="card-img-top" alt="{{ hotel.nom }}">
+    <div class="card-body">
+        <h5 class="card-title">{{ hotel.nom }}</h5>
+        <p class="card-text">{{ hotel.description }}</p>
+        <p class="card-text"><small class="text-muted">{{ hotel.localisation }}</small></p>
+        
+        <div class="average-rating">
+            <span id="avgRating{{ hotel.id }}">Chargement...</span>
+            <div class="stars-outer">
+                <div class="stars-inner" id="starsInner{{ hotel.id }}"></div>
+            </div>
+        </div>
+
+        {% if app.user %}
+            <div class="rating" id="ratingContainer{{ hotel.id }}">
+                <input type="radio" id="star5{{ hotel.id }}" name="rating{{ hotel.id }}" value="5" />
+                <label for="star5{{ hotel.id }}" title="5 étoiles">★</label>
+                <input type="radio" id="star4{{ hotel.id }}" name="rating{{ hotel.id }}" value="4" />
+                <label for="star4{{ hotel.id }}" title="4 étoiles">★</label>
+                <input type="radio" id="star3{{ hotel.id }}" name="rating{{ hotel.id }}" value="3" />
+                <label for="star3{{ hotel.id }}" title="3 étoiles">★</label>
+                <input type="radio" id="star2{{ hotel.id }}" name="rating{{ hotel.id }}" value="2" />
+                <label for="star2{{ hotel.id }}" title="2 étoiles">★</label>
+                <input type="radio" id="star1{{ hotel.id }}" name="rating{{ hotel.id }}" value="1" />
+                <label for="star1{{ hotel.id }}" title="1 étoile">★</label>
+            </div>
+            <small id="ratingMessage{{ hotel.id }}" class="text-muted d-block mt-2"></small>
+        {% endif %}
+
+        <div class="mt-3">
+            <a href="{{ path('app_hotel_detail', {'id': hotel.id}) }}" class="btn btn-primary">Voir les chambres</a>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateStarDisplay(rating) {
+        const starsInner = document.getElementById('starsInner{{ hotel.id }}');
+        const starPercentage = (rating / 5) * 100;
+        starsInner.style.width = starPercentage + '%';
+    }
+
+    {% if app.user %}
+        // Initialize rating for hotel {{ hotel.id }}
+        fetch('{{ path('app_rating_check', {'hotelId': hotel.id}) }}')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('ratingContainer{{ hotel.id }}');
+                const message = document.getElementById('ratingMessage{{ hotel.id }}');
+                const avgRating = document.getElementById('avgRating{{ hotel.id }}');
+                
+                // Update average rating
+                avgRating.textContent = data.averageRating;
+                updateStarDisplay(data.averageRating);
+
+                if (!data.canRate) {
+                    container.classList.add('rating-disabled');
+                    if (data.currentRating) {
+                        message.textContent = 'Vous avez déjà noté cet hôtel';
+                        // Set the user's rating
+                        document.getElementById(`star${data.currentRating}{{ hotel.id }}`).checked = true;
+                    } else {
+                        message.textContent = 'Vous devez avoir une réservation pour noter cet hôtel';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        // Add event listeners for rating
+        const ratingInputs = document.querySelectorAll('input[name="rating{{ hotel.id }}"]');
+        ratingInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const formData = new FormData();
+                formData.append('stars', this.value);
+
+                fetch('{{ path('app_rating_submit', {'hotelId': hotel.id}) }}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const container = document.getElementById('ratingContainer{{ hotel.id }}');
+                        const message = document.getElementById('ratingMessage{{ hotel.id }}');
+                        const avgRating = document.getElementById('avgRating{{ hotel.id }}');
+                        
+                        container.classList.add('rating-disabled');
+                        message.textContent = data.message;
+                        avgRating.textContent = data.averageRating;
+                        updateStarDisplay(data.averageRating);
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    {% else %}
+        // For non-logged in users, just show average rating
+        fetch('{{ path('app_rating_check', {'hotelId': hotel.id}) }}')
+            .then(response => response.json())
+            .then(data => {
+                const avgRating = document.getElementById('avgRating{{ hotel.id }}');
+                avgRating.textContent = data.averageRating;
+                updateStarDisplay(data.averageRating);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    {% endif %}
+});
+</script>
+{% endblock %} 

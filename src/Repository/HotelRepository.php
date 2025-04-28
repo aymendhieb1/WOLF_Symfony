@@ -38,4 +38,27 @@ class HotelRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function getMinRoomPrice(Hotel $hotel): ?float
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('MIN(c.prix) as minPrice')
+            ->from('App\Entity\Chambre', 'c')
+            ->where('c.hotel = :hotel')
+            ->setParameter('hotel', $hotel)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if ($result === null) {
+            return null;
+        }
+
+        return $result;
+    }
+
+    public function getDiscountedPrice(float $originalPrice, float $promotionPercentage): float
+    {
+        return $originalPrice - ($originalPrice * $promotionPercentage / 100);
+    }
 } 
