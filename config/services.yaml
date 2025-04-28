@@ -7,6 +7,10 @@ parameters:
   stripe_public_key: '%env(STRIPE_PUBLIC_KEY)%'
   stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
   hotel_images_directory: 'uploads/hotels'
+  twilio_account_sid: 'ACafa75c702edd991216ca0d996188d2fe'
+  twilio_auth_token: 'd045e88720193b44e47aef3bf641ca61'
+  twilio_phone_number: '+17177224458'
+  admin_phone_number: '+21656252246'
 
 services:
   # default configuration for services in *this* file
@@ -34,4 +38,11 @@ services:
   App\Controller\PaymentController:
     arguments:
       $stripe: '@Stripe\StripeClient'
+
+  App\Service\TwilioService:
+    arguments:
+      $accountSid: '%twilio_account_sid%'
+      $authToken: '%twilio_auth_token%'
+      $twilioPhoneNumber: '%twilio_phone_number%'
+      $adminPhoneNumber: '%admin_phone_number%'
 

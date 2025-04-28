@@ -27,6 +27,24 @@ class PaymentController extends AbstractController
         $this->stripe = $stripe;
     }
 
+    #[Route('/payment/{chambreId}/{dateDebut}/{dateFin}/{amount}', name: 'app_payment')]
+    #[IsGranted('ROLE_USER')]
+    public function index(
+        Request $request,
+        string $chambreId,
+        string $dateDebut,
+        string $dateFin,
+        float $amount
+    ): Response {
+        return $this->render('payment/index.html.twig', [
+            'chambreId' => $chambreId,
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin,
+            'amount' => $amount,
+            'stripe_public_key' => $this->getParameter('stripe_public_key'),
+        ]);
+    }
+
     #[Route('/process-payment', name: 'app_process_payment', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function processPayment(Request $request, EntityManagerInterface $entityManager): JsonResponse

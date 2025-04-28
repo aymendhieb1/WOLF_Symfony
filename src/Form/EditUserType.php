@@ -33,7 +33,6 @@ class EditUserType extends AbstractType
                 'label' => false,
                 'constraints' => [
                     new NotBlank(['message' => 'L\'email ne peut pas être vide']),
-                    new Callback([$this, 'validateEmailExists']),
                     new Regex([
                         'pattern' => '/^(?![.-])[A-Za-z0-9._-]+(?<![.-])@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/',
                         'message' => 'L\'Email doit être sous forme user@example.com',
@@ -81,7 +80,7 @@ class EditUserType extends AbstractType
                     new NotBlank(['message' => 'Veuillez entrer votre numéro de téléphone.']),
                     new Regex([
                         'pattern' => '/^\+\d{6,15}$/',
-                        'message' => "Le numéro doit inclure l'indicatif, ex: +21612345678",
+                        'message' => 'Le numéro doit inclure l’indicatif, ex: +21612345678',
                     ]),
                 ]
             ])
@@ -144,20 +143,6 @@ class EditUserType extends AbstractType
 
     }
 
-
-    public function validateEmailExists($value, ExecutionContextInterface $context): void
-    {
-        $form = $context->getRoot();
-        $user = $form->getData();
-        
-        $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['mail' => $value]);
-        
-        if ($existingUser && $existingUser->getId() !== $user->getId()) {
-            $context->buildViolation('Cette adresse email est déjà utilisée')
-                ->atPath('mail')
-                ->addViolation();
-        }
-    }
 
     public function validateENumberExists($value, ExecutionContextInterface $context): void
     {

@@ -88,34 +88,34 @@ class BackHotelController extends AbstractController
                 ->attachFromPath($tempDir . '/' . $pdfFilename) // Attach the PDF
                 ->html('
                 <div style="font-family: Arial, sans-serif; background-color: #f4f7fa; padding: 30px;">
-                    <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                        <div style="text-align: center; margin-bottom: 20px;">
-                            <img src="cid:logo" alt="TripToGo Logo" style="width: 120px; height: auto;">
-                        </div>
-                        <h2 style="color: #333333; text-align: center;">Confirmation d\'ajout d\'hôtel</h2>
-                        <p style="font-size: 16px; color: #555555; text-align: center;">
-                            Bonjour, <br><br>
-                            Votre hôtel a été ajouté avec succès sur TripToGo. Voici les détails :
-                        </p>
-                        <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
-                            <h3 style="color: #ff681a; margin-bottom: 15px;">Détails de l\'hôtel</h3>
-                            <p style="margin: 8px 0;"><strong>Nom:</strong> ' . $hotel->getNom() . '</p>
-                            <p style="margin: 8px 0;"><strong>Adresse:</strong> ' . $hotel->getLocalisation() . '</p>
-                            <p style="margin: 8px 0;"><strong>Email:</strong> ' . $hotel->getEmail() . '</p>
-                            <p style="margin: 8px 0;"><strong>Téléphone:</strong> ' . $hotel->getTelephone() . '</p>
-                            <p style="margin: 8px 0;"><strong>Description:</strong> ' . $hotel->getDescription() . '</p>
-                        </div>
-                        <p style="font-size: 16px; color: #555555; text-align: center;">
-                            Vous trouverez ci-joint un PDF contenant tous les détails de votre hôtel.
-                        </p>
-                        <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-                        <p style="font-size: 12px; color: #aaaaaa; text-align: center;">
-                            © ' . date("Y") . ' TripToGo. Tous droits réservés.
-                        </p>
-                    </div>
-                </div>')
-                ->embedFromPath('C:/xampp/htdocs/Projet_v2/TripToGo/public/assets/img/primary.png', 'logo');
-            $mailer->send($email);
+<div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <img src="cid:logo" alt="TripToGo Logo" style="width: 120px; height: auto;">
+    </div>
+    <h2 style="color: #333333; text-align: center;">Réinitialisation du mot de passe</h2>
+    <p style="font-size: 16px; color: #555555; text-align: center;">
+        Bonjour, <br><br>
+        Vous avez demandé à réinitialiser votre mot de passe. Voici votre code de vérification :
+    </p>
+    <div style="text-align: center; margin: 30px 0;">
+        <span style="font-size: 32px; color: #ff681a; font-weight: bold;">' . $code . '</span>
+    </div>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="' . $verificationUrl . '" style="display: inline-block; padding: 12px 24px; background-color: #ff681a; color: white; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            👉 Saisir le code maintenant
+        </a>
+    </div>
+    <p style="font-size: 14px; color: #999999; text-align: center;">
+        Ce code est valable pendant quelques minutes. Si vous n’êtes pas à l’origine de cette demande, ignorez cet email.
+    </p>
+    <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
+    <p style="font-size: 12px; color: #aaaaaa; text-align: center;">
+        © ' . date("Y") . ' TripToGo. Tous droits réservés.
+    </p>
+</div>
+</div>')
+                ->embedFromPath('C:/Users/Dhib/IdeaProjects/Projet_Pidev/src/main/resources/images/primary.png', 'logo');
+           $mailer->send($email);
     
             return $this->redirectToRoute('app_back_hotel_index', [], Response::HTTP_SEE_OTHER);
         }

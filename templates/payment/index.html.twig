@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block body %}
+    <!-- Verification Modal -->
+    <div class="modal fade" id="verificationModal" tabindex="-1" role="dialog" aria-labelledby="verificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verificationModalLabel">Vérification par SMS</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Un code de vérification a été envoyé à votre numéro de téléphone.</p>
+                    <div class="form-group">
+                        <label for="verificationCode">Code de vérification</label>
+                        <input type="text" class="form-control" id="verificationCode" placeholder="Entrez le code à 6 chiffres">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="verifyCodeBtn">Vérifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment form -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Paiement</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="reservation-details mb-4">
+                            <h4>Détails de la réservation</h4>
+                            <p><strong>Montant total:</strong> {{ amount }} €</p>
+                            <p><strong>Date d'arrivée:</strong> {{ dateDebut }}</p>
+                            <p><strong>Date de départ:</strong> {{ dateFin }}</p>
+                        </div>
+
+                        <form id="payment-form">
+                            <input type="hidden" id="is_verified" name="is_verified" value="0">
+                            <input type="hidden" name="chambreId" value="{{ chambreId }}">
+                            <input type="hidden" name="dateDebut" value="{{ dateDebut }}">
+                            <input type="hidden" name="dateFin" value="{{ dateFin }}">
+                            <input type="hidden" name="amount" value="{{ amount }}">
+                            
+                            <div class="form-group mb-4">
+                                <label for="phone">Numéro de téléphone</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" required 
+                                       placeholder="Ex: +33612345678">
+                                <small class="form-text text-muted">Format international requis (ex: +33612345678)</small>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" id="proceed-btn" class="btn btn-primary btn-lg">
+                                    Confirmer et procéder au paiement
+                                </button>
+
+                                <button type="button" id="final-payment-btn" class="btn btn-success btn-lg" style="display: none;">
+                                    Payer maintenant
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentForm = document.getElementById('payment-form');
+            const proceedBtn = document.getElementById('proceed-btn');
+            const finalPaymentBtn = document.getElementById('final-payment-btn');
+            const verifyCodeBtn = document.getElementById('verifyCodeBtn');
+            let verificationInProgress = false;
+
+            // Initialize Stripe
+            const stripe = Stripe('{{ stripe_public_key }}');
+
+            proceedBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (verificationInProgress) return;
+
+                const phoneNumber = document.getElementById('phone').value;
+                if (!phoneNumber) {
+                    alert('Veuillez entrer votre numéro de téléphone');
+                    return;
+                }
+
+                verificationInProgress = true;
+                proceedBtn.disabled = true;
+                proceedBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Envoi en cours...';
+
+                // Send verification code
+                fetch('/verification/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'phone_number=' + encodeURIComponent(phoneNumber)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#verificationModal').modal('show');
+                    } else {
+                        alert('Erreur lors de l\'envoi du code de vérification');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de l\'envoi du code de vérification');
+                })
+                .finally(() => {
+                    verificationInProgress = false;
+                    proceedBtn.disabled = false;
+                    proceedBtn.innerHTML = 'Confirmer et procéder au paiement';
+                });
+            });
+
+            verifyCodeBtn.addEventListener('click', function() {
+                const code = document.getElementById('verificationCode').value;
+                if (!code) {
+                    alert('Veuillez entrer le code de vérification');
+                    return;
+                }
+
+                verifyCodeBtn.disabled = true;
+                verifyCodeBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Vérification...';
+
+                fetch('/verification/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'code=' + encodeURIComponent(code)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#verificationModal').modal('hide');
+                        // Mark as verified and show final payment button
+                        document.getElementById('is_verified').value = '1';
+                        proceedBtn.style.display = 'none';
+                        finalPaymentBtn.style.display = 'block';
+                    } else {
+                        alert('Code de vérification invalide');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de la vérification du code');
+                })
+                .finally(() => {
+                    verifyCodeBtn.disabled = false;
+                    verifyCodeBtn.innerHTML = 'Vérifier';
+                });
+            });
+
+            finalPaymentBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                const isVerified = document.getElementById('is_verified').value === '1';
+                if (!isVerified) {
+                    alert('Veuillez d\'abord vérifier votre numéro de téléphone');
+                    return;
+                }
+
+                finalPaymentBtn.disabled = true;
+                finalPaymentBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Traitement en cours...';
+
+                try {
+                    const response = await fetch('/process-payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chambreId: '{{ chambreId }}',
+                            dateDebut: '{{ dateDebut }}',
+                            dateFin: '{{ dateFin }}',
+                            amount: {{ amount }}
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+
+                    if (result.sessionId) {
+                        // Redirect to Stripe Checkout
+                        const { error } = await stripe.redirectToCheckout({
+                            sessionId: result.sessionId
+                        });
+                        
+                        if (error) {
+                            throw error;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Une erreur est survenue: ' + error.message);
+                    finalPaymentBtn.disabled = false;
+                    finalPaymentBtn.innerHTML = 'Payer maintenant';
+                }
+            });
+        });
+    </script>
+{% endblock %} 

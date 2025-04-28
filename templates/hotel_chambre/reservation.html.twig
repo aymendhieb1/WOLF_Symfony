@@ -413,15 +413,51 @@
 
     <div class="payment-modal" id="payment-modal">
         <div class="payment-modal-content">
-            <h3>Paiement sécurisé</h3>
-            <form id="payment-form">
-                <div id="card-element"></div>
-                <div id="card-errors" role="alert"></div>
-                <button type="submit" class="pay-button" id="confirmPaymentBtn">
+            <h3>Vérification et Paiement</h3>
+            
+            <!-- Phone verification section -->
+            <div id="verification-section">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i>
+                    Pour des raisons de sécurité, veuillez entrer votre numéro de téléphone qui se termine par <span id="last-digits-hint">XX</span>.
+                </div>
+                <div class="form-group mb-4">
+                    <label for="phone">Numéro de téléphone</label>
+                    <input type="tel" class="form-control" id="phone" required 
+                           placeholder="Entrez votre numéro de téléphone"
+                           pattern="\d{8}"
+                           maxlength="8">
+                    <small class="form-text text-muted">Format: 8 chiffres</small>
+                </div>
+                <button type="button" class="btn btn-primary w-100" id="send-code-btn">
+                    <i class="fas fa-sms"></i>
+                    Envoyer le code de vérification
+                </button>
+            </div>
+
+            <!-- Code verification section (initially hidden) -->
+            <div id="code-section" style="display: none;">
+                <div class="form-group mb-4">
+                    <label for="verificationCode">Code de vérification</label>
+                    <input type="text" class="form-control" id="verificationCode" 
+                           placeholder="Entrez le code à 6 chiffres">
+                    <small class="form-text text-muted">Un code a été envoyé à votre numéro de téléphone</small>
+                </div>
+                <button type="button" class="btn btn-primary w-100" id="verify-code-btn">
+                    <i class="fas fa-check"></i>
+                    Vérifier le code
+                </button>
+            </div>
+
+            <!-- Payment section (initially hidden) -->
+            <div id="payment-section" style="display: none;">
+                <div id="card-element" class="mb-4"></div>
+                <div id="card-errors" role="alert" class="mb-4 text-danger"></div>
+                <button type="submit" class="btn btn-success w-100" id="confirmPaymentBtn">
                     <i class="fas fa-lock"></i>
                     Payer maintenant
                 </button>
-            </form>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -438,14 +474,11 @@
             let selectedStartDate = null;
             let selectedEndDate = null;
             let totalAmount = 0;
+            let isVerified = false;
 
-            // Initialize Stripe with the public key
+            // Initialize Stripe
             const stripe = Stripe('{{ stripe_public_key }}');
-            
-            // Create an instance of Elements
             const elements = stripe.elements();
-            
-            // Create and mount the Payment Element
             const cardElement = elements.create('card', {
                 style: {
                     base: {
@@ -453,9 +486,7 @@
                         fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
                         fontSmoothing: 'antialiased',
                         fontSize: '16px',
-                        '::placeholder': {
-                            color: '#aab7c4'
-                        }
+                        '::placeholder': { color: '#aab7c4' }
                     },
                     invalid: {
                         color: '#fa755a',
@@ -464,10 +495,8 @@
                 }
             });
             
-            // Mount the card Element to the card-element div
             cardElement.mount('#card-element');
             
-            // Handle real-time validation errors from the card Element
             cardElement.addEventListener('change', function(event) {
                 const displayError = document.getElementById('card-errors');
                 if (event.error) {
@@ -521,25 +550,133 @@
                 selectedEndDate = endDate;
             }
 
-            // Show payment modal when confirm button is clicked
+            // Get the phone number hint when the modal opens
             document.getElementById('confirm-btn').addEventListener('click', function() {
                 document.getElementById('payment-modal').style.display = 'flex';
+                document.getElementById('verification-section').style.display = 'block';
+                document.getElementById('code-section').style.display = 'none';
+                document.getElementById('payment-section').style.display = 'none';
+
+                // Fetch the last two digits hint
+                fetch('/verification/get-hint')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('last-digits-hint').textContent = data.lastTwoDigits;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
+            // Send verification code
+            document.getElementById('send-code-btn').addEventListener('click', function() {
+                const button = this;
+                const phoneNumber = document.getElementById('phone').value;
+                
+                if (!phoneNumber) {
+                    alert('Veuillez entrer votre numéro de téléphone');
+                    return;
+                }
+
+                if (!phoneNumber.match(/^\d{8}$/)) {
+                    alert('Le numéro doit contenir exactement 8 chiffres');
+                    return;
+                }
+
+                const lastTwoDigits = document.getElementById('last-digits-hint').textContent;
+                if (!phoneNumber.endsWith(lastTwoDigits)) {
+                    alert('Le numéro doit se terminer par ' + lastTwoDigits);
+                    return;
+                }
+
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Envoi en cours...';
+
+                fetch('/verification/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'phone_number=' + encodeURIComponent(phoneNumber)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('verification-section').style.display = 'none';
+                        document.getElementById('code-section').style.display = 'block';
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de l\'envoi du code');
+                })
+                .finally(() => {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-sms"></i> Envoyer le code de vérification';
+                });
+            });
+
+            // Verify code
+            document.getElementById('verify-code-btn').addEventListener('click', function() {
+                const button = this;
+                const code = document.getElementById('verificationCode').value;
+                
+                if (!code) {
+                    alert('Veuillez entrer le code de vérification');
+                    return;
+                }
+
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Vérification...';
+
+                fetch('/verification/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'code=' + encodeURIComponent(code)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        isVerified = true;
+                        document.getElementById('code-section').style.display = 'none';
+                        document.getElementById('payment-section').style.display = 'block';
+                    } else {
+                        alert('Code de vérification invalide');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de la vérification du code');
+                })
+                .finally(() => {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-check"></i> Vérifier le code';
+                });
             });
 
             // Handle payment form submission
-            document.getElementById('payment-form').addEventListener('submit', async function(e) {
+            document.getElementById('confirmPaymentBtn').addEventListener('click', async function(e) {
                 e.preventDefault();
-                const button = document.getElementById('confirmPaymentBtn');
+                if (!isVerified) {
+                    alert('Veuillez d\'abord vérifier votre numéro de téléphone');
+                    return;
+                }
+
+                const button = this;
                 button.disabled = true;
-                const originalText = button.textContent;
-                button.textContent = 'Traitement en cours...';
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Traitement en cours...';
 
                 try {
                     const response = await fetch('/process-payment', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: JSON.stringify({
                             chambreId: {{ room.id }},
@@ -549,32 +686,26 @@
                         })
                     });
 
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Une erreur est survenue lors du traitement du paiement');
-                    }
-
                     const result = await response.json();
                     
-                    if (!result.sessionId) {
-                        throw new Error('Session de paiement invalide');
+                    if (result.error) {
+                        throw new Error(result.error);
                     }
 
-                    // Use the session ID to redirect to Stripe Checkout
-                    const { error } = await stripe.redirectToCheckout({
-                        sessionId: result.sessionId
-                    });
-
-                    if (error) {
-                        throw error;
+                    if (result.sessionId) {
+                        const { error } = await stripe.redirectToCheckout({
+                            sessionId: result.sessionId
+                        });
+                        
+                        if (error) {
+                            throw error;
+                        }
                     }
                 } catch (error) {
-                    console.error('Erreur:', error);
-                    const errorElement = document.getElementById('card-errors');
-                    errorElement.textContent = error.message || 'Une erreur est survenue lors du traitement du paiement. Veuillez réessayer.';
-                } finally {
+                    console.error('Error:', error);
+                    alert('Une erreur est survenue: ' + error.message);
                     button.disabled = false;
-                    button.textContent = originalText;
+                    button.innerHTML = '<i class="fas fa-lock"></i> Payer maintenant';
                 }
             });
 
