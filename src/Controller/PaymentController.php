@@ -25,6 +25,9 @@ use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
 use Doctrine\DBAL\LockMode;
+use Endroid\QrCode\Builder\Builder;
+use chillerlan\QRCode\QRCode as ChillerlanQRCode;
+use chillerlan\QRCode\QROptions;
 
 class PaymentController extends AbstractController
 {
@@ -201,11 +204,12 @@ class PaymentController extends AbstractController
                 $entityManager->persist($payment);
                 $entityManager->flush();
 
-                // Generate QR code
-                $qrCode = new QrCode($chambre->getHotel()->getLocalisation());
-                $writer = new SvgWriter();
-                $result = $writer->write($qrCode);
-                $qrCodeSvg = $result->getString();
+                // Generate QR code with hotel location
+                $location = $chambre->getHotel()->getLocalisation();
+                $mapsUrl = "https://www.google.com/maps/search/?api=1&query=" . urlencode($location);
+                
+                // Using QRServer.com API for better compatibility
+                $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($mapsUrl);
 
                 // Send confirmation email
                 try {
@@ -222,7 +226,6 @@ class PaymentController extends AbstractController
                                     <h2 style="color: #333333;">Détails de la réservation</h2>
                                     <p><strong>Numéro de réservation:</strong> #' . $reservation->getId() . '</p>
                                     <p><strong>Hôtel:</strong> ' . $chambre->getHotel()->getNom() . '</p>
-                                    <p><strong>Localisation:</strong> ' . $chambre->getHotel()->getLocalisation() . '</p>
                                     <p><strong>Type de chambre:</strong> ' . $chambre->getType() . '</p>
                                     <p><strong>Date d\'arrivée:</strong> ' . $dateDebut->format('d/m/Y') . '</p>
                                     <p><strong>Date de départ:</strong> ' . $dateFin->format('d/m/Y') . '</p>
@@ -232,7 +235,7 @@ class PaymentController extends AbstractController
                                 
                                 <div style="text-align: center; margin: 20px 0;">
                                     <p>Scannez le QR code ci-dessous pour voir la localisation de l\'hôtel:</p>
-                                    ' . $qrCodeSvg . '
+                                    <img src="' . $qrCodeUrl . '" width="200" height="200" alt="QR Code pour la localisation" style="display: block; margin: 0 auto;">
                                 </div>
                                 
                                 <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
@@ -256,9 +259,12 @@ class PaymentController extends AbstractController
                 // Add success message
                 $this->addFlash('success', 'Votre réservation a été confirmée avec succès !');
 
-                return $this->render('hotel_chambre/reservation_success.html.twig', [
+                return $this->render('payment/success.html.twig', [
                     'reservation' => $reservation,
-                    'payment' => $payment
+                    'payment' => $payment,
+                    'qrCodeUrl' => $qrCodeUrl,
+                    'hotelName' => $chambre->getHotel()->getNom(),
+                    'location' => $location
                 ]);
 
             } catch (\Exception $e) {
