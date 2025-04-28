@@ -7,14 +7,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\UserRepository;
 use App\Repository\TodoRepository;
-use App\Repository\VehiculeRepository; // Inject VehicleRepository
+use App\Repository\VehiculeRepository;
+use Doctrine\DBAL\Connection;
+
 
 class DashBoardController extends AbstractController
 {
     #[Route('/dash/board', name: 'app_dash_board')]
-    public function index(UserRepository $userRepository, TodoRepository $todoRepository, VehiculeRepository $vehicleRepository): Response
+    public function index(UserRepository $userRepository, TodoRepository $todoRepository, VehiculeRepository $vehicleRepository, Connection $connection): Response
     {
-
+        $sql = "SELECT SUM(montant) as total_revenue FROM paiement";
+        $stmt = $connection->executeQuery($sql);
+        $totalRevenue = $stmt->fetchOne();
         $vehicles = $vehicleRepository->findAll();
 
         $cylinderCounts = [];
@@ -47,7 +51,9 @@ class DashBoardController extends AbstractController
                 'borderColors' => ['#132a3e', '#ff681a']
             ],
             'todos' => $todoRepository->findBy([], ['createdAt' => 'DESC']),
-            'vehicleCylinderStats' => $vehicleCylinderStats
+            'vehicleCylinderStats' => $vehicleCylinderStats,
+            'totalRevenue' => $totalRevenue
+
 
 
         ]);
