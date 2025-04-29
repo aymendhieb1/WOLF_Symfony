@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation Confirmée{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .success-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .details-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .detail-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .detail-section h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #43a047;
+            transform: translateY(-2px);
+        }
+
+        .back-button i {
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .details-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="success-container">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h1 class="success-title">Réservation confirmée !</h1>
+        <p class="success-message">
+            Votre paiement a été traité avec succès et votre réservation est confirmée.
+            Un email de confirmation vous sera envoyé dans quelques instants.
+        </p>
+
+        <div class="details-container">
+            <div class="detail-section">
+                <h2>Détails de la réservation</h2>
+                <div class="detail-row">
+                    <span class="detail-label">Numéro de réservation</span>
+                    <span class="detail-value">#{{ reservation.id }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Type de chambre</span>
+                    <span class="detail-value">{{ reservation.chambre.type }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Hôtel</span>
+                    <span class="detail-value">{{ reservation.chambre.hotel.nom }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date d'arrivée</span>
+                    <span class="detail-value">{{ reservation.dateDebut|date('d/m/Y') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date de départ</span>
+                    <span class="detail-value">{{ reservation.dateFin|date('d/m/Y') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Durée du séjour</span>
+                    <span class="detail-value">{{ reservation.durationInDays }} nuit(s)</span>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h2>Détails du paiement</h2>
+                <div class="detail-row">
+                    <span class="detail-label">Numéro de transaction</span>
+                    <span class="detail-value">#{{ payment.id }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date du paiement</span>
+                    <span class="detail-value">{{ payment.datePaiement|date('d/m/Y H:i') }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Montant total</span>
+                    <span class="detail-value">{{ payment.montant|number_format(2, ',', ' ') }} €</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Statut</span>
+                    <span class="detail-value" style="color: #4CAF50;">Payé</span>
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ path('app_home') }}" class="back-button">
+            <i class="fas fa-home"></i>
+            Retour à l'accueil
+        </a>
+    </div>
+{% endblock %} 

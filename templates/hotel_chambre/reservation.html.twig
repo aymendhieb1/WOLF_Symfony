@@ -1,0 +1,724 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation - {{ room.type }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .reservation-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .reservation-header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hotel-info {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .reservation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .room-details {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .room-image {
+            background: #f8f9fa;
+            height: 250px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-type-icon {
+            font-size: 4rem;
+            color: #cfd8dc;
+        }
+
+        .price-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .room-info h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .room-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #555;
+        }
+
+        .feature-item i {
+            color: #4CAF50;
+            font-size: 1.2rem;
+        }
+
+        .unavailable-dates {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .unavailable-dates h3 {
+            color: #856404;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .unavailable-dates ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .unavailable-dates li {
+            color: #856404;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+
+        .booking-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .booking-section h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .date-picker-wrapper {
+            margin-bottom: 30px;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .date-input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .price-summary {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+        .price-label {
+            color: #666;
+        }
+
+        .price-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .total-row {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+            font-size: 1.2rem;
+        }
+
+        .total-row .price-value {
+            color: #ff6b6b;
+            font-size: 1.3rem;
+        }
+
+        .confirm-button {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-button:hover {
+            background: #43a047;
+            transform: translateY(-2px);
+        }
+
+        .confirm-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Payment Modal Styles */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-modal-content h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #card-element {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+
+        #card-errors {
+            color: #dc3545;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .pay-button {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pay-button:hover {
+            background: #43a047;
+        }
+
+        @media (max-width: 768px) {
+            .reservation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="main-container">
+        <div class="reservation-header">
+            <h1>Réservation de chambre</h1>
+            <div class="hotel-info">{{ hotel.nom }} - {{ room.type }}</div>
+        </div>
+
+        <div class="reservation-grid">
+            <div class="room-details">
+                <div class="room-image">
+                    {% if room.image %}
+                        <img src="{{ asset('uploads/chambres/' ~ room.image) }}" alt="{{ room.type }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        {% if room.type == 'Simple' %}
+                            <i class="fas fa-bed room-type-icon"></i>
+                        {% elseif room.type == 'Double' %}
+                            <div style="display: flex; gap: 20px;">
+                                <i class="fas fa-bed room-type-icon"></i>
+                                <i class="fas fa-bed room-type-icon"></i>
+                            </div>
+                        {% else %}
+                            <i class="fas fa-star room-type-icon"></i>
+                        {% endif %}
+                    {% endif %}
+                    <div class="price-badge">
+                        {% if hotel.promotion > 0 %}
+                            <span style="text-decoration: line-through; margin-right: 10px; opacity: 0.7">
+                                {{ room.prix }} DT
+                            </span>
+                            {{ room.prix - (room.prix * hotel.promotion / 100) }} DT
+                        {% else %}
+                            {{ room.prix }} DT
+                        {% endif %}
+                        <span style="font-size: 0.8em">/nuit</span>
+                    </div>
+                </div>
+
+                <div class="room-info">
+                    <h2>{{ room.type }}</h2>
+                    <p class="room-description">{{ room.description }}</p>
+
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <i class="fas fa-users"></i>
+                            <span>{% if room.type == 'Simple' %}1 personne{% elseif room.type == 'Double' %}2 personnes{% else %}2-4 personnes{% endif %}</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-wifi"></i>
+                            <span>WiFi gratuit</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shower"></i>
+                            <span>Salle de bain privée</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-tv"></i>
+                            <span>TV écran plat</span>
+                        </div>
+                    </div>
+
+                    {% if unavailableDates|length > 0 %}
+                        <div class="unavailable-dates">
+                            <h3>
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Périodes non disponibles
+                            </h3>
+                            <ul>
+                                {% for date in unavailableDates %}
+                                    <li>Du {{ date.start|date('d/m/Y') }} au {{ date.end|date('d/m/Y') }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="booking-section">
+                <h2>Sélectionnez vos dates</h2>
+                <div class="date-picker-wrapper">
+                    <input type="text" id="reservation-dates" class="date-input" placeholder="Choisissez vos dates" required>
+                </div>
+
+                <div class="price-summary">
+                    <div class="price-row">
+                        <span class="price-label">Nombre de nuits</span>
+                        <span class="price-value" id="nights-count">0</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">Prix de base</span>
+                        <span class="price-value" id="base-price">0 DT</span>
+                    </div>
+                    {% if hotel.promotion > 0 %}
+                        <div class="price-row">
+                            <span class="price-label">Réduction ({{ hotel.promotion }}%)</span>
+                            <span class="price-value" id="discount-amount">0 DT</span>
+                        </div>
+                    {% endif %}
+                    <div class="price-row total-row">
+                        <span class="price-label">Prix total</span>
+                        <span class="price-value" id="total-price">0 DT</span>
+                    </div>
+                </div>
+
+                <button id="confirm-btn" class="confirm-button" disabled>
+                    <i class="fas fa-check-circle"></i>
+                    Confirmer et procéder au paiement
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-modal" id="payment-modal">
+        <div class="payment-modal-content">
+            <h3>Vérification et Paiement</h3>
+            
+            <!-- Phone verification section -->
+            <div id="verification-section">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i>
+                    Pour des raisons de sécurité, veuillez entrer votre numéro de téléphone qui se termine par <span id="last-digits-hint">XX</span>.
+                </div>
+                <div class="form-group mb-4">
+                    <label for="phone">Numéro de téléphone</label>
+                    <input type="tel" class="form-control" id="phone" required 
+                           placeholder="Entrez votre numéro de téléphone"
+                           pattern="\d{8}"
+                           maxlength="8">
+                    <small class="form-text text-muted">Format: 8 chiffres</small>
+                </div>
+                <button type="button" class="btn btn-primary w-100" id="send-code-btn">
+                    <i class="fas fa-sms"></i>
+                    Envoyer le code de vérification
+                </button>
+            </div>
+
+            <!-- Code verification section (initially hidden) -->
+            <div id="code-section" style="display: none;">
+                <div class="form-group mb-4">
+                    <label for="verificationCode">Code de vérification</label>
+                    <input type="text" class="form-control" id="verificationCode" 
+                           placeholder="Entrez le code à 6 chiffres">
+                    <small class="form-text text-muted">Un code a été envoyé à votre numéro de téléphone</small>
+                </div>
+                <button type="button" class="btn btn-primary w-100" id="verify-code-btn">
+                    <i class="fas fa-check"></i>
+                    Vérifier le code
+                </button>
+            </div>
+
+            <!-- Payment section (initially hidden) -->
+            <div id="payment-section" style="display: none;">
+                <div id="card-element" class="mb-4"></div>
+                <div id="card-errors" role="alert" class="mb-4 text-danger"></div>
+                <button type="submit" class="btn btn-success w-100" id="confirmPaymentBtn">
+                    <i class="fas fa-lock"></i>
+                    Payer maintenant
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const roomPrice = {{ room.prix }};
+            const hotelPromotion = {{ hotel.promotion }};
+            const unavailableDates = {{ unavailableDates|json_encode|raw }};
+            let selectedStartDate = null;
+            let selectedEndDate = null;
+            let totalAmount = 0;
+            let isVerified = false;
+
+            // Initialize Stripe
+            const stripe = Stripe('{{ stripe_public_key }}');
+            const elements = stripe.elements();
+            const cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        color: '#32325d',
+                        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                        fontSmoothing: 'antialiased',
+                        fontSize: '16px',
+                        '::placeholder': { color: '#aab7c4' }
+                    },
+                    invalid: {
+                        color: '#fa755a',
+                        iconColor: '#fa755a'
+                    }
+                }
+            });
+            
+            cardElement.mount('#card-element');
+            
+            cardElement.addEventListener('change', function(event) {
+                const displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
+
+            // Initialize Flatpickr
+            const fp = flatpickr("#reservation-dates", {
+                mode: "range",
+                minDate: "today",
+                disable: unavailableDates.map(date => ({
+                    from: date.start,
+                    to: date.end
+                })),
+                locale: {
+                    firstDayOfWeek: 1,
+                    weekdays: {
+                        shorthand: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+                        longhand: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
+                    },
+                    months: {
+                        shorthand: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'],
+                        longhand: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+                    }
+                },
+                onChange: function(selectedDates) {
+                    if (selectedDates.length === 2) {
+                        calculatePrice(selectedDates[0], selectedDates[1]);
+                    }
+                }
+            });
+
+            function calculatePrice(startDate, endDate) {
+                const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                const basePrice = roomPrice * nights;
+                const discount = hotelPromotion > 0 ? (basePrice * hotelPromotion / 100) : 0;
+                totalAmount = basePrice - discount;
+
+                document.getElementById('nights-count').textContent = nights;
+                document.getElementById('base-price').textContent = basePrice.toFixed(2) + ' DT';
+                if (hotelPromotion > 0) {
+                    document.getElementById('discount-amount').textContent = '-' + discount.toFixed(2) + ' DT';
+                }
+                document.getElementById('total-price').textContent = totalAmount.toFixed(2) + ' DT';
+                document.getElementById('confirm-btn').disabled = false;
+                
+                selectedStartDate = startDate;
+                selectedEndDate = endDate;
+            }
+
+            // Get the phone number hint when the modal opens
+            document.getElementById('confirm-btn').addEventListener('click', function() {
+                document.getElementById('payment-modal').style.display = 'flex';
+                document.getElementById('verification-section').style.display = 'block';
+                document.getElementById('code-section').style.display = 'none';
+                document.getElementById('payment-section').style.display = 'none';
+
+                // Fetch the last two digits hint
+                fetch('/verification/get-hint')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('last-digits-hint').textContent = data.lastTwoDigits;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
+            // Send verification code
+            document.getElementById('send-code-btn').addEventListener('click', function() {
+                const button = this;
+                const phoneNumber = document.getElementById('phone').value;
+                
+                if (!phoneNumber) {
+                    alert('Veuillez entrer votre numéro de téléphone');
+                    return;
+                }
+
+                if (!phoneNumber.match(/^\d{8}$/)) {
+                    alert('Le numéro doit contenir exactement 8 chiffres');
+                    return;
+                }
+
+                const lastTwoDigits = document.getElementById('last-digits-hint').textContent;
+                if (!phoneNumber.endsWith(lastTwoDigits)) {
+                    alert('Le numéro doit se terminer par ' + lastTwoDigits);
+                    return;
+                }
+
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Envoi en cours...';
+
+                fetch('/verification/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'phone_number=' + encodeURIComponent(phoneNumber)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('verification-section').style.display = 'none';
+                        document.getElementById('code-section').style.display = 'block';
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de l\'envoi du code');
+                })
+                .finally(() => {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-sms"></i> Envoyer le code de vérification';
+                });
+            });
+
+            // Verify code
+            document.getElementById('verify-code-btn').addEventListener('click', function() {
+                const button = this;
+                const code = document.getElementById('verificationCode').value;
+                
+                if (!code) {
+                    alert('Veuillez entrer le code de vérification');
+                    return;
+                }
+
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Vérification...';
+
+                fetch('/verification/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'code=' + encodeURIComponent(code)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        isVerified = true;
+                        document.getElementById('code-section').style.display = 'none';
+                        document.getElementById('payment-section').style.display = 'block';
+                    } else {
+                        alert('Code de vérification invalide');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Erreur lors de la vérification du code');
+                })
+                .finally(() => {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-check"></i> Vérifier le code';
+                });
+            });
+
+            // Handle payment form submission
+            document.getElementById('confirmPaymentBtn').addEventListener('click', async function(e) {
+                e.preventDefault();
+                if (!isVerified) {
+                    alert('Veuillez d\'abord vérifier votre numéro de téléphone');
+                    return;
+                }
+
+                const button = this;
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Traitement en cours...';
+
+                try {
+                    const response = await fetch('/process-payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chambreId: {{ room.id }},
+                            dateDebut: selectedStartDate.toISOString().split('T')[0],
+                            dateFin: selectedEndDate.toISOString().split('T')[0],
+                            amount: totalAmount
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+
+                    if (result.sessionId) {
+                        const { error } = await stripe.redirectToCheckout({
+                            sessionId: result.sessionId
+                        });
+                        
+                        if (error) {
+                            throw error;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Une erreur est survenue: ' + error.message);
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-lock"></i> Payer maintenant';
+                }
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('payment-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %} 

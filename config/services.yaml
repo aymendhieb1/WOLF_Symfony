@@ -12,6 +12,10 @@ parameters:
   google_calendar_redirect_uri: "http://127.0.0.1:8000/back/contrat/google-calendar/callback"
   mailer_from: "%env(MAILER_FROM)%"
 
+  stripe_public_key: "%env(STRIPE_PUBLIC_KEY)%"
+  stripe_secret_key: "%env(STRIPE_SECRET_KEY)%"
+  chambre_images_directory: "uploads/chambres"
+
 services:
   _defaults:
     autowire: true
@@ -33,3 +37,15 @@ services:
       $clientId: "%google_calendar_client_id%"
       $clientSecret: "%google_calendar_client_secret%"
       $redirectUri: "%google_calendar_redirect_uri%"
+
+  App\Controller\ChambreController:
+    arguments:
+      $chambreImagesDirectory: "%chambre_images_directory%"
+
+  # Configuration du client Stripe
+  Stripe\StripeClient:
+    arguments: ["%env(STRIPE_SECRET_KEY)%"]
+
+  App\Controller\PaymentController:
+    arguments:
+      $stripe: '@Stripe\StripeClient'

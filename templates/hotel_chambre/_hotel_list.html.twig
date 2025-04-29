@@ -1,0 +1,232 @@
+{% if error is defined and error %}
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Erreur</h4>
+        <p>{{ error }}</p>
+        <hr>
+        <p class="mb-0">
+            <button type="button" class="btn btn-outline-custom" onclick="loadHotels()">
+                <i class="fas fa-sync-alt"></i> Réessayer
+            </button>
+        </p>
+    </div>
+{% else %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ path('app_hotel_map') }}" class="btn btn-primary" style="background-color: #ff681a; border-color: #ff681a;">
+                <i class="fas fa-map-marked-alt me-2"></i>Voir sur la carte
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un hôtel..." 
+                       value="{{ app.request.query.get('search', '') }}">
+                <button class="btn btn-custom text-white" type="button" onclick="loadHotels()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <select id="sortSelect" class="form-select" onchange="loadHotels()">
+                        <option value="default" {% if app.request.query.get('sort') == 'default' %}selected{% endif %}>Trier par</option>
+                        <option value="price_asc" {% if app.request.query.get('sort') == 'price_asc' %}selected{% endif %}>Prix croissant</option>
+                        <option value="price_desc" {% if app.request.query.get('sort') == 'price_desc' %}selected{% endif %}>Prix décroissant</option>
+                        <option value="promotion" {% if app.request.query.get('sort') == 'promotion' %}selected{% endif %}>Meilleures promotions</option>
+                        <option value="reservations" {% if app.request.query.get('sort') == 'reservations' %}selected{% endif %}>Nombre de réservations</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if hotels is empty %}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Aucun hôtel</h4>
+            <p>Aucun hôtel ne correspond à vos critères de recherche.</p>
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for hotel in hotels %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="position-relative">
+                            {% if hotel.image %}
+                                <img src="{{ asset('uploads/hotels/' ~ hotel.image) }}" class="card-img-top" alt="{{ hotel.nom }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light text-center py-5">
+                                    <i class="fas fa-hotel fa-3x text-custom"></i>
+                                </div>
+                            {% endif %}
+                            
+                            {% if hotel.promotion %}
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    <span class="badge bg-custom text-white rounded-pill">-{{ hotel.promotion }}%</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title text-custom">{{ hotel.nom }}</h5>
+                            <div class="mb-2">
+                                <div class="rating-display" data-hotel-id="{{ hotel.id }}">
+                                    <div class="stars d-inline-block">
+                                        {% set averageRating = hotel.averageRating %}
+                                        {% for i in 1..5 %}
+                                            {% if i <= averageRating %}
+                                                <i class="fas fa-star text-custom"></i>
+                                            {% elseif i - 0.5 <= averageRating %}
+                                                <i class="fas fa-star-half-alt text-custom"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-custom"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <small class="text-muted ms-2">
+                                        ({{ hotel.totalRatings }} avis)
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <p class="card-text text-muted">
+                                {{ hotel.description|default('Aucune description disponible')|length > 100 ? 
+                                   hotel.description|slice(0, 100) ~ '...' : 
+                                   hotel.description|default('Aucune description disponible') }}
+                            </p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <div>
+                                    {% set priceInfo = getMinRoomPrice(hotel) %}
+                                    {% if priceInfo.originalPrice is not null %}
+                                        <span class="text-muted small">à partir de</span>
+                                        {% if priceInfo.hasPromotion %}
+                                            <span class="text-decoration-line-through text-muted">{{ priceInfo.originalPrice|number_format(2, ',', ' ') }}€</span>
+                                            <span class="text-custom fw-bold">{{ priceInfo.finalPrice|number_format(2, ',', ' ') }}€</span>
+                                        {% else %}
+                                            <span class="fw-bold text-custom">{{ priceInfo.finalPrice|number_format(2, ',', ' ') }}€</span>
+                                        {% endif %}
+                                        <span class="text-muted small">/nuit</span>
+                                    {% else %}
+                                        <span class="fw-bold text-muted">Aucune chambre</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline-custom btn-sm rating-btn" 
+                                            onclick="openRatingModal('{{ hotel.id }}')"
+                                            data-hotel-id="{{ hotel.id }}">
+                                        <i class="fas fa-star"></i>
+                                    </button>
+                                    {% if hotel.id is not null %}
+                                        <a href="{{ path('app_hotel_rooms', {'id': hotel.id}) }}" 
+                                           class="btn btn-custom text-white btn-sm">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if pagination is defined and pagination.totalPages > 1 %}
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-custom">
+                        {% if pagination.hasPreviousPage %}
+                            <li class="page-item">
+                                <a class="page-link" href="#" onclick="loadHotels({{ pagination.currentPage - 1 }})">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page in pagination.pages %}
+                            <li class="page-item {% if page == pagination.currentPage %}active{% endif %}">
+                                <a class="page-link" href="#" onclick="loadHotels({{ page }})">{{ page }}</a>
+                            </li>
+                        {% endfor %}
+                        
+                        {% if pagination.hasNextPage %}
+                            <li class="page-item">
+                                <a class="page-link" href="#" onclick="loadHotels({{ pagination.currentPage + 1 }})">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <style>
+        :root {
+            --custom-color: #ff681a;
+            --custom-color-hover: #e55d17;
+        }
+        
+        .pagination-custom .page-link {
+            color: var(--custom-color);
+            border: 1px solid var(--custom-color);
+            margin: 0 2px;
+            border-radius: 4px;
+        }
+        
+        .pagination-custom .page-item.active .page-link {
+            background-color: var(--custom-color);
+            border-color: var(--custom-color);
+            color: white;
+        }
+        
+        .pagination-custom .page-link:hover {
+            background-color: var(--custom-color);
+            color: white;
+            border-color: var(--custom-color);
+        }
+        
+        .pagination-custom .page-item.disabled .page-link {
+            color: #6c757d;
+            border-color: #dee2e6;
+        }
+        
+        .btn-custom {
+            background-color: var(--custom-color);
+            border-color: var(--custom-color);
+            color: white;
+        }
+        
+        .btn-custom:hover {
+            background-color: var(--custom-color-hover);
+            border-color: var(--custom-color-hover);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            color: var(--custom-color);
+            border-color: var(--custom-color);
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: var(--custom-color);
+            color: white;
+        }
+        
+        .text-custom {
+            color: var(--custom-color) !important;
+        }
+        
+        .bg-custom {
+            background-color: var(--custom-color) !important;
+        }
+        
+        .rating-display .stars i.fas {
+            color: var(--custom-color) !important;
+        }
+    </style>
+{% endif %} 

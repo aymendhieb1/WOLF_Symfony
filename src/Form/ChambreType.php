@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Hotel;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class ChambreType extends AbstractType
 {
@@ -59,7 +61,24 @@ class ChambreType extends AbstractType
                 'choice_label' => 'nom',
                 'label' => 'Hôtel',
                 'attr' => ['class' => 'form-control']
-            ]);
+            ])
+            ->add('image', FileType::class, [
+                'label' => 'Image de la chambre',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG ou GIF)',
+                    ])
+                ],
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

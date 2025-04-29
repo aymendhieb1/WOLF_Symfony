@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header" style="background-color: #ff681a;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="card-title" style="color: white;">Carte des Hôtels</h4>
+                                    <a href="{{ path('app_hotel_chambre_index') }}" class="btn" style="background-color: white; color: #ff681a;">
+                                        <i class="fas fa-arrow-left"></i> Retour aux hôtels
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="map" style="height: 600px; width: 100%; border-radius: 10px; border: 2px solid #75d893;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+let map;
+
+function initializeMap() {
+    map = L.map('map').setView([36.8065, 10.1815], 7); // Default view: Tunis
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add markers for each hotel
+    {% for hotel in hotels %}
+        {% if hotel.localisation %}
+            {% set coords = hotel.localisation|split(',') %}
+            {% if coords|length == 2 %}
+                L.marker([{{ coords[0] }}, {{ coords[1] }}])
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h5 style="color: #ff681a; margin-bottom: 10px;">{{ hotel.nom }}</h5>
+                            <p style="margin-bottom: 5px;"><i class="fas fa-map-marker-alt"></i> {{ hotel.localisation }}</p>
+                            {% if hotel.telephone %}
+                                <p style="margin-bottom: 5px;"><i class="fas fa-phone"></i> {{ hotel.telephone }}</p>
+                            {% endif %}
+                            {% if hotel.promotion %}
+                                <p style="margin-bottom: 5px;"><i class="fas fa-tag"></i> Promotion: -{{ hotel.promotion }}%</p>
+                            {% endif %}
+                            <div style="margin-top: 10px;">
+                                <a href="{{ path('app_hotel_rooms', {'id': hotel.id}) }}" class="btn btn-sm" style="background-color: #ff681a; color: white; width: 100%;">
+                                    <i class="fas fa-eye"></i> Voir les chambres
+                                </a>
+                            </div>
+                        </div>
+                    `);
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+}
+
+// Initialize the map when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeMap();
+});
+</script>
+
+<!-- Leaflet.js -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+    #map {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .btn {
+        transition: all 0.3s ease;
+    }
+    .btn:hover {
+        transform: translateX(-5px);
+    }
+    .leaflet-popup-content {
+        margin: 10px;
+    }
+    .leaflet-popup-content h5 {
+        font-weight: bold;
+    }
+    .leaflet-popup-content p {
+        margin: 5px 0;
+    }
+    .leaflet-popup-content i {
+        margin-right: 5px;
+        color: #ff681a;
+    }
+</style>
+{% endblock %} 

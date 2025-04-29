@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Poster</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0;
+        }
+        .poster {
+            width: 600px; /* Fixed width for the poster */
+            height: 900px; /* Fixed height for the poster */
+            border: 5px solid #333;
+            border-radius: 15px;
+            background: linear-gradient(to bottom, #ffffff, #e0e0e0);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin: 0;
+            padding: 20px 0;
+            color: #333;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .hotel-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover; /* Ensures the image covers the area nicely */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        .hotel-info {
+            padding: 20px;
+        }
+        .hotel-info p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #333;
+        }
+        .promotion {
+            font-size: 2em;
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1em;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="poster">
+        <h1>Hotel Details</h1>
+        <img src="asset{{'uploads/hotels/' ~ hotel.Image }}" alt="{{ hotel.Nom }}" class="hotel-image">
+        <div class="hotel-info">
+            <p><strong>Name:</strong> {{ hotel.Nom }}</p>
+            <p><strong>Address:</strong> {{ hotel.Localisation }}</p>
+            <p><strong>Phone:</strong> {{ hotel.telephone }}</p>
+            <p><strong>Email:</strong> {{ hotel.email }}</p>
+            <p><strong>Description:</strong> {{ hotel.Description }}</p>
+        </div>
+        <div class="promotion">Promotion: {{ hotel.Promotion }}% de réduction</div>
+        <div class="footer">
+            &copy; {{ "now"|date("Y") }} TripToGo. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

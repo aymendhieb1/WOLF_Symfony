@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
+
+use Knp\Snappy\Pdf;
 
 #[Route('/back/hotel')]
 class BackHotelController extends AbstractController
@@ -25,19 +30,19 @@ class BackHotelController extends AbstractController
     }
 
     #[Route('/new', name: 'app_back_hotel_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, MailerInterface $mailer, Pdf $knpSnappy): Response
     {
         $hotel = new Hotel();
         $form = $this->createForm(HotelType::class, $hotel);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-
+    
                 try {
                     $uploadDir = $this->getParameter('hotel_images_directory');
                     if (!file_exists($uploadDir)) {
@@ -54,27 +59,73 @@ class BackHotelController extends AbstractController
                     $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image');
                 }
             }
-
+    
             $entityManager->persist($hotel);
             $entityManager->flush();
-
+    
+            // Generate PDF
+            $html = $this->renderView('back_hotel/pdf.html.twig', [
+                'hotel' => $hotel,
+            ]);
+            
+            $pdfContent = $knpSnappy->getOutputFromHtml($html, [
+                'disable-smart-shrinking' => true,
+                'no-stop-slow-scripts' => true,
+                'enable-local-file-access' => true,
+            ]);
+    
+            // Save PDF to a temporary location
+            $pdfFilename = 'hotel_' . $hotel->getId() . '.pdf';
+            $tempDir = sys_get_temp_dir(); // Use system temp directory
+            file_put_contents($tempDir . '/' . $pdfFilename, $pdfContent);
+    
+            // Send email with the PDF attachment
+            $email = (new Email())
+                ->from('triptogo2025@gmail.com')
+                ->to($form->get('email')->getData())
+                ->subject('Votre hôtel a été ajouté avec succès !')
+                ->text('Votre hôtel a été ajouté avec succès. Veuillez trouver ci-joint le PDF.')
+                ->attachFromPath($tempDir . '/' . $pdfFilename) // Attach the PDF
+                ->html('
+                <div style="font-family: Arial, sans-serif; background-color: #f4f7fa; padding: 30px;">
+<div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <img src="cid:logo" alt="TripToGo Logo" style="width: 120px; height: auto;">
+    </div>
+    <h2 style="color: #333333; text-align: center;">Réinitialisation du mot de passe</h2>
+    <p style="font-size: 16px; color: #555555; text-align: center;">
+        Bonjour, <br><br>
+        Vous avez demandé à réinitialiser votre mot de passe. Voici votre code de vérification :
+    </p>
+    <div style="text-align: center; margin: 30px 0;">
+        <span style="font-size: 32px; color: #ff681a; font-weight: bold;">' . $code . '</span>
+    </div>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="' . $verificationUrl . '" style="display: inline-block; padding: 12px 24px; background-color: #ff681a; color: white; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            👉 Saisir le code maintenant
+        </a>
+    </div>
+    <p style="font-size: 14px; color: #999999; text-align: center;">
+        Ce code est valable pendant quelques minutes. Si vous n’êtes pas à l’origine de cette demande, ignorez cet email.
+    </p>
+    <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
+    <p style="font-size: 12px; color: #aaaaaa; text-align: center;">
+        © ' . date("Y") . ' TripToGo. Tous droits réservés.
+    </p>
+</div>
+</div>')
+                ->embedFromPath('C:/Users/Dhib/IdeaProjects/Projet_Pidev/src/main/resources/images/primary.png', 'logo');
+           $mailer->send($email);
+    
             return $this->redirectToRoute('app_back_hotel_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('back_hotel/new.html.twig', [
             'hotel' => $hotel,
             'form' => $form->createView(),
         ]);
     }
-
-    #[Route('/{id}', name: 'app_back_hotel_show', methods: ['GET'])]
-    public function show(Hotel $hotel): Response
-    {
-        return $this->render('back_hotel/show.html.twig', [
-            'hotel' => $hotel,
-        ]);
-    }
-
+  
     #[Route('/{id}/edit', name: 'app_back_hotel_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, int $id, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
@@ -146,5 +197,39 @@ class BackHotelController extends AbstractController
         }
 
         return $this->redirectToRoute('app_back_hotel_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+    #[Route('/{id}', name: 'app_back_hotel_pdf', methods: ['GET', 'POST'])]
+    public function extractPdf(Request $request, int $id, EntityManagerInterface $entityManager, Pdf $knpSnappy): Response
+    {
+        // Retrieve the hotel entity from the database
+        $hotel = $entityManager->getRepository(Hotel::class)->find($id);
+        
+        if (!$hotel) {
+            throw $this->createNotFoundException('Hotel not found');
+        }
+    
+        // Render the view to a variable
+        $html = $this->renderView('back_hotel/pdf.html.twig', [
+            'hotel' => $hotel,
+        ]);
+    
+        // Generate PDF from HTML with proper options
+        $pdfContent = $knpSnappy->getOutputFromHtml($html, [
+            'disable-smart-shrinking' => true,
+            'no-stop-slow-scripts' => true,
+            'enable-local-file-access' => true,
+        ]);
+    
+        // Create a Response with the PDF content
+        return new Response(
+            $pdfContent,
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="hotel_'.$hotel->getId().'.pdf"'
+            ]
+        );
     }
 }

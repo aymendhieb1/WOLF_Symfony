@@ -1,53 +1,14 @@
 {% extends 'base1.html.twig' %}
 
 {% block body %}
-<div class="wrapper">
-    <div class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
-        <div class="logo">
-            <a href="javascript:;" class="simple-text logo-normal">
-                TripToGo
-            </a>
-        </div>
-        <div class="sidebar-wrapper">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_back_hotel_index') }}">
-                        <i class="material-icons">hotel</i>
-                        <p>Hôtels</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_back_chambre') }}">
-                        <i class="material-icons">meeting_room</i>
-                        <p>Chambres</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_back_activite') }}">
-                        <i class="material-icons">local_activity</i>
-                        <p>Activités</p>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
     <div class="main-panel">
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-wrapper">
-                    <a class="navbar-brand" href="javascript:;">Modifier l'Hôtel</a>
-                </div>
-            </div>
-        </nav>
-        <!-- End Navbar -->
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header card-header-primary">
-                                <h4 class="card-title">Modifier l'hôtel</h4>
+                            <div class="card-header" style="background-color: #ff681a;">
+                                <h4 class="card-title" style="color: white;">Modifier l'Hôtel</h4>
                             </div>
                             <div class="card-body">
                                 {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'hotel-form'}}) }}
@@ -62,9 +23,12 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             {{ form_label(form.localisation) }}
-                                            {{ form_widget(form.localisation, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_widget(form.localisation, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
                                             <div class="invalid-feedback" id="localisation-error"></div>
                                         </div>
+                                        <button type="button" class="btn" style="background-color: #ff681a; color: white;" onclick="showMap()">
+                                            <i class="fas fa-map-marker-alt"></i> Select Location
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -110,8 +74,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary">Modifier</button>
-                                        <a href="{{ path('app_back_hotel_index') }}" class="btn btn-default">Retour</a>
+                                        <button type="submit" class="btn" style="background-color: #ff681a; color: white;">Enregistrer</button>
+                                        <a href="{{ path('app_back_hotel_index') }}" class="btn btn-default">Retour à la liste</a>
                                     </div>
                                 </div>
                                 {{ form_end(form) }}
@@ -122,7 +86,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script>
 document.getElementById('hotel-form').addEventListener('submit', function(event) {
@@ -230,5 +193,146 @@ document.querySelectorAll('.invalid-feedback').forEach(function(el) {
     el.style.marginTop = '0.25rem';
     el.style.fontSize = '80%';
 });
+
+let map;
+let currentMarker; // Variable to hold the current marker
+
+function showMap() {
+    document.getElementById('map-section').style.display = 'block'; // Show the map section
+    initializeMap(); // Initialize the map
+}
+
+function initializeMap() {
+    if (!map) {
+        map = L.map('map').setView([36.8065, 10.1815], 7); // Default view: Tunis
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    }
+
+    // Add click event to map for selecting location
+    map.off('click').on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lon = e.latlng.lng;
+        const localisationInput = document.getElementById('{{ form.localisation.vars.id }}');
+        
+        // Set the latitude and longitude in the localisation field
+        localisationInput.value = `${lat}, ${lon}`;
+
+        // Remove the previous marker if it exists
+        if (currentMarker) {
+            map.removeLayer(currentMarker);
+        }
+
+        // Add a new marker at the clicked location
+        currentMarker = L.marker([lat, lon]).addTo(map)
+            .bindPopup(`Selected Location: ${lat}, ${lon}`)
+            .openPopup();
+    });
+}
+
+function getCoordinates(address, name) {
+    let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&accept-language=fr`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                let lat = data[0].lat;
+                let lon = data[0].lon;
+                showLocation(lat, lon, name);
+            } else {
+                alert("Localisation introuvable pour : " + address);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur API Nominatim : ", error);
+            alert("Erreur lors de la récupération de la localisation.");
+        });
+}
+
+function showLocation(lat, lon, name) {
+    document.getElementById('map-section').style.display = 'block'; // Show map section
+    document.getElementById('map-title').innerText = "Localisation de " + name; // Change title
+
+    initializeMap();
+    map.setView([lat, lon], 14); // Center map on the location
+
+    // Remove the previous marker if it exists
+    if (currentMarker) {
+        map.removeLayer(currentMarker);
+    }
+
+    // Add a new marker at the location
+    currentMarker = L.marker([lat, lon]).addTo(map)
+        .bindPopup(`<b>${name}</b>`)
+        .openPopup();
+}
 </script>
+
+<!-- Section de la carte (cachée par défaut) -->
+<section id="map-section" style="display: none; margin-top: 20px;">
+    <div class="container">
+        <h2 id="map-title" style="text-align: center;">Localisation</h2>
+        <div id="map" style="height: 500px; width: 100%; margin-top: 10px; border-radius: 10px; border: 2px solid #75d893;"></div>
+    </div>
+</section>
+
+<!-- Leaflet.js -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+    .custom-carousel-control .carousel-control-prev-icon,
+    .custom-carousel-control .carousel-control-next-icon {
+        background-color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        border: 2px solid white;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+        background-image: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .carousel-control-prev {
+        left: -70px;
+    }
+    
+    .carousel-control-next {
+        right: -70px;
+    }
+    
+    .custom-carousel-control .carousel-control-prev-icon::after {
+        content: '\2039';
+        font-size: 24px;
+        color: #75d893;
+        font-weight: bold;
+    }
+    
+    .custom-carousel-control .carousel-control-next-icon::after {
+        content: '\203A';
+        font-size: 24px;
+        color: #75d893;
+        font-weight: bold;
+    }
+
+    .btn-outline-success {
+        border-color: #75d893;
+        color: #75d893;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #75d893;
+        color: white;
+    }
+
+    #map-section {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+    }
+</style>
 {% endblock %} 

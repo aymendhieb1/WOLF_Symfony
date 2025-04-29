@@ -3,96 +3,238 @@
 {% block title %}Nouvelle Chambre{% endblock %}
 
 {% block body %}
-<div class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-primary">
-                        <h4 class="card-title">Nouvelle Chambre</h4>
-                        <p class="card-category">Ajoutez une nouvelle chambre</p>
-                    </div>
-                    <div class="card-body">
-                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group{% if form.type.vars.errors|length > 0 %} has-danger{% endif %}">
-                                    {{ form_label(form.type, 'Type de chambre', {'label_attr': {'class': 'bmd-label-floating'}}) }}
-                                    {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
-                                    {{ form_errors(form.type, {'attr': {'class': 'text-danger'}}) }}
-                                    <small class="form-text text-muted">Choisissez entre Simple, Double ou Suite</small>
-                                </div>
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header" style="background-color: #ff681a;">
+                                <h4 class="card-title" style="color: white;">Nouvelle Chambre</h4>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group{% if form.prix.vars.errors|length > 0 %} has-danger{% endif %}">
-                                    {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'bmd-label-floating'}}) }}
-                                    {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
-                                    {{ form_errors(form.prix, {'attr': {'class': 'text-danger'}}) }}
-                                    <small class="form-text text-muted">Le prix doit être un nombre positif</small>
+                            <div class="card-body">
+                                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'chambre-form'}}) }}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.type, 'Type de chambre', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="type-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.prix, 'Prix par nuit', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="prix-error"></div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.disponibilite, 'Disponibilité', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.disponibilite, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="disponibilite-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.hotel, 'Hôtel', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.hotel, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="hotel-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.image, 'Image de la chambre', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+                                            <div class="invalid-feedback" id="image-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                                            <div class="invalid-feedback" id="description-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn" style="background-color: #ff681a; color: white;">Enregistrer</button>
+                                        <a href="{{ path('app_back_chambre') }}" class="btn btn-default">Retour à la liste</a>
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group{% if form.disponibilite.vars.errors|length > 0 %} has-danger{% endif %}">
-                                    {{ form_label(form.disponibilite, 'Disponibilité', {'label_attr': {'class': 'bmd-label-floating'}}) }}
-                                    {{ form_widget(form.disponibilite, {'attr': {'class': 'form-control'}}) }}
-                                    {{ form_errors(form.disponibilite, {'attr': {'class': 'text-danger'}}) }}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group{% if form.hotel.vars.errors|length > 0 %} has-danger{% endif %}">
-                                    {{ form_label(form.hotel, 'Hôtel', {'label_attr': {'class': 'bmd-label-floating'}}) }}
-                                    {{ form_widget(form.hotel, {'attr': {'class': 'form-control select2'}}) }}
-                                    {{ form_errors(form.hotel, {'attr': {'class': 'text-danger'}}) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group{% if form.description.vars.errors|length > 0 %} has-danger{% endif %}">
-                                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'bmd-label-floating'}}) }}
-                                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
-                                    {{ form_errors(form.description, {'attr': {'class': 'text-danger'}}) }}
-                                    <small class="form-text text-muted">La description doit contenir entre 10 et 500 caractères</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary pull-right">
-                                <i class="material-icons">save</i> Créer
-                            </button>
-                            <a href="{{ path('app_back_chambre') }}" class="btn btn-default">
-                                <i class="material-icons">arrow_back</i> Retour à la liste
-                            </a>
-                        </div>
-                        {{ form_end(form) }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            // Initialize select2 for hotel selection
-            if ($().select2) {
-                $('.select2').select2();
-            }
+<script>
+document.getElementById('chambre-form').addEventListener('submit', function(event) {
+    let isValid = true;
 
-            // Add custom validation styling
-            $('.form-control').on('change', function() {
-                var $formGroup = $(this).closest('.form-group');
-                if ($(this).val()) {
-                    $formGroup.removeClass('has-danger').addClass('has-success');
-                } else {
-                    $formGroup.removeClass('has-success').addClass('has-danger');
-                }
-            });
-        });
-    </script>
+    // Reset previous error states
+    document.querySelectorAll('.invalid-feedback').forEach(function(el) {
+        el.style.display = 'none';
+    });
+    document.querySelectorAll('.form-control').forEach(function(el) {
+        el.classList.remove('is-invalid');
+    });
+
+    // Validate type
+    const typeInput = document.getElementById('{{ form.type.vars.id }}');
+    if (!typeInput.value) {
+        typeInput.classList.add('is-invalid');
+        document.getElementById('type-error').textContent = 'Le type est obligatoire';
+        document.getElementById('type-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate prix
+    const prixInput = document.getElementById('{{ form.prix.vars.id }}');
+    if (!prixInput.value) {
+        prixInput.classList.add('is-invalid');
+        document.getElementById('prix-error').textContent = 'Le prix est obligatoire';
+        document.getElementById('prix-error').style.display = 'block';
+        isValid = false;
+    } else if (parseFloat(prixInput.value) <= 0) {
+        prixInput.classList.add('is-invalid');
+        document.getElementById('prix-error').textContent = 'Le prix doit être supérieur à 0';
+        document.getElementById('prix-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate disponibilite
+    const disponibiliteInput = document.getElementById('{{ form.disponibilite.vars.id }}');
+    if (!disponibiliteInput.value) {
+        disponibiliteInput.classList.add('is-invalid');
+        document.getElementById('disponibilite-error').textContent = 'La disponibilité est obligatoire';
+        document.getElementById('disponibilite-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate hotel
+    const hotelInput = document.getElementById('{{ form.hotel.vars.id }}');
+    if (!hotelInput.value) {
+        hotelInput.classList.add('is-invalid');
+        document.getElementById('hotel-error').textContent = 'L\'hôtel est obligatoire';
+        document.getElementById('hotel-error').style.display = 'block';
+        isValid = false;
+    }
+
+    // Validate description
+    const descriptionInput = document.getElementById('{{ form.description.vars.id }}');
+    if (!descriptionInput.value) {
+        descriptionInput.classList.add('is-invalid');
+        document.getElementById('description-error').textContent = 'La description est obligatoire';
+        document.getElementById('description-error').style.display = 'block';
+        isValid = false;
+    } else if (descriptionInput.value.length < 10) {
+        descriptionInput.classList.add('is-invalid');
+        document.getElementById('description-error').textContent = 'La description doit contenir au moins 10 caractères';
+        document.getElementById('description-error').style.display = 'block';
+        isValid = false;
+    }
+
+    if (!isValid) {
+        event.preventDefault();
+    }
+});
+
+// Style the error messages
+document.querySelectorAll('.invalid-feedback').forEach(function(el) {
+    el.style.color = '#dc3545';
+    el.style.display = 'none';
+    el.style.marginTop = '0.25rem';
+    el.style.fontSize = '80%';
+});
+</script>
+
+<style>
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        transition: all 0.3s ease;
+        margin-top: 5px;
+    }
+
+    .form-control:focus {
+        border-color: #ff681a;
+        box-shadow: 0 0 0 0.2rem rgba(255, 104, 26, 0.25);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-default {
+        background-color: #f8f9fa;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    .btn-default:hover {
+        background-color: #e2e6ea;
+        color: #333;
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .is-invalid {
+        border-color: #dc3545;
+    }
+
+    .is-invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    select.form-control {
+        height: auto;
+        padding: 10px;
+    }
+</style>
 {% endblock %} 

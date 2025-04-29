@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation Confirmée{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover {
+        color: black;
+    }
+
+    .success-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .qr-button {
+        background-color: #ff681a;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .qr-button:hover {
+        background-color: #e55d17;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="success-container">
+    <h1 class="text-center text-success mb-4">Réservation Confirmée !</h1>
+    
+    <div class="alert alert-success">
+        Votre réservation a été effectuée avec succès. Un email de confirmation vous a été envoyé.
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Détails de la réservation</h5>
+            <p><strong>Numéro de réservation:</strong> #{{ reservation.id }}</p>
+            <p><strong>Hôtel:</strong> {{ hotelName }}</p>
+            <p><strong>Type de chambre:</strong> {{ reservation.chambre.type }}</p>
+            <p><strong>Date d'arrivée:</strong> {{ reservation.dateDebut|date('d/m/Y') }}</p>
+            <p><strong>Date de départ:</strong> {{ reservation.dateFin|date('d/m/Y') }}</p>
+            <p><strong>Nombre de nuits:</strong> {{ reservation.dateDebut|date('U')|date_modify('-' ~ reservation.dateFin|date('U') ~ ' seconds')|date('d') }}</p>
+            <p><strong>Montant total:</strong> {{ payment.montant }} DT</p>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button class="qr-button" onclick="showQRCode()">Voir la localisation de l'hôtel</button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="qrModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Localisation de l'hôtel</h2>
+        <p>Scannez ce QR code pour voir la localisation de l'hôtel sur Google Maps</p>
+        <img src="{{ qrCodeUrl }}" alt="QR Code pour la localisation" style="width: 200px; height: 200px; margin: 20px auto; display: block;">
+        <p><small>{{ location }}</small></p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Show QR code modal automatically when page loads
+    window.onload = function() {
+        showQRCode();
+    };
+
+    function showQRCode() {
+        document.getElementById('qrModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('qrModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        var modal = document.getElementById('qrModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %} 

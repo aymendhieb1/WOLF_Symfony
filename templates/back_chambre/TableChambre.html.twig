@@ -1,7 +1,6 @@
 {% extends 'base1.html.twig' %}
 
-{% block title %}Gestion des Chambres
-{% endblock %}
+{% block title %}Gestion des Chambres{% endblock %}
 
 {% block body %}
 	<!-- Extra details for Live View on GitHub Pages -->
@@ -9,7 +8,7 @@
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKDMSK6" height="0" width="0" style="display:none;visibility:hidden"> </iframe>
 	</noscript>
 	<!-- End Google Tag Manager (noscript) -->
-	<div class="wrapper ">
+	<div class="wrapper">
 		<div class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
 			<div class="logo">
 				<img src="{{ asset('assets/img/secondry - Copie.png') }}" class="simple-text logo-mini" alt="Logo">
@@ -17,7 +16,7 @@
 			<div class="sidebar-wrapper">
 				<ul class="nav">
 					<li class="nav-item">
-						<a class="nav-link" href="{{path('app_dash_board')}}">
+						<a class="nav-link" href="dashboard.html">
 							<i class="material-icons">dashboard</i>
 							<p>Dashboard</p>
 						</a>
@@ -26,7 +25,7 @@
 					<!-- Sector Gestion User Nav bar-->
 					<li class="nav-item">
 						<a class="nav-link" href="{{path('app_back_office')}}">
-							<i class="material-icons">person</i>
+							<i class="material-icons">User</i>
 							<p>Gestion User</p>
 						</a>
 					</li>
@@ -57,7 +56,129 @@
 						</div>
 					</li>
 
-					<!-- Other menu items remain the same -->
+					<!-- Sector Gestion Circuit Nav bar -->
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="collapse" href="#gestionCircuitMenu">
+							<i class="material-icons">map</i>
+							<p>Gestion Circuit
+								<b class="caret"></b>
+							</p>
+						</a>
+						<div class="collapse" id="gestionCircuitMenu">
+							<ul class="nav">
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_activite')}}">
+										<span class="sidebar-mini">A</span>
+										<span class="sidebar-normal">Activite</span>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_session')}}">
+										<span class="sidebar-mini">S</span>
+										<span class="sidebar-normal">Session</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+
+					<!-- Sector Gestion Vol Nav bar -->
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="collapse" href="#gestionVolMenu">
+							<i class="material-icons">flight</i>
+							<p>Gestion Vols
+								<b class="caret"></b>
+							</p>
+						</a>
+						<div class="collapse" id="gestionVolMenu">
+							<ul class="nav">
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_vol')}}">
+										<span class="sidebar-mini">V</span>
+										<span class="sidebar-normal">Vols</span>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_checkout')}}">
+										<span class="sidebar-mini">C</span>
+										<span class="sidebar-normal">Check Out</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+
+					<!-- Sector Gestion Vehicule Nav bar -->
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="collapse" href="#gestionVehiculeMenu">
+							<i class="material-icons">directions_car</i>
+							<p>Gestion Location
+								<b class="caret"></b>
+							</p>
+						</a>
+						<div class="collapse" id="gestionVehiculeMenu">
+							<ul class="nav">
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_vehicule')}}">
+										<span class="sidebar-mini">V</span>
+										<span class="sidebar-normal">Vehicule</span>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_contrat')}}">
+										<span class="sidebar-mini">C</span>
+										<span class="sidebar-normal">Contrat</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+
+					<!-- Sector Gestion Forum Nav bar -->
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="collapse" href="#gestionForumMenu">
+							<i class="material-icons">forum</i>
+							<p>Gestion Forum
+								<b class="caret"></b>
+							</p>
+						</a>
+						<div class="collapse" id="gestionForumMenu">
+							<ul class="nav">
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_forum')}}">
+										<span class="sidebar-mini">F</span>
+										<span class="sidebar-normal">Forum</span>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_post')}}">
+										<span class="sidebar-mini">P</span>
+										<span class="sidebar-normal">Post</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+
+					<!-- Sector Gestion Reclamation Nav bar -->
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="collapse" href="#gestionReclamationMenu">
+							<i class="material-icons">restore</i>
+							<p>Gestion Reclamation
+								<b class="caret"></b>
+							</p>
+						</a>
+						<div class="collapse" id="gestionReclamationMenu">
+							<ul class="nav">
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_back_reclamation')}}">
+										<span class="sidebar-mini">R</span>
+										<span class="sidebar-normal">Reclamation</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -68,10 +189,9 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="card">
-								<div class="card-header card-header-primary">
-									<h4 class="card-title">Chambres</h4>
-									<p class="card-category">Liste des chambres disponibles</p>
-									<a href="{{ path('app_back_chambre_new') }}" class="btn btn-success btn-round float-right">
+								<div class="card-header" style="background-color: #ff681a;">
+									<h4 class="card-title" style="color: white;">Liste des Chambres Disponibles</h4>
+									<a href="{{ path('app_back_chambre_new') }}" class="btn btn-success btn-round float-right" style="background-color: #ff681a; color: white;">
 										<i class="material-icons">add</i>
 										Nouvelle Chambre
 									</a>
@@ -100,38 +220,36 @@
 												</tr>
 											</tfoot>
 											<tbody>
-												{% for chambre in chambres %}
-													<tr>
-														<td>{{ chambre.type }}</td>
-														<td>{{ chambre.prix }}
-															DT</td>
-														<td>
-															{% if chambre.disponibilite == 'Disponible' %}
-																<span class="badge badge-success">DISPONIBLE</span>
-															{% else %}
-																<span class="badge badge-danger">NON DISPONIBLE</span>
-															{% endif %}
-														</td>
-														<td>{{ chambre.description }}</td>
-														<td>{{ chambre.hotel is not null ? chambre.hotel.nom : 'Non assigné' }}</td>
-														<td class="td-actions text-right">
-
-															<a href="{{ path('app_back_chambre_edit', {'id': chambre.id}) }}" class="btn btn-success btn-round">
-																<i class="material-icons">edit</i>
-															</a>
-															<form method="post" action="{{ path('app_back_chambre_delete', {'id': chambre.id}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette chambre?');">
-																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chambre.id) }}">
-																<button type="submit" class="btn btn-danger btn-round">
-																	<i class="material-icons">close</i>
-																</button>
-															</form>
-														</td>
-													</tr>
-												{% else %}
-													<tr>
-														<td colspan="6" class="text-center">Aucune chambre trouvée</td>
-													</tr>
-												{% endfor %}
+											{% for chambre in chambres %}
+												<tr>
+													<td>{{ chambre.type }}</td>
+													<td>{{ chambre.prix }} DT</td>
+													<td>
+														{% if chambre.disponibilite == 'Disponible' %}
+															<span class="badge badge-success">DISPONIBLE</span>
+														{% else %}
+															<span class="badge badge-danger">NON DISPONIBLE</span>
+														{% endif %}
+													</td>
+													<td>{{ chambre.description }}</td>
+													<td>{{ chambre.hotel is not null ? chambre.hotel.nom : 'Non assigné' }}</td>
+													<td class="td-actions text-right">
+														<a href="{{ path('app_back_chambre_edit', {'id': chambre.id}) }}" class="btn btn-success btn-round" style="background-color: #ff681a; color: white;">
+															<i class="material-icons">edit</i>
+														</a>
+														<form method="post" action="{{ path('app_back_chambre_delete', {'id': chambre.id}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette chambre?');">
+															<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chambre.id) }}">
+															<button type="submit" class="btn btn-danger btn-round">
+																<i class="material-icons">close</i>
+															</button>
+														</form>
+													</td>
+												</tr>
+											{% else %}
+												<tr>
+													<td colspan="6" class="text-center">Aucune chambre trouvée</td>
+												</tr>
+											{% endfor %}
 											</tbody>
 										</table>
 									</div>
@@ -143,9 +261,113 @@
 			</div>
 		</div>
 	</div>
+
+<style>
+	.card {
+		border-radius: 10px;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	.card-header {
+		border-radius: 10px 10px 0 0;
+		padding: 1.5rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.card-title {
+		margin: 0;
+		font-size: 1.5rem;
+		font-weight: 500;
+	}
+
+	.table {
+		width: 100%;
+		margin-bottom: 1rem;
+		background-color: transparent;
+	}
+
+	.table th {
+		font-weight: 500;
+		color: #333;
+		padding: 1rem;
+		border-bottom: 2px solid #dee2e6;
+	}
+
+	.table td {
+		padding: 1rem;
+		vertical-align: middle;
+		border-bottom: 1px solid #dee2e6;
+	}
+
+	.btn-round {
+		border-radius: 30px;
+		padding: 0.5rem;
+		transition: all 0.3s ease;
+		margin: 0 5px;
+	}
+
+	.btn-round:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.table-responsive {
+		display: block;
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.float-right {
+		float: right;
+	}
+
+	.badge-success {
+		background-color: #28a745;
+		color: white;
+		padding: 5px 10px;
+		border-radius: 15px;
+	}
+
+	.badge-danger {
+		background-color: #dc3545;
+		color: white;
+		padding: 5px 10px;
+		border-radius: 15px;
+	}
+
+	.td-actions {
+		white-space: nowrap;
+	}
+</style>
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
-
+	<script>
+		$(document).ready(function () {
+			$('#datatables').DataTable({
+				"pagingType": "full_numbers",
+				"lengthMenu": [
+					[10, 25, 50, -1],
+					[10, 25, 50, "Tout"]
+				],
+				responsive: true,
+				language: {
+					search: "_INPUT_",
+					searchPlaceholder: "Chercher",
+					info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+					lengthMenu: "Afficher _MENU_ entrées",
+					paginate: {
+						first: "Premier",
+						last: "Dernier",
+						next: "Suivant",
+						previous: "Précédent"
+					}
+				}
+			});
+		});
+	</script>
 {% endblock %}

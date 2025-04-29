@@ -1,641 +1,233 @@
-<meta class="no-js" lang="fr">
-<meta charset="UTF-8">
-<meta http-equiv="x-ua-compatible" content="ie=edge"/>
-<title>TripToGo - Agence de voyages et réservation de circuits</title>
-<meta name="author" content="vecuro"/>
-<meta name="description" content="Travolo - Travel Agency & Tour Booking HTML Template"/>
-<meta name="keywords" content="Travolo - Travel Agency & Tour Booking HTML Template"/>
-<meta
-name="robots" content="INDEX,FOLLOW"/>
+{% extends 'base.html.twig' %}
 
-<!-- Mobile Specific Metas -->
-<meta
-name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-
-<!-- Favicons -->
-<link rel="icon" type="image/png" href="{{ asset('assets/img/primary.png') }}"/>
-<meta name="msapplication-TileColor" content="#ffffff"/>
-<meta name="theme-color" content="#ffffff"/>
-{% block stylesheets %}
-
-	<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('assets/css/slick.min.css') }}"/>
-	<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"/>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
-	<link rel="preconnect" href="https://fonts.googleapis.com"/>
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-	<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-{% endblock %}
+{% block title %}Liste des Hôtels{% endblock %}
 
 {% block body %}
-<style>:root
-{
-	--theme-color: #ff681a;
-}
+    <div class="container py-4">
+        <h1 class="mb-4">Nos Hôtels</h1>
+        
+        <div id="hotelList">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-2">Chargement des hôtels...</p>
+            </div>
+        </div>
+    </div>
 
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800 &display=swap');
-
-body {
-	font-family: 'Jost', sans-serif;
-}
-
-.package-style1 {
-	background: #fff;
-	border-radius: 10px;
-	overflow: hidden;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-	margin-bottom: 30px;
-	height: 400px;
-	display: flex;
-	flex-direction: column;
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.package-style1:hover {
-	transform: translateY(-5px);
-	box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-}
-
-.package-img {
-	position: relative;
-	overflow: hidden;
-	background: #f8f9fa;
-	height: 200px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.package-img img {
-	transition: transform 0.5s ease;
-}
-
-.package-style1:hover .package-img img {
-	transform: scale(1.1);
-}
-
-.package-content {
-	padding: 20px;
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-}
-
-.package-title {
-	font-size: 20px;
-	font-weight: 600;
-	margin-bottom: 10px;
-	color: #333;
-	transition: color 0.3s ease;
-}
-
-.package-title:hover {
-	color: var(--theme-color);
-}
-
-.package-text {
-	color: #666;
-	margin-bottom: 15px;
-	font-size: 14px;
-	line-height: 1.6;
-}
-
-.package-meta {
-	display: flex;
-	gap: 15px;
-	margin-bottom: 15px;
-	flex-wrap: wrap;
-}
-
-.package-meta a {
-	color: #666;
-	text-decoration: none;
-	transition: color 0.3s ease;
-	font-size: 14px;
-}
-
-.package-meta a i {
-	margin-right: 5px;
-	color: var(--theme-color);
-}
-
-.package-meta a:hover {
-	color: var(--theme-color);
-}
-
-.vs-btn {
-	background: var(--theme-color);
-	color: #fff;
-	padding: 8px 20px;
-	border-radius: 5px;
-	text-decoration: none;
-	transition: all 0.3s ease;
-	border: none;
-	cursor: pointer;
-	font-family: 'Jost', sans-serif;
-	font-weight: 500;
-	font-size: 14px;
-}
-
-.vs-btn:hover {
-	background: #e55a0f;
-	color: #fff;
-	transform: translateY(-2px);
-}
-
-.package-footer {
-	margin-top: auto;
-}
-
-.rooms-list {
-	margin-top: 15px;
-	max-height: 200px;
-	overflow-y: auto;
-}
-
-.room-item {
-	padding: 10px;
-	border-bottom: 1px solid #eee;
-	transition: background-color 0.3s ease;
-}
-
-.room-item:hover {
-	background-color: #f8f9fa;
-}
-
-.room-details {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 10px;
-}
-
-.room-info {
-	display: flex;
-	gap: 15px;
-	flex-wrap: wrap;
-}
-
-.room-info span {
-	color: #666;
-}
-
-.room-info i {
-	color: #ff4a52;
-	margin-right: 5px;
-}
-
-.filter-menu1 {
-	display: flex;
-	gap: 10px;
-	margin-bottom: 30px;
-	flex-wrap: wrap;
-}
-
-.tab-button {
-	background: #fff;
-	border: 1px solid #eee;
-	color: #666;
-}
-
-.tab-button.active {
-	background: var(--theme-color);
-	border-color: var(--theme-color);
-	color: #fff;
-}
-
-.tab-button:hover:not(.active) {
-	border-color: var(--theme-color);
-	color: var(--theme-color);
-}
-
-.sidebar-area {
-	background: #fff;
-	padding: 20px;
-	border-radius: 10px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-	margin-bottom: 0;
-}
-
-.widget_title {
-	font-size: 20px;
-	margin-bottom: 20px;
-	color: #333;
-}
-
-.form-group {
-	margin-bottom: 15px;
-	position: relative;
-}
-
-.form-group i {
-	position: absolute;
-	left: 15px;
-	top: 50%;
-	transform: translateY(-50%);
-	color: #666;
-}
-
-.form-control,
-.form-select {
-	padding-left: 40px;
-	border-radius: 5px;
-	border: 1px solid #ddd;
-	font-family: 'Jost', sans-serif;
-}
-
-.price_slider_wrapper {
-	margin: 20px 0;
-}
-
-.chekbox-area {
-	margin-bottom: 10px;
-}</style>{{ include('includes/header.html.twig')  }}<div class="wrapper">
-<div
-	class="main-panel">
-	<!-- Navbar -->
-	<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-wrapper"></div>
-		</div>
-	</nav>
-	<!-- End Navbar -->
-	<div class="content">
-		<div class="container-fluid">
-			<div class="filter-menu1">
-				<button class="tab-button active" data-filter="*">
-					<i class="fas fa-sort-alpha-up"></i>
-					Nom (A - Z)</button>
-				<button class="tab-button" data-filter=".date">
-					<i class="fas fa-calendar-alt"></i>
-					Date</button>
-				<button class="tab-button" data-filter=".hightTolow">
-					<i class="fas fa-upload"></i>
-					Prix Croissant</button>
-				<button class="tab-button" data-filter=".lowToHigh">
-					<i class="fas fa-download"></i>
-					Prix Décroissant</button>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-9">
-					<div class="row filter-active hotels-active">
-						{% for hotel in hotels %}
-							<div class="col-xl-4 col-lg-6 col-sm-6 filter-item hightTolow">
-								<div class="package-style1">
-									<div class="package-img">
-										{% if hotel.image %}
-											{% set imagePath = 'uploads/hotels/' ~ hotel.image %}
-											<img src="{{ asset(imagePath) }}" alt="{{ hotel.nom }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="console.log('Failed to load image: {{ imagePath }}'); this.onerror=null; this.src='{{ asset('assets/img/placeholder.jpg') }}'">
-										{% else %}
-											<img src="{{ asset('assets/img/placeholder.jpg') }}" alt="No image" style="width: 100%; height: 100%; object-fit: cover;">
-										{% endif %}
-									</div>
-									<div class="package-content">
-										<h3 class="package-title">{{ hotel.nom }}</h3>
-										<p class="package-text">{{ hotel.description|slice(0, 100) }}...</p>
-										<div class="package-meta">
-											<a href="#">
-												<i class="fas fa-map-marker-alt"></i>
-												{{ hotel.localisation }}</a>
-											<a href="#">
-												<i class="fas fa-star"></i>
-												{{ hotel.promotion }}%</a>
-										</div>
-
-										<div class="package-footer">
-											<a class="vs-btn " style="width: 100%; margin-top: 10px;" href="{{path('app_hotel_details',{'id':hotel.id}) }}" data-hotel-name="{{ hotel.nom }}">
-												<i class="fas fa-bed"></i>
-												Voir les Chambres
-											</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						{% endfor %}
-					</div>
-				</div>
-				<div class="col-lg-3">
-					<div class="sidebar-area hotels-sidebar">
-						<div class="widget">
-							<h3 class="widget_title">Filtrer les Hôtels</h3>
-							<form class="booking-form">
-								<div class="form-group">
-									<i class="fas fa-search"></i>
-									<input type="text" class="form-control" placeholder="Rechercher un hôtel"/>
-								</div>
-								<div class="form-group">
-									<i class="fas fa-map-marker-alt"></i>
-									<input type="text" class="form-control" placeholder="Localisation"/>
-								</div>
-								<div class="form-group">
-									<i class="fas fa-bed"></i>
-									<select class="form-select">
-										<option value="" selected disabled hidden>Type de Chambre</option>
-										{% for type in roomTypes %}
-											<option value="{{ type.value }}">{{ type.name }}</option>
-										{% endfor %}
-									</select>
-								</div>
-								<div class="price_slider_wrapper">
-									<h3 class="widget_title">Filtrer par Prix</h3>
-									<div class="price_slider"></div>
-									<div class="price_label">
-										Prix:
-										<span class="from">{{ minPrice }}
-											DT</span>
-										—
-										<span class="to">{{ maxPrice }}
-											DT</span>
-									</div>
-								</div>
-								<button class="vs-btn style4 w-100">Rechercher</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div></div>{{ include('includes/footer.html.twig')  }}<script>
-document.addEventListener('DOMContentLoaded', function () { // Filter functionality
-const filterButtons = document.querySelectorAll('.tab-button');
-const filterItems = document.querySelectorAll('.filter-item');
-
-filterButtons.forEach(button => {
-button.addEventListener('click', () => {
-filterButtons.forEach(btn => btn.classList.remove('active'));
-button.classList.add('active');
-
-const filterValue = button.getAttribute('data-filter');
-
-filterItems.forEach(item => {
-if (filterValue === '*' || item.classList.contains(filterValue.replace('.', ''))) {
-item.style.display = 'block';
-} else {
-item.style.display = 'none';
-}
-});
-});
-});
-
-// Rooms button functionality
-const roomsModal = document.getElementById('roomsModal');
-const roomsModalClose = roomsModal.querySelector('.close');
-const roomButtons = document.querySelectorAll('.rooms-btn');
-
-roomButtons.forEach(button => {
-button.addEventListener('click', function (e) {
-e.stopPropagation();
-const hotelId = this.getAttribute('data-hotel-id');
-const hotelName = this.getAttribute('data-hotel-name');
-
-// Update modal title
-roomsModal.querySelector('.session-modal-title').textContent = `Chambres de ${hotelName}`;
-
-// Clear previous rooms
-const roomsGrid = roomsModal.querySelector('.rooms-grid');
-roomsGrid.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
-
-// Fetch rooms for this hotel
-fetch(`/hotel-chambre/rooms/${hotelId}`, {
-method: 'GET',
-headers: {
-'Accept': 'application/json',
-'Content-Type': 'application/json'
-}
-}).then(response => {
-console.log('Response status:', response.status);
-if (!response.ok) {
-return response.json().then(err => {
-console.error('Error response:', err);
-throw new Error(err.message || 'Erreur lors du chargement des chambres');
-});
-}
-return response.json();
-}).then(data => {
-console.log('Received data:', data);
-roomsGrid.innerHTML = ''; // Clear loading spinner
-
-if (data.error) {
-console.error('Data error:', data.error);
-throw new Error(data.message || data.error);
-}
-
-// Check if we have rooms in the response
-const rooms = data.rooms || data;
-
-if (Array.isArray(rooms) && rooms.length > 0) {
-rooms.forEach(room => {
-const roomCard = document.createElement('div');
-roomCard.className = 'room-card';
-roomCard.style.cssText = `
-                            background: #fff;
-                            border-radius: 10px;
-                            padding: 20px;
-                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                            margin-bottom: 15px;
-                        `;
-
-const disponibiliteClass = room.disponibilite ? 'text-success' : 'text-danger';
-const disponibiliteText = room.disponibilite ? 'Disponible' : 'Non disponible';
-
-roomCard.innerHTML = `
-                            <div class="room-header" style="margin-bottom: 15px;">
-                                <h4 style="margin: 0; color: #333;">${
-room.type
-}</h4>
-                                <span class="badge ${disponibiliteClass}" style="float: right;">${disponibiliteText}</span>
-                            </div>
-                            <div class="room-details" style="margin-bottom: 15px;">
-                                <div style="margin-bottom: 10px;">
-                                    <i class="fas fa-money-bill" style="color: #ff681a; margin-right: 5px;"></i>
-                                    <strong>Prix:</strong> ${
-room.prix
-} DT
-                                </div>
-                            </div>
-                            <div class="room-description">
-                                <p style="color: #666; margin: 0;">${
-room.description
-}</p>
-                            </div>
-                        `;
-
-roomsGrid.appendChild(roomCard);
-});
-} else {
-console.log('No rooms found:', data);
-let message = 'Aucune chambre disponible pour le moment';
-if (data.message) {
-message = data.message;
-}
-roomsGrid.innerHTML = `
-                        <div class="text-center" style="grid-column: 1 / -1; padding: 20px;">
-                            <i class="fas fa-bed fa-3x" style="color: #ccc; margin-bottom: 10px;"></i>
-                            <p style="color: #666;">${message}</p>
+<!-- Rating Modal -->
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingModalLabel">Noter l'hôtel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="ratingForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('rate') }}">
+                    <div class="text-center mb-3">
+                        <div class="rating">
+                            {% for i in 1..5 %}
+                                <i class="far fa-star rating-star" data-rating="{{ i }}"></i>
+                            {% endfor %}
                         </div>
-                    `;
-}
-}).catch(error => {
-console.error('Fetch error:', error);
-roomsGrid.innerHTML = `
-                    <div class="text-center" style="grid-column: 1 / -1; padding: 20px;">
-                        <i class="fas fa-exclamation-circle fa-3x" style="color: #ff681a; margin-bottom: 10px;"></i>
-                        <p style="color: #666;">${
-error.message
-}</p>
+                        <div id="ratingMessage" class="mt-2"></div>
                     </div>
-                `;
-});
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" form="ratingForm" class="btn btn-primary" id="confirmRating" disabled>Confirmer</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-roomsModal.style.display = 'block';
-});
-});
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .rating {
+        font-size: 40px;
+        color: #ffd700;
+    }
+    .rating-star {
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .rating-star:hover,
+    .rating-star.selected {
+        color: #ffd700;
+    }
+    .rating-star:not(.selected):not(:hover) {
+        color: #ccc;
+    }
+    .rating-star:hover ~ .rating-star {
+        color: #ccc;
+    }
+</style>
+{% endblock %}
 
-roomsModalClose.onclick = function () {
-roomsModal.style.display = 'none';
-}
-
-window.onclick = function (event) {
-if (event.target == roomsModal) {
-roomsModal.style.display = 'none';
-}
-}
-
-// Add hover effect to room cards
-document.addEventListener('mouseover', function (e) {
-if (e.target.closest('.room-card')) {
-e.target.closest('.room-card').style.transform = 'translateY(-5px)';
-}
-});
-
-document.addEventListener('mouseout', function (e) {
-if (e.target.closest('.room-card')) {
-e.target.closest('.room-card').style.transform = 'translateY(0)';
-}
-});
-}); <script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
-<script src="{{ asset('assets/js/slick.min.js') }}"></script>
-<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
-<script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
-<script src="{{ asset('assets/js/circle-progress.min.js') }}"></script>
-<script src="{{ asset('assets/js/imagesLoaded.js') }}"></script>
-<script src="{{ asset('assets/js/isotope.js') }}"></script>
-<script src="{{ asset('assets/js/wow.min.js') }}"></script>
-<script src="{{ asset('assets/js/main.js') }}"></script>
-<script src="{{ asset('assets/js/vendor/jquery-3.6.0.min.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-
+{% block javascripts %}
+{{ parent() }}
 <script>
-	window.addEventListener("load", function () {
-setTimeout(function () {
-fetch("{{ path('app_logout') }}", {
-method: 'POST',
-headers: {
-'X-Requested-With': 'XMLHttpRequest'
-}
-}).then(response => {
-if (response.ok) {
-window.location.href = "{{ path('app_home') }}";
-} else {
-console.log("Erreur lors de la déconnexion.");
-}
-}).catch(error => {
-console.error("Erreur de requête AJAX:", error);
+document.addEventListener('DOMContentLoaded', function() {
+    // Initial load of hotels
+    loadHotels();
+
+    // Price range slider
+    const priceRange = document.getElementById('priceRange');
+    const priceValue = document.getElementById('priceValue');
+    
+    if (priceRange && priceValue) {
+        priceRange.addEventListener('input', function() {
+            priceValue.textContent = this.value + '€';
+        });
+    }
+
+    // Rating modal functionality
+    const ratingModal = document.getElementById('ratingModal');
+    const ratingForm = document.getElementById('ratingForm');
+    const ratingStars = document.querySelectorAll('.rating-star');
+    const confirmButton = document.getElementById('confirmRating');
+    const ratingMessage = document.getElementById('ratingMessage');
+    let selectedRating = 0;
+    let currentHotelId = null;
+
+    // Function to reset modal state
+    function resetModal() {
+        selectedRating = 0;
+        ratingStars.forEach(star => star.classList.remove('selected'));
+        confirmButton.disabled = true;
+        ratingMessage.textContent = '';
+        ratingMessage.className = 'mt-2';
+    }
+
+    // Star rating selection
+    ratingStars.forEach(star => {
+        star.addEventListener('click', function() {
+            selectedRating = parseInt(this.dataset.rating);
+            ratingStars.forEach(s => {
+                s.classList.remove('selected');
+                if (parseInt(s.dataset.rating) <= selectedRating) {
+                    s.classList.add('selected');
+                }
+            });
+            confirmButton.disabled = false;
+        });
+    });
+
+    // Form submission
+    ratingForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (!selectedRating || !currentHotelId) return;
+
+        const formData = new FormData();
+        formData.append('rating', selectedRating);
+        formData.append('_token', this.querySelector('[name="_token"]').value);
+
+        fetch(`/rating/${currentHotelId}/submit`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                ratingMessage.textContent = 'Note enregistrée avec succès!';
+                ratingMessage.className = 'mt-2 text-success';
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(ratingModal);
+                    modal.hide();
+                    loadHotels();
+                }, 1500);
+            } else {
+                throw new Error(data.message || 'Une erreur est survenue');
+            }
+        })
+        .catch(error => {
+            ratingMessage.textContent = error.message || 'Une erreur est survenue lors de l\'envoi';
+            ratingMessage.className = 'mt-2 text-danger';
+        });
+    });
+
+    // Reset modal when it's hidden
+    ratingModal.addEventListener('hidden.bs.modal', resetModal);
+
+    // Make the openRatingModal function globally available
+    window.openRatingModal = function(hotelId) {
+        currentHotelId = hotelId;
+        resetModal();
+        
+        // Check if user can rate
+        fetch(`/rating/${hotelId}/check`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.canRate) {
+                ratingMessage.textContent = 'Vous avez déjà noté cet hôtel';
+                ratingMessage.className = 'mt-2 text-warning';
+                confirmButton.disabled = true;
+            }
+        })
+        .catch(error => {
+            ratingMessage.textContent = 'Une erreur est survenue lors de la vérification';
+            ratingMessage.className = 'mt-2 text-danger';
+            confirmButton.disabled = true;
+        });
+
+        const modal = new bootstrap.Modal(ratingModal);
+        modal.show();
+    };
 });
-}, 1800000);
-});
+
+// Load hotels with filters
+window.loadHotels = function(page = 1) {
+    const search = document.getElementById('searchInput')?.value || '';
+    const sort = document.getElementById('sortSelect')?.value || 'default';
+    const rating = document.getElementById('ratingFilter')?.value || '';
+    const maxPrice = document.getElementById('priceRange')?.value || 1000;
+    
+    const url = new URL('{{ path("app_hotel_chambre_list") }}', window.location.origin);
+    url.searchParams.set('page', page);
+    url.searchParams.set('search', search);
+    url.searchParams.set('sort', sort);
+    url.searchParams.set('rating', rating);
+    url.searchParams.set('maxPrice', maxPrice);
+    
+    fetch(url.toString(), {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.querySelector('#hotelList').innerHTML = html;
+        // Scroll to top of the list
+        document.querySelector('#hotelList').scrollIntoView({ behavior: 'smooth' });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.querySelector('#hotelList').innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Erreur</h4>
+                <p>Une erreur est survenue lors du chargement des hôtels: ${error.message}</p>
+                <hr>
+                <p class="mb-0">
+                    <button type="button" class="btn btn-outline-primary" onclick="loadHotels()">
+                        <i class="fas fa-sync-alt"></i> Réessayer
+                    </button>
+                </p>
+            </div>
+        `;
+    });
+};
 </script>
-<script>
-	toastr.options = {
-"closeButton": true,
-"progressBar": true,
-"positionClass": "toast-top-right",
-"timeOut": "5000"
-};{% for label, messages in app.flashes %}{% for message in messages %}toastr["{{ label }}"]("{{ message }}");{% endfor %}{% endfor %}
-</script>
-
-
-<script>
-	// Hide the loading screen when the page has loaded
-window.addEventListener('load', function () {
-var loadingScreen = document.getElementById('loading-screen');
-if (loadingScreen) {
-loadingScreen.style.display = 'none';
-}
-});
-</script>
-<script>
-	function toggleChatWindow() {
-const chatWindow = document.getElementById("chat-window");
-}
-
-// Afficher un message dans la fenêtre de chat
-function appendMessage(sender, message) {
-const chatMessages = document.getElementById("chat-messages");
-const messageDiv = document.createElement("div");
-messageDiv.classList.add("chat-message", sender);
-messageDiv.textContent = message;
-chatMessages.appendChild(messageDiv);
-chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-let lastQuestion = "";
-
-async function sendMessage(event) {
-event.preventDefault();
-
-const input = document.getElementById("user-question");
-const message = input.value.trim();
-
-if (! message || message === lastQuestion) 
-return;
-
-
-
-lastQuestion = message;
-
-appendMessage("user", message);
-
-try {
-const response = await fetch("http://localhost:5000/ask-chatbot", {
-method: "POST",
-headers: {
-"Content-Type": "application/json"
-},
-body: JSON.stringify(
-{question: message}
-)
-});
-
-if (response.ok) {
-const data = await response.json();
-appendMessage("bot", data.answer || "Je n’ai pas compris. Pouvez-vous reformuler ?");
-} else {
-appendMessage("bot", "Erreur serveur. Essayez plus tard.");
-}
-} catch (error) {
-console.error("Erreur:", error);
-appendMessage("bot", "Connexion impossible. Veuillez réessayer.");
-}
-
-input.value = "";
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-appendMessage("bot", "👋 Bonjour ! Comment puis-je vous aider ?");
-});
-
-document.getElementById("chat-form").addEventListener("submit", sendMessage);
-document.getElementById("user-question").addEventListener("keypress", function (e) {
-if (e.key === "Enter") {
-sendMessage(e);
-}
-});
-</script></script></script></script></script></script></script></script></script></script>{% endblock %}
+{% endblock %}

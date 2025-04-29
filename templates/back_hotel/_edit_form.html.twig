@@ -1,0 +1,161 @@
+<!-- Edit Hotel Modal -->
+<div class="modal fade" id="editHotelModal" tabindex="-1" role="dialog" aria-labelledby="editHotelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="editHotelModalLabel">Modifier Hotel</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="material-icons">clear</i>
+                </button>
+            </div>
+            {{ form_start(form, {'attr': {'id': 'editHotelForm', 'method': 'POST', 'enctype': 'multipart/form-data'}}) }}
+                <div class="modal-body">
+                    <div class="form-group">
+                        {{ form_label(form.nomHotel, 'Nom', {'label_attr': {'for': 'edit_nomHotel'}}) }}
+                        {{ form_widget(form.nomHotel, {'attr': {
+                            'id': 'edit_nomHotel',
+                            'class': 'form-control',
+                            'placeholder': 'Nom de l\'hôtel',
+                            'required': 'required'
+                        }}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.nomHotel) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.localisationHotel, 'Localisation', {'label_attr': {'for': 'edit_localisationHotel'}}) }}
+                        {{ form_widget(form.localisationHotel, {'attr': {
+                            'id': 'edit_localisationHotel',
+                            'class': 'form-control',
+                            'placeholder': 'Localisation de l\'hôtel',
+                            'required': 'required'
+                        }}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.localisationHotel) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.numTelephoneHotel, 'Téléphone', {'label_attr': {'for': 'edit_numTelephoneHotel'}}) }}
+                        {{ form_widget(form.numTelephoneHotel, {'attr': {
+                            'id': 'edit_numTelephoneHotel',
+                            'class': 'form-control',
+                            'placeholder': 'Numéro de téléphone',
+                            'required': 'required'
+                        }}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.numTelephoneHotel) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.emailHotel, 'Email', {'label_attr': {'for': 'edit_emailHotel'}}) }}
+                        {{ form_widget(form.emailHotel, {'attr': {
+                            'id': 'edit_emailHotel',
+                            'class': 'form-control',
+                            'placeholder': 'Adresse email',
+                            'required': 'required'
+                        }}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.emailHotel) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.descriptionHotel, 'Description', {'label_attr': {'for': 'edit_descriptionHotel'}}) }}
+                        {{ form_widget(form.descriptionHotel, {'attr': {
+                            'id': 'edit_descriptionHotel',
+                            'class': 'form-control',
+                            'placeholder': 'Description de l\'hôtel',
+                            'required': 'required'
+                        }}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.descriptionHotel) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.promotionHotel, 'Promotion', {'label_attr': {'for': 'edit_promotionHotel'}}) }}
+                        {{ form_widget(form.promotionHotel, {'attr': {
+                            'id': 'edit_promotionHotel',
+                            'class': 'form-control',
+                            'placeholder': 'Promotion en %',
+                            'min': '0',
+                            'max': '100',
+                            'step': '0.1'
+                        }}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.promotionHotel) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.imageHotel, 'Image', {'label_attr': {'for': 'edit_imageHotel'}}) }}
+                        {{ form_widget(form.imageHotel, {'attr': {
+                            'id': 'edit_imageHotel',
+                            'class': 'form-control-file'
+                        }}) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.imageHotel) }}
+                        </div>
+                        {% if hotel.imageHotel %}
+                            <div class="mt-2">
+                                <img src="{{ asset('uploads/hotels/' ~ hotel.imageHotel) }}" alt="Current hotel image" class="img-thumbnail" style="max-width: 200px;">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('editHotelForm');
+    
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        if (!form.checkValidity()) {
+            event.stopPropagation();
+            form.classList.add('was-validated');
+            return;
+        }
+        
+        const formData = new FormData(form);
+        
+        fetch('{{ path('app_back_hotel_edit', {'id': hotel.id}) }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                const toast = new bootstrap.Toast(document.querySelector('.toast'));
+                toast.show();
+                
+                // Close modal
+                $('#editHotelModal').modal('hide');
+                
+                // Reload the page after a short delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                // Show error message
+                alert(data.message);
+                if (data.errors) {
+                    data.errors.forEach(error => {
+                        alert(error);
+                    });
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue lors de la modification de l\'hôtel');
+        });
+    });
+});
+</script> 

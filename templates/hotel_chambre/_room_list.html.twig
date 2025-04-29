@@ -1,0 +1,184 @@
+{% if error is defined and error %}
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Erreur</h4>
+        <p>{{ error }}</p>
+        <hr>
+        <p class="mb-0">
+            <button type="button" class="btn btn-outline-primary" onclick="loadRooms()" style="border-color: #ff681a; color: #ff681a;">
+                <i class="fas fa-sync-alt"></i> Réessayer
+            </button>
+        </p>
+    </div>
+{% else %}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une chambre..." 
+                       value="{{ app.request.query.get('search', '') }}">
+                <button class="btn btn-primary" type="button" onclick="loadRooms()" style="background-color: #ff681a; border-color: #ff681a;">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <select id="sortSelect" class="form-select" onchange="loadRooms()">
+                        <option value="default" {% if app.request.query.get('sort') == 'default' %}selected{% endif %}>Trier par</option>
+                        <option value="price_asc" {% if app.request.query.get('sort') == 'price_asc' %}selected{% endif %}>Prix croissant</option>
+                        <option value="price_desc" {% if app.request.query.get('sort') == 'price_desc' %}selected{% endif %}>Prix décroissant</option>
+                        <option value="type" {% if app.request.query.get('sort') == 'type' %}selected{% endif %}>Type de chambre</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if chambres is empty %}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Aucune chambre</h4>
+            <p>Aucune chambre ne correspond à vos critères de recherche.</p>
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for chambre in chambres %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if chambre.hotel.promotion and chambre.hotel.promotion > 0 %}
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-danger fs-6">-{{ chambre.hotel.promotion }}%</span>
+                            </div>
+                        {% endif %}
+                        {% if chambre.image %}
+                            <img src="{{ asset('uploads/chambres/' ~ chambre.image) }}" class="card-img-top" alt="{{ chambre.type }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-bed fa-3x" style="color: #ff681a;"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title" style="color: #ff681a;">{{ chambre.type }}</h5>
+                            <p class="card-text">{{ chambre.description }}</p>
+                            <div class="card-text">
+                                {% if chambre.hotel.promotion and chambre.hotel.promotion > 0 %}
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-decoration-line-through text-muted me-2">{{ chambre.prix }} €</span>
+                                        <span class="text-success fw-bold">{{ (chambre.prix * (1 - chambre.hotel.promotion/100))|number_format(2) }} €</span>
+                                    </div>
+                                {% else %}
+                                    <p class="card-text">
+                                        <strong style="color: #ff681a;">Prix par nuit:</strong> {{ chambre.prix }} €
+                                    </p>
+                                {% endif %}
+                            </div>
+                            <div class="mt-auto text-end">
+                                <a href="{{ path('app_room_reservation', {'id': chambre.id}) }}" class="btn btn-primary" style="background-color: #ff681a; border-color: #ff681a;">
+                                    <i class="fas fa-calendar-check me-1"></i> Réserver
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if pagination is defined and pagination.totalPages > 1 %}
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if pagination.hasPreviousPage %}
+                            <li class="page-item">
+                                <a class="page-link" href="#" onclick="loadRooms({{ pagination.currentPage - 1 }})" style="color: #ff681a;">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page in pagination.pages %}
+                            <li class="page-item {% if page == pagination.currentPage %}active{% endif %}">
+                                <a class="page-link" href="#" onclick="loadRooms({{ page }})" 
+                                   style="{% if page == pagination.currentPage %}background-color: #ff681a; border-color: #ff681a;{% else %}color: #ff681a;{% endif %}">
+                                    {{ page }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        
+                        {% if pagination.hasNextPage %}
+                            <li class="page-item">
+                                <a class="page-link" href="#" onclick="loadRooms({{ pagination.currentPage + 1 }})" style="color: #ff681a;">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <style>
+        .form-control:focus, .form-select:focus {
+            border-color: #ff681a;
+            box-shadow: 0 0 0 0.2rem rgba(255, 104, 26, 0.25);
+        }
+        .card {
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-primary:hover {
+            background-color: #e55a15;
+            border-color: #e55a15;
+        }
+    </style>
+
+    <script>
+        // Make loadRooms function globally available
+        window.loadRooms = function(page = 1) {
+            const search = document.getElementById('searchInput')?.value || '';
+            const sort = document.getElementById('sortSelect')?.value || 'default';
+            
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            url.searchParams.set('search', search);
+            url.searchParams.set('sort', sort);
+
+            fetch(url.toString(), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.querySelector('#room-list-container').innerHTML = html;
+                // Scroll to top of the list
+                document.querySelector('#room-list-container').scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.querySelector('#room-list-container').innerHTML = 
+                    '<div class="alert alert-danger">Une erreur est survenue lors du chargement des chambres</div>';
+            });
+        };
+
+        // Add event listeners for search input
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function(e) {
+                    if (e.key === 'Enter') {
+                        loadRooms(1);
+                    }
+                });
+            }
+
+            const sortSelect = document.getElementById('sortSelect');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', function() {
+                    loadRooms(1);
+                });
+            }
+        });
+    </script>
+{% endif %} 

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chambre{% endblock %}
+
+{% block body %}
+    <h1>Chambre</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ chambre.id }}</td>
+            </tr>
+            <tr>
+                <th>Id_Chambre</th>
+                <td>{{ chambre.idChambre }}</td>
+            </tr>
+            <tr>
+                <th>Type_Chambre</th>
+                <td>{{ chambre.typeChambre }}</td>
+            </tr>
+            <tr>
+                <th>Prix_Chambre</th>
+                <td>{{ chambre.prixChambre }}</td>
+            </tr>
+            <tr>
+                <th>Disponibilite_Chambre</th>
+                <td>{{ chambre.disponibiliteChambre }}</td>
+            </tr>
+            <tr>
+                <th>Description_Chambre</th>
+                <td>{{ chambre.descriptionChambre }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chambre_index') }}">back to list</a>
+
+    <a href="{{ path('app_chambre_edit', {'id': chambre.id}) }}">edit</a>
+
+    {{ include('chambre/_delete_form.html.twig') }}
+{% endblock %}
