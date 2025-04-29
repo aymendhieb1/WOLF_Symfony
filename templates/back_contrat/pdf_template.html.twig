@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: helvetica, sans-serif;
+            font-size: 12pt;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24pt;
+            margin-bottom: 30px;
+        }
+        .contract-details {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .contract-details td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .label {
+            font-weight: bold;
+            width: 40%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 10pt;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Contrat de Location</h1>
+    </div>
+
+    <table class="contract-details">
+        <tr>
+            <td class="label">Date de début:</td>
+            <td>{{ dateD }}</td>
+        </tr>
+        <tr>
+            <td class="label">Date de fin:</td>
+            <td>{{ dateF }}</td>
+        </tr>
+        <tr>
+            <td class="label">CIN Locataire:</td>
+            <td>{{ cinLocateur }}</td>
+        </tr>
+        <tr>
+            <td class="label">Matricule du véhicule:</td>
+            <td>{{ matricule }}</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <p>Document généré le {{ "now"|date("d/m/Y H:i") }}</p>
+        <p>TripToGo - Contrat de Location N° {{ contrat.idLocation }}</p>
+    </div>
+</body>
+</html> 

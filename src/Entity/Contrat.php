@@ -11,8 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Contrat
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(name: "id_location", type: "integer")]
+    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\Column(name: "id_location", type: "integer", options: ["unsigned" => true])]
     private ?int $id_location = null;
 
     #[ORM\Column(name: "dateD", type: "string", length: 255)]
@@ -41,7 +41,7 @@ class Contrat
         return $this->id_location;
     }
 
-    public function setIdLocation(int $id_location): static
+    public function setIdLocation(?int $id_location): self
     {
         $this->id_location = $id_location;
         return $this;
@@ -52,7 +52,7 @@ class Contrat
         return $this->dateD;
     }
 
-    public function setDateD(?string $dateD): static
+    public function setDateD(?string $dateD): self
     {
         $this->dateD = $dateD;
         return $this;
@@ -63,7 +63,7 @@ class Contrat
         return $this->dateF;
     }
 
-    public function setDateF(?string $dateF): static
+    public function setDateF(?string $dateF): self
     {
         $this->dateF = $dateF;
         return $this;
@@ -74,7 +74,7 @@ class Contrat
         return $this->cinLocateur;
     }
 
-    public function setCinLocateur(int $cinLocateur): static
+    public function setCinLocateur(?int $cinLocateur): self
     {
         $this->cinLocateur = $cinLocateur;
         return $this;
@@ -85,7 +85,7 @@ class Contrat
         return $this->photo_permit;
     }
 
-    public function setPhotoPermit(?string $photo_permit): static
+    public function setPhotoPermit(?string $photo_permit): self
     {
         $this->photo_permit = $photo_permit;
         return $this;
@@ -96,7 +96,7 @@ class Contrat
         return $this->id_vehicule;
     }
 
-    public function setIdVehicule(?Vehicule $id_vehicule): static
+    public function setIdVehicule(?Vehicule $id_vehicule): self
     {
         $this->id_vehicule = $id_vehicule;
         return $this;

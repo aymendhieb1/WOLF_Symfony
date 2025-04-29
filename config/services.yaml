@@ -4,6 +4,13 @@ parameters:
   permits_directory: "uploads/permits"
   uploads_directory: "%kernel.project_dir%/public/uploads"
   hotel_images_directory: "%kernel.project_dir%/public/uploads/hotels"
+  twilio_account_sid: "%env(TWILIO_ACCOUNT_SID)%"
+  twilio_auth_token: "%env(TWILIO_AUTH_TOKEN)%"
+  twilio_from_number: "%env(TWILIO_PHONE_NUMBER)%"
+  google_calendar_client_id: "522491585292-v87ju258ql3lfvjm06s5959bsjh50fp4.apps.googleusercontent.com"
+  google_calendar_client_secret: "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"
+  google_calendar_redirect_uri: "http://127.0.0.1:8000/back/contrat/google-calendar/callback"
+  mailer_from: "%env(MAILER_FROM)%"
 
 services:
   _defaults:
@@ -20,3 +27,9 @@ services:
   App\Controller\BackContratController:
     arguments:
       $uploadsDirectory: "uploads/permits"
+
+  App\Service\GoogleCalendarService:
+    arguments:
+      $clientId: "%google_calendar_client_id%"
+      $clientSecret: "%google_calendar_client_secret%"
+      $redirectUri: "%google_calendar_redirect_uri%"
