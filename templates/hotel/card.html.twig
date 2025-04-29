@@ -44,7 +44,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
-    }
+    }Q
 
     .rating-disabled {
         pointer-events: none;
@@ -111,7 +111,7 @@
         {% endif %}
 
         <div class="mt-3">
-            <a href="{{ path('app_hotel_detail', {'id': hotel.id}) }}" class="btn btn-primary">Voir les chambres</a>
+            <a href="{{ path('app_hotel_rooms', {'id': hotel.id}) }}" class="btn btn-primary">Voir les chambres</a>
         </div>
     </div>
 </div>

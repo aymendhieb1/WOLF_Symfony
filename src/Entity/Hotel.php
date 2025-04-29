@@ -52,9 +52,13 @@ class Hotel
     #[ORM\OneToMany(targetEntity: Chambre::class, mappedBy: 'hotel')]
     private Collection $chambres;
 
+    #[ORM\OneToMany(mappedBy: 'hotel', targetEntity: Rating::class)]
+    private Collection $ratings;
+
     public function __construct()
     {
         $this->chambres = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -166,6 +170,53 @@ class Hotel
             }
         }
 
+        return $this;
+    }
+
+    public function getAverageRating(): float
+    {
+        if ($this->ratings->isEmpty()) {
+            return 0.0;
+        }
+
+        $total = 0;
+        foreach ($this->ratings as $rating) {
+            $total += $rating->getStars();
+        }
+
+        return round($total / $this->ratings->count(), 1);
+    }
+
+    public function getTotalRatings(): int
+    {
+        return $this->ratings->count();
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): self
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setHotel($this);
+        }
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): self
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getHotel() === $this) {
+                $rating->setHotel(null);
+            }
+        }
         return $this;
     }
 } 

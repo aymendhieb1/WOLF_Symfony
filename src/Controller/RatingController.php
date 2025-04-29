@@ -11,52 +11,72 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Response;
+use App\Repository\HotelRepository;
+use App\Repository\RatingRepository;
+use App\Repository\ReservationChambreRepository;
 
 class RatingController extends AbstractController
 {
-    #[Route('/rating/submit/{hotelId}', name: 'app_rating_submit', methods: ['POST'])]
+    #[Route('/rating/{hotelId}/submit', name: 'app_rating_submit', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function submitRating(Request $request, EntityManagerInterface $entityManager, int $hotelId): JsonResponse
+    public function submitRating(Request $request, int $hotelId, HotelRepository $hotelRepository, RatingRepository $ratingRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
-            if (!$request->isXmlHttpRequest()) {
-                throw new \Exception('Only AJAX requests are allowed');
+            if (!$this->isCsrfTokenValid('rate', $request->request->get('_token'))) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Token invalide'
+                ], Response::HTTP_BAD_REQUEST);
             }
 
-            // Validate CSRF token
-            $submittedToken = $request->request->get('_token');
-            if (!$this->isCsrfTokenValid('rating', $submittedToken)) {
-                throw new InvalidCsrfTokenException('Invalid CSRF token');
+            $hotel = $hotelRepository->find($hotelId);
+            if (!$hotel) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Hôtel non trouvé'
+                ], Response::HTTP_NOT_FOUND);
             }
 
             $user = $this->getUser();
-            $hotel = $entityManager->getRepository(Hotel::class)->find($hotelId);
-
-            if (!$hotel) {
-                throw new \Exception('Hôtel non trouvé');
+            if (!$user) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Vous devez être connecté pour noter un hôtel'
+                ], Response::HTTP_UNAUTHORIZED);
             }
 
-            $ratingRepository = $entityManager->getRepository(Rating::class);
-            
-            // Check if user can rate
-            if (!$ratingRepository->canUserRateHotel($user, $hotel)) {
-                throw new \Exception('Vous ne pouvez pas noter cet hôtel. Soit vous n\'avez pas de réservation, soit vous avez déjà noté cet hôtel.');
+            // Check if user has already rated this hotel
+            $existingRating = $ratingRepository->findOneBy([
+                'hotel' => $hotel,
+                'user' => $user
+            ]);
+
+            if ($existingRating) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Vous avez déjà noté cet hôtel'
+                ], Response::HTTP_BAD_REQUEST);
             }
 
-            $stars = $request->request->get('stars');
-            if (!is_numeric($stars) || $stars < 1 || $stars > 5) {
-                throw new \Exception('Note invalide. La note doit être entre 1 et 5.');
+            $rating = $request->request->get('rating');
+            if (!is_numeric($rating) || $rating < 1 || $rating > 5) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Note invalide'
+                ], Response::HTTP_BAD_REQUEST);
             }
 
-            $rating = new Rating();
-            $rating->setUser($user);
-            $rating->setHotel($hotel);
-            $rating->setStars((int)$stars);
+            $newRating = new Rating();
+            $newRating->setHotel($hotel)
+                     ->setUser($user)
+                     ->setStars((int)$rating);
 
-            $entityManager->persist($rating);
+            $entityManager->persist($newRating);
             $entityManager->flush();
 
-            // Get updated stats
             $stats = $ratingRepository->getRatingStats($hotel);
 
             return new JsonResponse([
@@ -65,65 +85,75 @@ class RatingController extends AbstractController
                 'averageRating' => $stats['average'],
                 'totalRatings' => $stats['total']
             ]);
-
-        } catch (InvalidCsrfTokenException $e) {
-            return new JsonResponse([
-                'success' => false,
-                'error' => 'Session expirée. Veuillez rafraîchir la page.'
-            ], 403);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,
-                'error' => $e->getMessage()
-            ], 400);
+                'message' => 'Une erreur est survenue lors de l\'enregistrement de la note'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    #[Route('/rating/check/{hotelId}', name: 'app_rating_check', methods: ['GET'])]
-    public function checkRating(Request $request, EntityManagerInterface $entityManager, int $hotelId): JsonResponse
+    #[Route('/rating/{hotelId}/check', name: 'app_rating_check', methods: ['GET'])]
+    public function checkRating(int $hotelId, HotelRepository $hotelRepository, RatingRepository $ratingRepository, ReservationChambreRepository $reservationRepo): JsonResponse
     {
         try {
-            $hotel = $entityManager->getRepository(Hotel::class)->find($hotelId);
-
+            $hotel = $hotelRepository->find($hotelId);
             if (!$hotel) {
+                throw new NotFoundHttpException('Hotel not found');
+            }
+
+            $user = $this->getUser();
+            if (!$user) {
                 return new JsonResponse([
-                    'success' => false,
-                    'error' => 'Hôtel non trouvé',
-                    'averageRating' => 0,
-                    'totalRatings' => 0
+                    'canRate' => false,
+                    'message' => 'Vous devez être connecté pour noter un hôtel'
                 ]);
             }
 
-            $ratingRepository = $entityManager->getRepository(Rating::class);
-            $stats = $ratingRepository->getRatingStats($hotel);
-            
-            $user = $this->getUser();
-            if ($user) {
-                $canRate = $ratingRepository->canUserRateHotel($user, $hotel);
-                $currentRating = $ratingRepository->findUserRatingForHotel($user, $hotel);
-                
+            // Check if user has already rated this hotel
+            $existingRating = $ratingRepository->findOneBy([
+                'hotel' => $hotel,
+                'user' => $user
+            ]);
+
+            if ($existingRating) {
                 return new JsonResponse([
-                    'success' => true,
-                    'canRate' => $canRate,
-                    'currentRating' => $currentRating ? $currentRating->getStars() : null,
-                    'averageRating' => $stats['average'],
-                    'totalRatings' => $stats['total']
+                    'canRate' => false,
+                    'message' => 'Vous avez déjà noté cet hôtel'
                 ]);
             }
+
+            // Check if user has a reservation for this hotel
+            $hasReservation = $reservationRepo->createQueryBuilder('r')
+                ->join('r.chambre', 'c')
+                ->join('c.hotel', 'h')
+                ->where('h.id = :hotelId')
+                ->andWhere('r.user = :user')
+                ->andWhere('r.dateFin >= :today')
+                ->setParameter('hotelId', $hotelId)
+                ->setParameter('user', $user)
+                ->setParameter('today', new \DateTime())
+                ->getQuery()
+                ->getResult();
+
+            if (empty($hasReservation)) {
+                return new JsonResponse([
+                    'canRate' => false,
+                    'message' => 'Vous devez avoir effectué une réservation dans cet hôtel pour pouvoir le noter'
+                ]);
+            }
+
+            $stats = $ratingRepository->getRatingStats($hotel);
 
             return new JsonResponse([
-                'success' => true,
+                'canRate' => true,
                 'averageRating' => $stats['average'],
                 'totalRatings' => $stats['total']
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
-                'success' => false,
-                'error' => $e->getMessage(),
-                'averageRating' => 0,
-                'totalRatings' => 0
-            ]);
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 } 

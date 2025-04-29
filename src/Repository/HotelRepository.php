@@ -61,4 +61,24 @@ class HotelRepository extends ServiceEntityRepository
     {
         return $originalPrice - ($originalPrice * $promotionPercentage / 100);
     }
+
+    public function getPriceRange(): array
+    {
+        try {
+            $qb = $this->createQueryBuilder('h');
+            $result = $qb->select('MIN(h.prix) as min, MAX(h.prix) as max')
+                ->getQuery()
+                ->getSingleResult();
+
+            return [
+                'min' => $result['min'] ?? 0,
+                'max' => $result['max'] ?? 1000
+            ];
+        } catch (\Exception $e) {
+            return [
+                'min' => 0,
+                'max' => 1000
+            ];
+        }
+    }
 } 

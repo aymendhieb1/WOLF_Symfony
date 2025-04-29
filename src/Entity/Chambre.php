@@ -6,6 +6,8 @@ use App\Repository\ChambreRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ChambreRepository::class)]
 #[ORM\Table(name: 'chambre')]
@@ -45,6 +47,17 @@ class Chambre
     #[ORM\JoinColumn(name: 'id_hotel_Chambre', referencedColumnName: 'id_hotel')]
     #[Assert\NotBlank(message: "L'hôtel est obligatoire")]
     private ?Hotel $hotel = null;
+
+    #[ORM\OneToMany(mappedBy: 'chambre', targetEntity: ReservationChambre::class)]
+    private Collection $reservations;
+
+    #[ORM\Column(name: 'image_chambre', length: 255, nullable: true)]
+    private ?string $image = null;
+
+    public function __construct()
+    {
+        $this->reservations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +116,45 @@ class Chambre
     public function setHotel(?Hotel $hotel): static
     {
         $this->hotel = $hotel;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReservationChambre>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(ReservationChambre $reservation): self
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setChambre($this);
+        }
+        return $this;
+    }
+
+    public function removeReservation(ReservationChambre $reservation): self
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getChambre() === $this) {
+                $reservation->setChambre(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
         return $this;
     }
 } 

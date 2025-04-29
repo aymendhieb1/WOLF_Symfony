@@ -248,34 +248,30 @@ class PaymentController extends AbstractController
 
                     $this->mailer->send($email);
                 } catch (\Exception $e) {
-                    // Log the error but don't stop the process
-                    // The reservation is still valid even if email fails
-                    $this->addFlash('warning', 'La réservation est confirmée mais l\'email de confirmation n\'a pas pu être envoyé.');
+                    // Log email error but don't fail the transaction
+                    $this->logger->error('Failed to send confirmation email: ' . $e->getMessage());
                 }
 
                 // Commit transaction
                 $entityManager->commit();
 
-                // Add success message
-                $this->addFlash('success', 'Votre réservation a été confirmée avec succès !');
-
+                // Render success page with all required variables
                 return $this->render('payment/success.html.twig', [
                     'reservation' => $reservation,
                     'payment' => $payment,
-                    'qrCodeUrl' => $qrCodeUrl,
                     'hotelName' => $chambre->getHotel()->getNom(),
+                    'qrCodeUrl' => $qrCodeUrl,
                     'location' => $location
                 ]);
 
             } catch (\Exception $e) {
-                // Rollback transaction on error
                 $entityManager->rollback();
                 throw $e;
             }
-
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Une erreur est survenue lors de la finalisation de la réservation: ' . $e->getMessage());
-            return $this->redirectToRoute('app_home');
+            return $this->render('payment/error.html.twig', [
+                'error' => $e->getMessage()
+            ]);
         }
     }
 } 

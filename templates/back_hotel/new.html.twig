@@ -9,8 +9,8 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header card-header-primary">
-                                <h4 class="card-title">Nouvel Hôtel</h4>
+                            <div class="card-header" style="background-color: #ff681a;">
+                                <h4 class="card-title" style="color: white;">Nouvel Hôtel</h4>
                             </div>
                             <div class="card-body">
                                 {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'hotel-form'}}) }}
@@ -28,7 +28,7 @@
                                             {{ form_widget(form.localisation, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
                                             <div class="invalid-feedback" id="localisation-error"></div>
                                         </div>
-                                        <button type="button" class="btn btn-primary" onclick="showMap()">
+                                        <button type="button" class="btn" style="background-color: #ff681a; color: white;" onclick="showMap()">
                                             <i class="fas fa-map-marker-alt"></i> Select Location
                                         </button>
                                     </div>
@@ -76,7 +76,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                        <button type="submit" class="btn" style="background-color: #ff681a; color: white;">Enregistrer</button>
                                         <a href="{{ path('app_back_hotel_index') }}" class="btn btn-default">Retour à la liste</a>
                                     </div>
                                 </div>

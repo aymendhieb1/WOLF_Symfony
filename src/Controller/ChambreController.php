@@ -10,10 +10,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[Route('/back/chambre')]
 class ChambreController extends AbstractController
 {
+    public function __construct(
+        private string $chambreImagesDirectory
+    ) {
+        // Create the directory if it doesn't exist
+        if (!file_exists($this->chambreImagesDirectory)) {
+            mkdir($this->chambreImagesDirectory, 0777, true);
+        }
+    }
+
     #[Route('/', name: 'app_back_chambre', methods: ['GET'])]
     public function index(ChambreRepository $chambreRepository): Response
     {
@@ -24,13 +35,32 @@ class ChambreController extends AbstractController
     }
 
     #[Route('/new', name: 'app_back_chambre_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $chambre = new Chambre();
         $form = $this->createForm(ChambreType::class, $chambre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->chambreImagesDirectory,
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                $chambre->setImage($newFilename);
+            }
+
             $entityManager->persist($chambre);
             $entityManager->flush();
 
@@ -58,7 +88,7 @@ class ChambreController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_back_chambre_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, int $id, EntityManagerInterface $entityManager, ChambreRepository $chambreRepository): Response
+    public function edit(Request $request, int $id, EntityManagerInterface $entityManager, ChambreRepository $chambreRepository, SluggerInterface $slugger): Response
     {
         $chambre = $chambreRepository->find($id);
         
@@ -70,6 +100,33 @@ class ChambreController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->chambreImagesDirectory,
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                // Delete old image if exists
+                if ($chambre->getImage()) {
+                    $oldImage = $this->chambreImagesDirectory.'/'.$chambre->getImage();
+                    if (file_exists($oldImage)) {
+                        unlink($oldImage);
+                    }
+                }
+
+                $chambre->setImage($newFilename);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_back_chambre', [], Response::HTTP_SEE_OTHER);
@@ -91,6 +148,14 @@ class ChambreController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete'.$chambre->getId(), $request->request->get('_token'))) {
+            // Delete image file if exists
+            if ($chambre->getImage()) {
+                $imagePath = $this->chambreImagesDirectory.'/'.$chambre->getImage();
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
             $entityManager->remove($chambre);
             $entityManager->flush();
         }

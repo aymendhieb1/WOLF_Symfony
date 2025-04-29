@@ -1,959 +1,233 @@
-{% extends 'base1.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Hôtels{% endblock %}
 
 {% block body %}
-    <!-- Add Bootstrap and jQuery if not already in base template -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-        :root {
-            --theme-color: #ff681a;
-            --secondary-color: #2f4858;
-            --light-gray: #f8f9fa;
-            --dark-gray: #333;
-        }
-
-        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap');
-
-        body {
-            font-family: 'Jost', sans-serif;
-            background-color: #f5f5f5;
-        }
-
-        .page-header {
-            background: linear-gradient(135deg, #ff681a, #2f4858);
-            color: white;
-            padding: 3rem 0;
-            margin-bottom: 3rem;
-        }
-
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .filter-menu {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .filter-button {
-            background: white;
-            border: 2px solid var(--theme-color);
-            color: var(--theme-color);
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-button.active {
-            background: var(--theme-color);
-            color: white;
-        }
-
-        .filter-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 104, 26, 0.2);
-        }
-
-        /* Hotel Cards */
-        .hotel-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-            padding: 20px;
-        }
-
-        .hotel-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            height: 100%;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .hotel-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .hotel-image {
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .hotel-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .hotel-card:hover .hotel-image img {
-            transform: scale(1.05);
-        }
-
-        .promotion-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #ff0000;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .hotel-content {
-            padding: 1.5rem;
-        }
-
-        .hotel-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2f4858;
-            margin-bottom: 0.5rem;
-        }
-
-        .hotel-location {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .hotel-location i {
-            color: #ff681a;
-        }
-
-        .hotel-description {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .hotel-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-
-        .view-rooms-btn {
-            background: #ff681a;
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            border: none;
-            font-weight: 600;
-        }
-
-        .view-rooms-btn:hover {
-            background: #e55a0f;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Rooms Section */
-        .rooms-section {
-            display: none;
-            margin-top: 30px;
-            padding: 30px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .rooms-section.active {
-            display: block;
-        }
-
-        .rooms-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .rooms-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--dark-gray);
-        }
-
-        .rooms-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .room-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border: 1px solid #eee;
-        }
-
-        .room-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .room-image {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .room-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .room-card:hover .room-image img {
-            transform: scale(1.05);
-        }
-
-        .room-content {
-            padding: 20px;
-        }
-
-        .room-type {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--dark-gray);
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .availability-badge {
-            font-size: 0.8rem;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        .available {
-            background: #4caf50;
-            color: white;
-        }
-
-        .unavailable {
-            background: #f44336;
-            color: white;
-        }
-
-        .room-features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .room-feature {
-            display: flex;
-            align-items: center;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .room-feature i {
-            color: var(--theme-color);
-            margin-right: 5px;
-        }
-
-        .room-price {
-            margin-bottom: 20px;
-        }
-
-        .price-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .original-price {
-            font-size: 14px;
-            color: #666;
-            text-decoration: line-through;
-            margin-bottom: 2px;
-        }
-
-        .price-amount {
-            font-size: 20px;
-            font-weight: 600;
-            color: #ff681a;
-        }
-
-        .price-label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 4px;
-        }
-
-        .discounted-price {
-            color: #ff0000;
-            font-weight: 700;
-            font-size: 1.3rem;
-        }
-
-        .book-btn {
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            font-family: 'Jost', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .book-btn:hover:not(:disabled) {
-            background: #1d3644;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(47, 72, 88, 0.2);
-        }
-
-        .book-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 768px) {
-            .hotel-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .rooms-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hotel-location {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-        }
-
-        .pagination {
-            margin-top: 2rem;
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: #ff681a;
-            border-color: #ff681a;
-        }
-
-        .pagination .page-link {
-            color: #ff681a;
-        }
-
-        .rating {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .rating > input {
-            display: none;
-        }
-
-        .rating > label {
-            position: relative;
-            width: 1.1em;
-            font-size: 40px;
-            color: #ddd;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .rating > label:before {
-            content: "★";
-            position: absolute;
-            color: #FFD700;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .rating > label:hover:before,
-        .rating > label:hover ~ label:before {
-            opacity: 1;
-        }
-
-        .rating > input:checked ~ label:before {
-            opacity: 1;
-        }
-
-        .rating:hover > input:checked ~ label:before {
-            opacity: 0.4;
-        }
-
-        .rating-container {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .btn-primary {
-            background-color: #ff681a;
-            border-color: #ff681a;
-            padding: 10px 30px;
-            font-weight: 600;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background-color: #e55a0f;
-            border-color: #e55a0f;
-        }
-
-        .btn-primary:disabled {
-            background-color: #ffa07a;
-            border-color: #ffa07a;
-        }
-
-        .average-rating {
-            color: #FFD700;
-            font-size: 18px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .rating-disabled {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        .stars-outer {
-            display: inline-block;
-            position: relative;
-            font-size: 20px;
-        }
-
-        .stars-outer::before {
-            content: "☆☆☆☆☆";
-        }
-
-        .stars-inner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            color: #FFD700;
-        }
-
-        .stars-inner::before {
-            content: "★★★★★";
-        }
-
-        .filters-section {
-            background: #f8f9fa;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-        }
-
-        .price-slider {
-            width: 100%;
-            margin: 20px 0;
-        }
-
-        .room-type-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .stars-container {
-            display: flex;
-            align-items: center;
-        }
+    <div class="container py-4">
+        <h1 class="mb-4">Nos Hôtels</h1>
         
-        .rating-number {
-            font-size: 16px;
-            color: #666;
-            font-weight: 600;
-        }
-
-        .hotel-price {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .btn-rate {
-            background: #FFD700;
-            color: #333;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn-rate:hover {
-            background: #FFC700;
-            transform: translateY(-1px);
-        }
-
-        .btn-rate.disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .btn-rate i {
-            font-size: 12px;
-        }
-
-        .rating {
-            transition: all 0.3s ease;
-        }
-
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-        }
-
-        .modal-header {
-            border-bottom: none;
-            padding: 20px;
-        }
-
-        .modal-body {
-            padding: 20px;
-        }
-
-        .rating-status-message {
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        .promotion-tag {
-            background-color: #ff4444;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-
-        .total-ratings {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .stars-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .stars-outer {
-            position: relative;
-            display: inline-block;
-            font-size: 20px;
-            color: #ddd;
-        }
-
-        .stars-outer::before {
-            content: "☆☆☆☆☆";
-        }
-
-        .stars-inner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            color: #FFD700;
-        }
-
-        .stars-inner::before {
-            content: "★★★★★";
-        }
-
-        .error-message {
-            color: #dc3545;
-        }
-
-        .success-message {
-            color: #28a745;
-        }
-    </style>
-
-    <div class="page-header">
-        <div class="container">
-            <h1 class="text-center mb-3">Découvrez Nos Hôtels</h1>
-            <p class="text-center mb-0">Trouvez l'hébergement parfait pour votre séjour</p>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            {% for hotel in hotels %}
-                <div class="col-md-4 mb-4">
-                    <div class="hotel-card">
-                        <div class="hotel-image">
-                            {% if hotel.image %}
-                                <img src="{{ asset('uploads/hotels/' ~ hotel.image) }}" alt="{{ hotel.nom }}" class="hotel-img">
-                            {% else %}
-                                <img src="{{ asset('assets/img/placeholder.jpg') }}" alt="{{ hotel.nom }}">
-                            {% endif %}
-                            {% if hotel.promotion > 0 %}
-                                <div class="promotion-badge">-{{ hotel.promotion }}%</div>
-                            {% endif %}
-                        </div>
-                        <div class="hotel-content">
-                            <h3 class="hotel-title">{{ hotel.nom }}</h3>
-                            
-                            <!-- Rating Display -->
-                            <div class="average-rating mb-3">
-                                <div class="stars-container">
-                                    <div class="stars-outer">
-                                        <div class="stars-inner" id="starsInner{{ hotel.id }}" style="width: 0%"></div>
-                                    </div>
-                                    <span class="rating-number ms-2" id="avgRating{{ hotel.id }}">0.0</span>
-                                    <span class="total-ratings ms-1" id="totalRatings{{ hotel.id }}">(0)</span>
-                                </div>
-                                {% if app.user %}
-                                    <button type="button" class="btn-rate ms-2" data-bs-toggle="modal" data-bs-target="#ratingModal" onclick="prepareRatingModal('{{ hotel.id }}', '{{ hotel.nom }}')" id="rateBtn{{ hotel.id }}">
-                                        <i class="fas fa-star"></i> Noter
-                                    </button>
-                                {% endif %}
-                            </div>
-
-                            <!-- Price and Action Button -->
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="hotel-price">
-                                    <span class="price-label">À partir de</span>
-                                    {% set minPrice = hotelRepository.getMinRoomPrice(hotel) %}
-                                    {% if minPrice is not null %}
-                                        {% if hotel.promotion > 0 %}
-                                            <div class="price-wrapper">
-                                                <span class="original-price">{{ minPrice|number_format(2, '.', ',') }} DT</span>
-                                                {% set discountedPrice = hotelRepository.getDiscountedPrice(minPrice, hotel.promotion) %}
-                                                <span class="price-amount">{{ discountedPrice|number_format(2, '.', ',') }} DT</span>
-                                                <span class="promotion-tag">-{{ hotel.promotion }}%</span>
-                                            </div>
-                                        {% else %}
-                                            <span class="price-amount">{{ minPrice|number_format(2, '.', ',') }} DT</span>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="price-amount">Prix non disponible</span>
-                                    {% endif %}
-                                </div>
-                                <a href="{{ path('app_hotel_rooms', {'id': hotel.id}) }}" class="view-rooms-btn">
-                                    <i class="fas fa-door-open"></i>
-                                    Voir les chambres
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+        <div id="hotelList">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
                 </div>
-            {% endfor %}
-        </div>
-
-        <div class="d-flex justify-content-center">
-            {{ knp_pagination_render(hotels, '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig') }}
-        </div>
-    </div>
-
-    <!-- Single Rating Modal for all hotels -->
-    <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ratingModalLabel">Noter l'hôtel</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <h4 id="hotelNameInModal" class="mb-4"></h4>
-                    <div id="ratingMessageContainer" class="mb-3">
-                        <p id="ratingMessage" class="rating-status-message"></p>
-                    </div>
-                    <div class="rating-container">
-                        <div class="rating" id="modalRatingStars">
-                            <input type="radio" id="star5" name="rating" value="5" />
-                            <label for="star5" title="5 étoiles">★</label>
-                            <input type="radio" id="star4" name="rating" value="4" />
-                            <label for="star4" title="4 étoiles">★</label>
-                            <input type="radio" id="star3" name="rating" value="3" />
-                            <label for="star3" title="3 étoiles">★</label>
-                            <input type="radio" id="star2" name="rating" value="2" />
-                            <label for="star2" title="2 étoiles">★</label>
-                            <input type="radio" id="star1" name="rating" value="1" />
-                            <label for="star1" title="1 étoile">★</label>
-                        </div>
-                        <div class="mt-2 text-muted">
-                            Cliquez sur une étoile pour noter
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary px-4" id="submitRating" onclick="handleSubmit()" disabled>Confirmer</button>
-                </div>
+                <p class="mt-2">Chargement des hôtels...</p>
             </div>
         </div>
     </div>
 
-    <!-- Add CSRF token -->
-    <div id="js-data" 
-         data-check-url="{{ path('app_rating_check', {'hotelId': 'HOTEL_ID'}) }}"
-         data-submit-url="{{ path('app_rating_submit', {'hotelId': 'HOTEL_ID'}) }}"
-         data-token="{{ csrf_token('rating') }}">
+<!-- Rating Modal -->
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingModalLabel">Noter l'hôtel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="ratingForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('rate') }}">
+                    <div class="text-center mb-3">
+                        <div class="rating">
+                            {% for i in 1..5 %}
+                                <i class="far fa-star rating-star" data-rating="{{ i }}"></i>
+                            {% endfor %}
+                        </div>
+                        <div id="ratingMessage" class="mt-2"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" form="ratingForm" class="btn btn-primary" id="confirmRating" disabled>Confirmer</button>
+            </div>
+        </div>
     </div>
+</div>
+{% endblock %}
 
-    <script>
-        let currentHotelId = null;
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .rating {
+        font-size: 40px;
+        color: #ffd700;
+    }
+    .rating-star {
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .rating-star:hover,
+    .rating-star.selected {
+        color: #ffd700;
+    }
+    .rating-star:not(.selected):not(:hover) {
+        color: #ccc;
+    }
+    .rating-star:hover ~ .rating-star {
+        color: #ccc;
+    }
+</style>
+{% endblock %}
 
-        // Initialize ratings when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, initializing ratings...');
-            initializeRatings();
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initial load of hotels
+    loadHotels();
+
+    // Price range slider
+    const priceRange = document.getElementById('priceRange');
+    const priceValue = document.getElementById('priceValue');
+    
+    if (priceRange && priceValue) {
+        priceRange.addEventListener('input', function() {
+            priceValue.textContent = this.value + '€';
+        });
+    }
+
+    // Rating modal functionality
+    const ratingModal = document.getElementById('ratingModal');
+    const ratingForm = document.getElementById('ratingForm');
+    const ratingStars = document.querySelectorAll('.rating-star');
+    const confirmButton = document.getElementById('confirmRating');
+    const ratingMessage = document.getElementById('ratingMessage');
+    let selectedRating = 0;
+    let currentHotelId = null;
+
+    // Function to reset modal state
+    function resetModal() {
+        selectedRating = 0;
+        ratingStars.forEach(star => star.classList.remove('selected'));
+        confirmButton.disabled = true;
+        ratingMessage.textContent = '';
+        ratingMessage.className = 'mt-2';
+    }
+
+    // Star rating selection
+    ratingStars.forEach(star => {
+        star.addEventListener('click', function() {
+            selectedRating = parseInt(this.dataset.rating);
+            ratingStars.forEach(s => {
+                s.classList.remove('selected');
+                if (parseInt(s.dataset.rating) <= selectedRating) {
+                    s.classList.add('selected');
+                }
+            });
+            confirmButton.disabled = false;
+        });
+    });
+
+    // Form submission
+    ratingForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (!selectedRating || !currentHotelId) return;
+
+        const formData = new FormData();
+        formData.append('rating', selectedRating);
+        formData.append('_token', this.querySelector('[name="_token"]').value);
+
+        fetch(`/rating/${currentHotelId}/submit`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                ratingMessage.textContent = 'Note enregistrée avec succès!';
+                ratingMessage.className = 'mt-2 text-success';
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(ratingModal);
+                    modal.hide();
+                    loadHotels();
+                }, 1500);
+            } else {
+                throw new Error(data.message || 'Une erreur est survenue');
+            }
+        })
+        .catch(error => {
+            ratingMessage.textContent = error.message || 'Une erreur est survenue lors de l\'envoi';
+            ratingMessage.className = 'mt-2 text-danger';
+        });
+    });
+
+    // Reset modal when it's hidden
+    ratingModal.addEventListener('hidden.bs.modal', resetModal);
+
+    // Make the openRatingModal function globally available
+    window.openRatingModal = function(hotelId) {
+        currentHotelId = hotelId;
+        resetModal();
+        
+        // Check if user can rate
+        fetch(`/rating/${hotelId}/check`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.canRate) {
+                ratingMessage.textContent = 'Vous avez déjà noté cet hôtel';
+                ratingMessage.className = 'mt-2 text-warning';
+                confirmButton.disabled = true;
+            }
+        })
+        .catch(error => {
+            ratingMessage.textContent = 'Une erreur est survenue lors de la vérification';
+            ratingMessage.className = 'mt-2 text-danger';
+            confirmButton.disabled = true;
         });
 
-        function initializeRatings() {
-            // Handle rating selection
-            document.querySelectorAll('input[name="rating"]').forEach(input => {
-                input.addEventListener('change', function() {
-                    console.log('Rating selected:', this.value);
-                    document.getElementById('submitRating').disabled = false;
-                    const rating = this.value;
-                    const message = `Vous avez sélectionné ${rating} étoile${rating > 1 ? 's' : ''}`;
-                    document.getElementById('ratingMessage').textContent = message;
-                    document.getElementById('ratingMessage').className = 'rating-status-message';
-                });
-            });
+        const modal = new bootstrap.Modal(ratingModal);
+        modal.show();
+    };
+});
 
-            // Load initial ratings
-            {% for hotel in hotels %}
-                loadHotelRating('{{ hotel.id }}');
-            {% endfor %}
+// Load hotels with filters
+window.loadHotels = function(page = 1) {
+    const search = document.getElementById('searchInput')?.value || '';
+    const sort = document.getElementById('sortSelect')?.value || 'default';
+    const rating = document.getElementById('ratingFilter')?.value || '';
+    const maxPrice = document.getElementById('priceRange')?.value || 1000;
+    
+    const url = new URL('{{ path("app_hotel_chambre_list") }}', window.location.origin);
+    url.searchParams.set('page', page);
+    url.searchParams.set('search', search);
+    url.searchParams.set('sort', sort);
+    url.searchParams.set('rating', rating);
+    url.searchParams.set('maxPrice', maxPrice);
+    
+    fetch(url.toString(), {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
         }
-
-        function loadHotelRating(hotelId) {
-            console.log('Loading rating for hotel:', hotelId);
-            const checkUrl = document.getElementById('js-data').dataset.checkUrl.replace('HOTEL_ID', hotelId);
-            
-            fetch(checkUrl, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Rating data received:', data);
-                if (!data.success) {
-                    console.error('Error loading rating:', data.error);
-                    return;
-                }
-                
-                updateStarDisplay(hotelId, data.averageRating, data.totalRatings);
-                
-                {% if app.user %}
-                    const rateBtn = document.getElementById('rateBtn' + hotelId);
-                    if (rateBtn) {
-                        if (!data.canRate && data.currentRating) {
-                            rateBtn.innerHTML = '<i class="fas fa-check"></i> Noté';
-                            rateBtn.classList.add('disabled');
-                        } else {
-                            rateBtn.innerHTML = '<i class="fas fa-star"></i> Noter';
-                            rateBtn.classList.remove('disabled');
-                        }
-                    }
-                {% endif %}
-            })
-            .catch(error => {
-                console.error('Error loading rating:', error);
-                // Set default values in case of error
-                updateStarDisplay(hotelId, 0, 0);
-            });
-        }
-
-        function updateStarDisplay(hotelId, rating, totalRatings) {
-            console.log('Updating star display:', { hotelId, rating, totalRatings });
-            const starsInner = document.getElementById('starsInner' + hotelId);
-            const avgRating = document.getElementById('avgRating' + hotelId);
-            const totalRatingsSpan = document.getElementById('totalRatings' + hotelId);
-            
-            if (starsInner && avgRating && totalRatingsSpan) {
-                const starPercentage = (rating / 5) * 100;
-                starsInner.style.width = `${starPercentage}%`;
-                avgRating.textContent = Number(rating).toFixed(1);
-                totalRatingsSpan.textContent = `(${totalRatings})`;
-            }
-        }
-
-        window.prepareRatingModal = function(hotelId, hotelName) {
-            console.log('Preparing modal for hotel:', { hotelId, hotelName });
-            currentHotelId = hotelId;
-            
-            // Update modal content
-            document.getElementById('hotelNameInModal').textContent = hotelName;
-            document.getElementById('ratingMessage').textContent = 'Sélectionnez une note';
-            document.getElementById('ratingMessage').className = 'rating-status-message';
-            
-            // Reset rating selection
-            document.querySelectorAll('input[name="rating"]').forEach(input => {
-                input.checked = false;
-            });
-            document.getElementById('submitRating').disabled = true;
-            
-            // Check if user can rate
-            const checkUrl = document.getElementById('js-data').dataset.checkUrl.replace('HOTEL_ID', hotelId);
-            fetch(checkUrl, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Can rate check response:', data);
-                const modalRatingStars = document.getElementById('modalRatingStars');
-                
-                if (!data.success) {
-                    throw new Error(data.error || 'Une erreur est survenue');
-                }
-                
-                if (!data.canRate) {
-                    modalRatingStars.classList.add('rating-disabled');
-                    if (data.currentRating) {
-                        document.getElementById('ratingMessage').textContent = 'Vous avez déjà noté cet hôtel';
-                        document.querySelector(`input[name="rating"][value="${data.currentRating}"]`).checked = true;
-                    } else {
-                        document.getElementById('ratingMessage').textContent = 'Vous devez avoir une réservation pour noter cet hôtel';
-                    }
-                    document.getElementById('submitRating').disabled = true;
-                } else {
-                    modalRatingStars.classList.remove('rating-disabled');
-                }
-            })
-            .catch(error => {
-                console.error('Error checking rating eligibility:', error);
-                document.getElementById('ratingMessage').textContent = 'Une erreur est survenue lors de la vérification';
-                document.getElementById('ratingMessage').classList.add('error-message');
-                document.getElementById('submitRating').disabled = true;
-            });
-        };
-
-        window.handleSubmit = function() {
-            console.log('Submit button clicked');
-            const selectedRating = document.querySelector('input[name="rating"]:checked');
-            if (!selectedRating || !currentHotelId) {
-                console.error('No rating selected or no hotel ID');
-                return;
-            }
-
-            console.log('Submitting rating:', {
-                hotelId: currentHotelId,
-                rating: selectedRating.value
-            });
-
-            const submitButton = document.getElementById('submitRating');
-            submitButton.disabled = true;
-
-            const formData = new FormData();
-            formData.append('stars', selectedRating.value);
-            formData.append('_token', document.getElementById('js-data').dataset.token);
-
-            const submitUrl = document.getElementById('js-data').dataset.submitUrl.replace('HOTEL_ID', currentHotelId);
-            
-            fetch(submitUrl, {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 403) {
-                        throw new Error('Session expirée. Veuillez rafraîchir la page.');
-                    }
-                    return response.json().then(data => {
-                        throw new Error(data.error || 'Une erreur est survenue');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Submit response:', data);
-                if (data.success) {
-                    // Update the rating display
-                    updateStarDisplay(currentHotelId, data.averageRating, data.totalRatings);
-                    
-                    // Update button state
-                    const rateBtn = document.getElementById('rateBtn' + currentHotelId);
-                    if (rateBtn) {
-                        rateBtn.innerHTML = '<i class="fas fa-check"></i> Noté';
-                        rateBtn.classList.add('disabled');
-                    }
-                    
-                    // Show success message
-                    document.getElementById('ratingMessage').textContent = 'Merci pour votre note !';
-                    document.getElementById('ratingMessage').className = 'rating-status-message success-message';
-                    
-                    // Close modal after delay
-                    setTimeout(() => {
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
-                        if (modal) {
-                            modal.hide();
-                        }
-                    }, 1500);
-                } else {
-                    throw new Error(data.error || 'Une erreur est survenue');
-                }
-            })
-            .catch(error => {
-                console.error('Error submitting rating:', error);
-                document.getElementById('ratingMessage').textContent = error.message;
-                document.getElementById('ratingMessage').classList.add('error-message');
-                submitButton.disabled = false;
-            });
-        };
-    </script>
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.querySelector('#hotelList').innerHTML = html;
+        // Scroll to top of the list
+        document.querySelector('#hotelList').scrollIntoView({ behavior: 'smooth' });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.querySelector('#hotelList').innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Erreur</h4>
+                <p>Une erreur est survenue lors du chargement des hôtels: ${error.message}</p>
+                <hr>
+                <p class="mb-0">
+                    <button type="button" class="btn btn-outline-primary" onclick="loadHotels()">
+                        <i class="fas fa-sync-alt"></i> Réessayer
+                    </button>
+                </p>
+            </div>
+        `;
+    });
+};
+</script>
 {% endblock %}

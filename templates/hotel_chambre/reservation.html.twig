@@ -314,15 +314,19 @@
         <div class="reservation-grid">
             <div class="room-details">
                 <div class="room-image">
-                    {% if room.type == 'Simple' %}
-                        <i class="fas fa-bed room-type-icon"></i>
-                    {% elseif room.type == 'Double' %}
-                        <div style="display: flex; gap: 20px;">
-                            <i class="fas fa-bed room-type-icon"></i>
-                            <i class="fas fa-bed room-type-icon"></i>
-                </div>
+                    {% if room.image %}
+                        <img src="{{ asset('uploads/chambres/' ~ room.image) }}" alt="{{ room.type }}" style="width: 100%; height: 100%; object-fit: cover;">
                     {% else %}
-                        <i class="fas fa-star room-type-icon"></i>
+                        {% if room.type == 'Simple' %}
+                            <i class="fas fa-bed room-type-icon"></i>
+                        {% elseif room.type == 'Double' %}
+                            <div style="display: flex; gap: 20px;">
+                                <i class="fas fa-bed room-type-icon"></i>
+                                <i class="fas fa-bed room-type-icon"></i>
+                            </div>
+                        {% else %}
+                            <i class="fas fa-star room-type-icon"></i>
+                        {% endif %}
                     {% endif %}
                     <div class="price-badge">
                         {% if hotel.promotion > 0 %}
@@ -357,7 +361,7 @@
                         <div class="feature-item">
                             <i class="fas fa-tv"></i>
                             <span>TV écran plat</span>
-            </div>
+                        </div>
                     </div>
 
                     {% if unavailableDates|length > 0 %}
@@ -371,7 +375,7 @@
                                     <li>Du {{ date.start|date('d/m/Y') }} au {{ date.end|date('d/m/Y') }}</li>
                                 {% endfor %}
                             </ul>
-                    </div>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -383,10 +387,10 @@
                 </div>
 
                 <div class="price-summary">
-                <div class="price-row">
+                    <div class="price-row">
                         <span class="price-label">Nombre de nuits</span>
                         <span class="price-value" id="nights-count">0</span>
-                </div>
+                    </div>
                     <div class="price-row">
                         <span class="price-label">Prix de base</span>
                         <span class="price-value" id="base-price">0 DT</span>
@@ -395,8 +399,8 @@
                         <div class="price-row">
                             <span class="price-label">Réduction ({{ hotel.promotion }}%)</span>
                             <span class="price-value" id="discount-amount">0 DT</span>
-                    </div>
-                {% endif %}
+                        </div>
+                    {% endif %}
                     <div class="price-row total-row">
                         <span class="price-label">Prix total</span>
                         <span class="price-value" id="total-price">0 DT</span>
@@ -408,8 +412,8 @@
                     Confirmer et procéder au paiement
                 </button>
             </div>
-                </div>
-            </div>
+        </div>
+    </div>
 
     <div class="payment-modal" id="payment-modal">
         <div class="payment-modal-content">
