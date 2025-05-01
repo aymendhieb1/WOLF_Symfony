@@ -107,9 +107,34 @@ class SessionController extends AbstractController
         $data = [];
         foreach ($sessions as $session) {
             $data[] = [
+                'id' => $session->getId(),
                 'date' => $session->getDate()->format('Y-m-d'),
                 'heure' => $session->getHeure()->format('H:i'),
                 'nbPlace' => $session->getNbPlace()
+            ];
+        }
+        
+        return new JsonResponse($data);
+    }
+
+    #[Route('/api/all-sessions', name: 'app_session_api_all', methods: ['GET'])]
+    public function getAllSessions(SessionRepository $sessionRepository): JsonResponse
+    {
+        $sessions = $sessionRepository->findAll();
+        
+        $data = [];
+        foreach ($sessions as $session) {
+            $data[] = [
+                'id' => $session->getId(),
+                'date' => $session->getDate()->format('Y-m-d'),
+                'heure' => $session->getHeure()->format('H:i:s'),
+                'capacite' => $session->getCapacite(),
+                'nbPlace' => $session->getNbPlace(),
+                'activite' => [
+                    'id' => $session->getActivite()->getId(),
+                    'nom' => $session->getActivite()->getNom(),
+                    'type' => $session->getActivite()->getType(),
+                ]
             ];
         }
         

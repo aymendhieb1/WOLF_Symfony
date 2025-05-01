@@ -15,6 +15,7 @@ parameters:
   stripe_public_key: "%env(STRIPE_PUBLIC_KEY)%"
   stripe_secret_key: "%env(STRIPE_SECRET_KEY)%"
   chambre_images_directory: "uploads/chambres"
+  exchange_rate_api_key: "191d06448921407aff3db9f7"
 
 services:
   _defaults:
@@ -45,6 +46,14 @@ services:
   # Configuration du client Stripe
   Stripe\StripeClient:
     arguments: ["%env(STRIPE_SECRET_KEY)%"]
+
+  App\Service\CurrencyService:
+    arguments:
+      $apiKey: "%exchange_rate_api_key%" # Inject the API key from parameters
+
+  App\Service\FlightTrackingService:
+    arguments:
+      $apiKey: "%env(AIRCRAFT_API_KEY)%"
 
   App\Controller\PaymentController:
     arguments:

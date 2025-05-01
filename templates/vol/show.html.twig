@@ -1,0 +1,246 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Vol
+{% endblock %}
+
+{% block body %}
+
+
+	<!-- Main Content Area -->
+	<div class="space">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="card mb-4">
+						<div class="card-header">
+							<h3 class="card-title">Informations du Vol</h3>
+						</div>
+						<div class="card-body">
+							<div class="flight-info">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="info-group">
+											<h4>Départ</h4>
+											<p>
+												<i class="fas fa-map-marker-alt"></i>
+												{{ vol.depart }}</p>
+											<p>
+												<i class="far fa-calendar"></i>
+												{{ vol.heureDepart|date('d/m/Y') }}</p>
+											<p>
+												<i class="far fa-clock"></i>
+												{{ vol.heureDepart|date('H:i') }}</p>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="info-group">
+											<h4>Arrivée</h4>
+											<p>
+												<i class="fas fa-map-marker-alt"></i>
+												{{ vol.destination }}</p>
+											<p>
+												<i class="far fa-calendar"></i>
+												{{ vol.heureArrivee|date('d/m/Y') }}</p>
+											<p>
+												<i class="far fa-clock"></i>
+												{{ vol.heureArrivee|date('H:i') }}</p>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-4">
+									<div class="col-12">
+										<div class="info-group">
+											<h4>Détails Supplémentaires</h4>
+											<p>
+												<i class="fas fa-plane"></i>
+												Compagnie:
+												{{ vol.compagnie }}</p>
+											<p>
+												<i class="fas fa-tag"></i>
+												Prix:
+												{{ vol.prix }}
+												TND</p>
+											<p>
+												<i class="fas fa-chair"></i>
+												Classe:
+												{{ vol.classeChaise }}</p>
+											<p>
+												<i class="fas fa-chair"></i>
+												Sièges disponibles:
+												{{ vol.siegesDisponibles }}</p>
+											<p>
+												<i class="fas fa-info-circle"></i>
+												Description:
+												{{ vol.description }}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Carte du Vol</h3>
+						</div>
+						<div class="card-body">
+							<div id="map" style="height: 400px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% block weather_section %}{% endblock %}
+
+	<a href="{{ path('app_vol_index') }}" class="btn btn-primary">Retour à la liste</a>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+	<style>
+		.hero-layout {
+			padding: 120px 0;
+			background-size: cover;
+			background-position: center;
+			position: relative;
+		}
+		.hero-mask {
+			background: rgba(0, 0, 0, 0.5);
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+		.hero-content {
+			position: relative;
+			z-index: 1;
+			color: white;
+		}
+		.hero-subtitle {
+			font-size: 1.2rem;
+			margin-bottom: 1rem;
+			display: block;
+		}
+		.hero-title {
+			font-size: 3rem;
+			margin-bottom: 1.5rem;
+		}
+		.hero-text {
+			font-size: 1.1rem;
+			margin-bottom: 2rem;
+		}
+		.space {
+			padding: 80px 0;
+		}
+		.card {
+			border: none;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+			border-radius: 10px;
+		}
+		.card-header {
+			background-color: #fff;
+			border-bottom: 1px solid #eee;
+			padding: 20px;
+		}
+		.card-title {
+			margin: 0;
+			color: #333;
+			font-size: 1.5rem;
+		}
+		.card-body {
+			padding: 30px;
+		}
+		.info-group {
+			padding: 20px;
+			background: #f8f9fa;
+			border-radius: 8px;
+		}
+		.info-group h4 {
+			color: #333;
+			margin-bottom: 15px;
+		}
+		.info-group p {
+			margin-bottom: 10px;
+			color: #666;
+		}
+		.info-group i {
+			margin-right: 10px;
+			color: #ff681a;
+		}
+		#map {
+			border-radius: 8px;
+			overflow: hidden;
+		}
+	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Initialize the map
+const map = L.map('map').setView([
+0, 0
+], 2);
+
+// Add OpenStreetMap tiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+maxZoom: 19,
+attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// Function to get coordinates from city name using Nominatim
+async function getCoordinates(city) {
+try {
+const response = await fetch (`https://nominatim.openstreetmap.org/search?format=json&q=${
+encodeURIComponent(city)
+}`);
+const data = await response.json();
+if (data && data.length > 0) {
+return [
+parseFloat(data[0].lat),
+parseFloat(data[0].lon)
+];
+}
+return null;
+} catch (error) {
+console.error('Error fetching coordinates:', error);
+return null;
+}
+}
+
+// Add markers and line for the flight
+async function addFlightPath() {
+const departCoords = await getCoordinates('{{ vol.depart }}');
+const destCoords = await getCoordinates('{{ vol.destination }}');
+
+if (departCoords && destCoords) { // Add markers
+const departMarker = L.marker(departCoords).addTo(map).bindPopup('Départ:  {{ vol.depart }}');
+
+const destMarker = L.marker(destCoords).addTo(map).bindPopup('Arrivée:  {{ vol.destination }}');
+
+// Add flight path
+const flightPath = L.polyline([
+departCoords, destCoords
+], {
+color: '#ff681a',
+weight: 3,
+opacity: 0.7,
+dashArray: '10, 10'
+}).addTo(map);
+
+// Fit map to show both markers
+map.fitBounds(flightPath.getBounds());
+}
+}
+
+// Initialize the flight path
+addFlightPath();
+});
+	</script>
+{% endblock %}

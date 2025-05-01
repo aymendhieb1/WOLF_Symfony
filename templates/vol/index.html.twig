@@ -1,0 +1,441 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Vols
+{% endblock %}
+
+{% block body %}
+
+
+	<!-- AI Chatbot Section -->
+	<div class="chatbot-section space-bottom" style="margin-top: 60px;">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-12">
+					<div class="chatbot-container">
+						<div class="chatbot-header">
+							<h3>
+								<i class="fas fa-robot"></i>
+								Assistant Vol</h3>
+							<p>Posez vos questions sur nos vols, les destinations, ou obtenez des informations générales sur le voyage</p>
+						</div>
+						<div class="chatbot-messages" id="chatbot-messages">
+							<div class="message bot">
+								<div class="message-content">
+									Bonjour ! Je suis votre assistant de voyage. Comment puis-je vous aider aujourd'hui ?
+								</div>
+							</div>
+						</div>
+						<div class="chatbot-input">
+							<form id="chatbot-form" class="d-flex">
+								<input type="text" id="user-input" class="form-control" placeholder="Posez votre question..." required>
+								<button type="submit" class="btn btn-primary">
+									<i class="fas fa-paper-plane"></i>
+								</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Main Content Area -->
+	<div class="space">
+		<div class="container">
+			{% if vols is empty %}
+				<div class="alert alert-info">
+					<i class="fas fa-info-circle"></i>
+					Aucun vol disponible pour le moment.
+				</div>
+			{% else %}
+				<div class="row">
+					{% for vol in vols %}
+						<div class="col-lg-4 col-md-6 mb-4">
+							<div class="flight-card">
+								<div class="flight-header">
+									<h3>{{ vol.depart }}
+										→
+										{{ vol.destination }}</h3>
+									<span class="airline">{{ vol.compagnie }}</span>
+								</div>
+								<div class="flight-body">
+									<div class="flight-time">
+										<div class="departure">
+											<i class="far fa-clock"></i>
+											<span>{{ vol.heureDepart|date('H:i') }}</span>
+											<small>{{ vol.depart }}</small>
+										</div>
+										<div class="flight-duration">
+											<i class="fas fa-plane"></i>
+										</div>
+										<div class="arrival">
+											<i class="far fa-clock"></i>
+											<span>{{ vol.heureArrivee|date('H:i') }}</span>
+											<small>{{ vol.destination }}</small>
+										</div>
+									</div>
+									<div class="flight-details">
+										<div class="detail-item">
+											<i class="fas fa-tag"></i>
+											<span>{{ vol.prix }}
+												TND</span>
+										</div>
+										<div class="detail-item">
+											<i class="fas fa-chair"></i>
+											<span>{{ vol.classeChaise }}</span>
+										</div>
+										<div class="detail-item">
+											<i class="fas fa-users"></i>
+											<span>{{ vol.siegesDisponibles }}
+												sièges</span>
+										</div>
+									</div>
+								</div>
+								<div class="flight-footer">
+									<a href="{{ path('app_vol_show', {'id': vol.id}) }}" class="btn btn-primary">
+										Voir les détails
+									</a>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.hero-layout {
+			padding: 120px 0;
+			background-size: cover;
+			background-position: center;
+			position: relative;
+		}
+		.hero-mask {
+			background: rgba(0, 0, 0, 0.5);
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+		.hero-content {
+			position: relative;
+			z-index: 1;
+			color: white;
+		}
+		.hero-subtitle {
+			font-size: 1.2rem;
+			margin-bottom: 1rem;
+			display: block;
+		}
+		.hero-title {
+			font-size: 3rem;
+			margin-bottom: 1.5rem;
+		}
+		.hero-text {
+			font-size: 1.1rem;
+			margin-bottom: 2rem;
+		}
+		.space {
+			padding: 80px 0;
+		}
+		.space-bottom {
+			padding-bottom: 40px;
+		}
+		.flight-card {
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+			transition: transform 0.3s ease;
+		}
+		.flight-card:hover {
+			transform: translateY(-5px);
+		}
+		.flight-header {
+			padding: 20px;
+			background: #f8f9fa;
+			border-bottom: 1px solid #eee;
+		}
+		.flight-header h3 {
+			margin: 0;
+			font-size: 1.2rem;
+			color: #333;
+		}
+		.airline {
+			font-size: 0.9rem;
+			color: #666;
+		}
+		.flight-body {
+			padding: 20px;
+		}
+		.flight-time {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+		.departure,
+		.arrival {
+			text-align: center;
+		}
+		.departure i,
+		.arrival i {
+			color: #ff681a;
+			margin-bottom: 5px;
+		}
+		.departure span,
+		.arrival span {
+			display: block;
+			font-size: 1.2rem;
+			font-weight: bold;
+			color: #333;
+		}
+		.departure small,
+		.arrival small {
+			color: #666;
+			font-size: 0.9rem;
+		}
+		.flight-duration {
+			color: #ff681a;
+			font-size: 1.5rem;
+		}
+		.flight-details {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+			margin-top: 20px;
+		}
+		.detail-item {
+			text-align: center;
+			padding: 10px;
+			background: #f8f9fa;
+			border-radius: 5px;
+		}
+		.detail-item i {
+			color: #ff681a;
+			margin-bottom: 5px;
+		}
+		.detail-item span {
+			display: block;
+			font-size: 0.9rem;
+			color: #666;
+		}
+		.flight-footer {
+			padding: 20px;
+			background: #f8f9fa;
+			border-top: 1px solid #eee;
+			text-align: center;
+		}
+		.btn-primary {
+			background-color: #ff681a;
+			border-color: #ff681a;
+			padding: 10px 20px;
+			transition: all 0.3s ease;
+		}
+		.btn-primary:hover {
+			background-color: #e55a15;
+			border-color: #e55a15;
+			transform: translateY(-2px);
+		}
+
+		/* Chatbot Styles */
+		.chatbot-section {
+			background: #f8f9fa;
+			padding: 40px 0;
+		}
+		.chatbot-container {
+			background: white;
+			border-radius: 15px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+		}
+		.chatbot-header {
+			background: #ff681a;
+			color: white;
+			padding: 20px;
+			text-align: center;
+		}
+		.chatbot-header h3 {
+			margin: 0;
+			font-size: 1.5rem;
+		}
+		.chatbot-header p {
+			margin: 10px 0 0;
+			opacity: 0.9;
+		}
+		.chatbot-messages {
+			height: 400px;
+			overflow-y: auto;
+			padding: 20px;
+		}
+		.message {
+			margin-bottom: 15px;
+			display: flex;
+			flex-direction: column;
+		}
+		.message.user {
+			align-items: flex-end;
+		}
+		.message.bot {
+			align-items: flex-start;
+		}
+		.message-content {
+			max-width: 80%;
+			padding: 12px 16px;
+			border-radius: 15px;
+			font-size: 0.95rem;
+			line-height: 1.4;
+		}
+		.message.user .message-content {
+			background: #ff681a;
+			color: white;
+			border-bottom-right-radius: 5px;
+		}
+		.message.bot .message-content {
+			background: #f0f2f5;
+			color: #333;
+			border-bottom-left-radius: 5px;
+		}
+		.message.error .message-content {
+			background: #ff4444;
+			color: white;
+		}
+		.chatbot-input {
+			padding: 20px;
+			border-top: 1px solid #eee;
+		}
+		.chatbot-input form {
+			display: flex;
+			gap: 10px;
+		}
+		.chatbot-input input {
+			flex: 1;
+			padding: 12px;
+			border: 1px solid #ddd;
+			border-radius: 25px;
+			font-size: 0.95rem;
+		}
+		.chatbot-input button {
+			padding: 12px 25px;
+			border: none;
+			border-radius: 25px;
+			background: #ff681a;
+			color: white;
+			cursor: pointer;
+			transition: background 0.3s ease;
+		}
+		.chatbot-input button:hover {
+			background: #e55a0f;
+		}
+		.typing-dot {
+			display: inline-block;
+			width: 8px;
+			height: 8px;
+			background: #999;
+			border-radius: 50%;
+			margin: 0 2px;
+			animation: typing 1s infinite;
+		}
+		.typing-dot:nth-child(2) {
+			animation-delay: 0.2s;
+		}
+		.typing-dot:nth-child(3) {
+			animation-delay: 0.4s;
+		}
+		@keyframes typing {
+			0,
+			100% {
+				transform: translateY(0);
+			}
+			50% {
+				transform: translateY(-5px);
+			}
+		}
+	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const chatbotForm = document.getElementById('chatbot-form');
+const userInput = document.getElementById('user-input');
+const messagesContainer = document.getElementById('chatbot-messages');
+
+chatbotForm.addEventListener('submit', async function (e) {
+e.preventDefault();
+
+const userMessage = userInput.value.trim();
+if (! userMessage) 
+return;
+
+
+
+// Add user message to chat
+addMessage(userMessage, 'user');
+userInput.value = '';
+
+try { // Show loading state
+const loadingMessage = addMessage('Je réfléchis...', 'bot');
+
+// Make API call to your backend
+const response = await fetch('/api/chatbot', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify(
+{message: userMessage}
+)
+});
+
+const data = await response.json();
+
+// Remove loading message
+loadingMessage.remove();
+
+// Check for error response
+if (data.error) {
+console.error('API Error:', data.error);
+addMessage('Désolé, une erreur est survenue: ' + data.error, 'bot');
+return;
+}
+
+// Add bot response
+if (data.response) {
+addMessage(data.response, 'bot');
+} else {
+console.error('No response data:', data);
+addMessage('Désolé, je n\'ai pas reçu de réponse valide.', 'bot');
+}
+} catch (error) {
+console.error('Error:', error);
+addMessage('Désolé, une erreur est survenue. Veuillez réessayer.', 'bot');
+}
+});
+
+function addMessage(text, type) {
+const messageDiv = document.createElement('div');
+messageDiv.className = `message ${type}`;
+
+const contentDiv = document.createElement('div');
+contentDiv.className = 'message-content';
+contentDiv.textContent = text;
+
+messageDiv.appendChild(contentDiv);
+messagesContainer.appendChild(messageDiv);
+
+// Scroll to bottom
+messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+return messageDiv;
+}
+});
+	</script>
+	<script src="{{ asset('assets/js/chatbot.js') }}"></script>
+{% endblock %}

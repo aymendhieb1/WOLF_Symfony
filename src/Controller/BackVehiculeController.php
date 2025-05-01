@@ -25,7 +25,7 @@ final class BackVehiculeController extends AbstractController
             ]);
         } catch (\Exception $e) {
             error_log('Index error: ' . $e->getMessage());
-            return new JsonResponse(['status' => 'error', 'message' => 'Erreur de chargement.'], 500);
+            throw $e;
         }
     }
 

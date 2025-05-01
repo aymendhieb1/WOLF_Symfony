@@ -1,0 +1,28 @@
+{% for session in sessions %}
+    <tr>
+        <td>{{ session.activite ? session.activite.nom : 'No Activity' }}</td>
+        <td>{{ session.date ? session.date|date('Y-m-d') : '' }}</td>
+        <td>{{ session.heure ? session.heure|date('H:i:s') : '' }}</td>
+        <td>{{ session.capacite }}</td>
+        <td>{{ session.nbPlace }}</td>
+        <td class="td-actions text-right">
+            <a href="{{ path('app_session_show', {'id': session.id}) }}" class="btn btn-info btn-round">
+                <i class="material-icons">visibility</i>
+            </a>
+            <a href="{{ path('app_session_edit', {'id': session.id}) }}" class="btn btn-success btn-round">
+                <i class="material-icons">edit</i>
+            </a>
+            <form method="post" action="{{ path('app_session_delete', {'id': session.id}) }}" style="display: inline-block" onsubmit="return false;" class="delete-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ session.id) }}">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="button" class="btn btn-danger" onclick="handleDelete('{{ path('app_session_delete', {'id': session.id}) }}', this)">
+                    <i class="material-icons">close</i>
+                </button>
+            </form>
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="6" class="text-center">No records found</td>
+    </tr>
+{% endfor %} 

@@ -2,6 +2,7 @@
 
 {% block stylesheets %}
 	{{ parent() }}
+	<link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet'/>
 	<style>
 		/* Add these styles for weather display */
 		.weather-info {
@@ -11,48 +12,48 @@
 			background: rgba(255, 255, 255, 0.05);
 			border: 1px solid rgba(0, 0, 0, 0.1);
 		}
-		
+
 		.weather-container {
 			display: flex;
 			align-items: center;
 			gap: 12px;
 		}
-		
+
 		.weather-icon {
 			width: 40px;
 			height: 40px;
 			object-fit: contain;
 		}
-		
+
 		.weather-details {
 			display: flex;
 			flex-direction: column;
 			gap: 4px;
 		}
-		
+
 		.weather-temp {
 			font-size: 1.2em;
 			font-weight: 600;
 			color: var(--theme-color);
 		}
-		
+
 		.weather-desc {
 			font-size: 0.9em;
 			color: #666;
 			text-transform: capitalize;
 		}
-		
+
 		.weather-indeterminate {
 			color: #666;
 			font-style: italic;
 			text-align: center;
 			padding: 8px;
 		}
-		
+
 		/* Updated share button styles */
 		.share-btn {
 			background: #1877f2;
-			color: #fff;
+			color: #fff !important;
 			border: none;
 			padding: 8px 15px;
 			border-radius: 5px;
@@ -65,123 +66,1166 @@
 			align-items: center;
 			justify-content: center;
 			gap: 8px;
+			text-decoration: none !important;
 		}
-		
+
 		.share-btn:hover {
 			background: #166fe5;
 			transform: translateY(-2px);
+			color: #fff !important;
+			text-decoration: none !important;
 		}
-		
+
+		.share-btn i {
+			font-size: 16px;
+		}
+
 		.package-footer {
 			display: flex;
 			flex-direction: column;
 			margin-top: auto;
+		}
+
+		/* Calendar Modal Styles */
+		.calendar-modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+		}
+
+		.calendar-modal-content {
+			background-color: #fefefe;
+			margin: 2% auto;
+			padding: 20px;
+			border-radius: 10px;
+			width: 90%;
+			max-width: 1200px;
+			position: relative;
+			height: 85vh;
+		}
+
+		.calendar-container {
+			display: flex;
+			gap: 20px;
+			height: calc(100% - 40px);
+		}
+
+		#calendar {
+			flex: 2;
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			height: 100%;
+		}
+
+		.fc {
+			height: 100% !important;
+		}
+
+		.fc-view {
+			height: 100% !important;
+		}
+
+		.fc-view-container {
+			height: calc(100% - 50px) !important;
+		}
+
+		.fc-row {
+			min-height: 80px !important;
+		}
+
+		.fc-day-grid-container {
+			height: auto !important;
+		}
+
+		.fc-basic-view .fc-body .fc-row {
+			min-height: 80px !important;
+		}
+
+		.fc-event {
+			margin: 2px 0;
+			padding: 4px;
+			min-height: 25px;
+			border-radius: 3px;
+			cursor: pointer;
+		}
+
+		.fc-day-grid-event {
+			min-height: 25px;
+			padding: 4px;
+		}
+
+		.fc-day-grid-event .fc-content {
+			white-space: normal !important;
+			overflow: visible;
+			padding: 2px;
+		}
+
+		.fc-title {
+			font-weight: bold;
+			font-size: 0.9em;
+			display: block;
+			line-height: 1.3;
+		}
+
+		.upcoming-events {
+			flex: 1;
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			max-height: 100%;
+			overflow-y: auto;
+			min-width: 300px;
+		}
+
+		.upcoming-event-item {
+			padding: 15px;
+			border-bottom: 1px solid #eee;
+			margin-bottom: 10px;
+			background: #f8f9fa;
+			border-radius: 5px;
+			transition: all 0.3s ease;
+		}
+
+		.upcoming-event-item:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+
+		/* Calendar Button Style */
+		.calendar-btn {
+			background: var(--theme-color);
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 5px;
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 20px;
+			transition: all 0.3s ease;
+			font-size: 16px;
+			font-weight: 500;
+		}
+
+		.calendar-btn:hover {
+			background: #e55a0f;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.calendar-btn i {
+			font-size: 18px;
+		}
+
+		.fc-day {
+			min-height: 100px !important;
+		}
+
+		.day-events {
+			padding: 2px;
+		}
+
+		.day-event {
+			margin: 2px 0;
+			padding: 2px 5px;
+			border-radius: 3px;
+			font-size: 0.85em;
+			cursor: pointer;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.day-event:hover {
+			opacity: 0.9;
+			transform: translateY(-1px);
+			transition: all 0.2s ease;
+		}
+
+		.fc-day-grid-container {
+			min-height: 500px !important;
+		}
+
+		.fc-basic-view .fc-body .fc-row {
+			min-height: 100px !important;
+		}
+
+		.activity-prompt {
+			padding: 20px;
+		}
+
+		.activity-prompt .form-group {
+			margin-bottom: 15px;
+		}
+
+		.activity-prompt label {
+			display: block;
+			margin-bottom: 5px;
+			font-weight: 500;
+		}
+
+		.activity-prompt input,
+		.activity-prompt select {
+			width: 100%;
+			padding: 8px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+		}
+
+		.day-event {
+			cursor: pointer;
+			transition: all 0.2s ease;
+		}
+
+		.day-event:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		}
+
+		.ui-dialog {
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		}
+
+		.ui-dialog-titlebar {
+			background: var(--theme-color);
+			color: white;
+			border-radius: 8px 8px 0 0;
+		}
+
+		.ui-dialog-buttonset button {
+			background: var(--theme-color);
+			color: white;
+			border: none;
+			padding: 8px 16px;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-left: 10px;
+		}
+
+		.ui-dialog-buttonset button:hover {
+			opacity: 0.9;
+		}
+
+		/* Add these new styles for reservation */
+		.reservation-btn {
+			background: #28a745;
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 5px;
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 20px;
+			margin-left: 15px;
+			transition: all 0.3s ease;
+			font-size: 16px;
+			font-weight: 500;
+		}
+
+		.reservation-btn:hover {
+			background: #218838;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.reservation-modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+		}
+
+		.reservation-modal-content {
+			background-color: #fefefe;
+			margin: 5% auto;
+			padding: 20px;
+			border-radius: 10px;
+			width: 80%;
+			max-width: 600px;
+		}
+
+		.activity-list {
+			max-height: 400px;
+			overflow-y: auto;
+			margin: 20px 0;
+		}
+
+		.activity-item {
+			padding: 15px;
+			margin: 10px 0;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.activity-item:hover {
+			background-color: #f8f9fa;
+			transform: translateY(-2px);
+		}
+
+		.activity-item.selected {
+			border-color: var(--theme-color);
+			background-color: rgba(255, 104, 26, 0.1);
+		}
+
+		.session-list {
+			max-height: 400px;
+			overflow-y: auto;
+			margin: 20px 0;
+		}
+
+		.session-item {
+			padding: 15px;
+			margin: 10px 0;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.session-item:hover {
+			background-color: #f8f9fa;
+			transform: translateY(-2px);
+		}
+
+		.session-item.selected {
+			border-color: var(--theme-color);
+			background-color: rgba(255, 104, 26, 0.1);
+		}
+
+		.modal-buttons {
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+			margin-top: 20px;
+		}
+
+		.modal-btn {
+			padding: 8px 16px;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.modal-btn-primary {
+			background: var(--theme-color);
+			color: white;
+			border: none;
+		}
+
+		.modal-btn-secondary {
+			background: #6c757d;
+			color: white;
+			border: none;
+		}
+
+		.modal-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+
+		.sidebar-area {
+			background: #fff;
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		}
+
+		.widget_title {
+			font-size: 20px;
+			margin-bottom: 20px;
+			color: #333;
+		}
+
+		.form-group {
+			margin-bottom: 15px;
+			position: relative;
+		}
+
+		.form-group i {
+			position: absolute;
+			left: 15px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: #666;
+		}
+
+		.form-control,
+		.form-select {
+			padding-left: 40px;
+			border-radius: 5px;
+			border: 1px solid #ddd;
+			font-family: 'Jost', sans-serif;
+		}
+
+		.price-range {
+			padding: 15px;
+			margin-bottom: 20px;
+		}
+
+		.price-inputs {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.price-input {
+			width: 80px;
+			padding: 5px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			text-align: center;
+		}
+
+		.filter-btn {
+			width: 100%;
+			margin-bottom: 10px;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.filter-btn.search {
+			background: #ff681a;
+			color: white;
+		}
+
+		.filter-btn.reset {
+			background: #6c757d;
+			color: white;
+		}
+
+		.filter-btn:hover {
+			opacity: 0.9;
+			transform: translateY(-2px);
+		}
+
+		.ui-slider-horizontal {
+			height: 4px;
+			background: #e0e0e0;
+			border: none;
+			margin: 15px 0;
+		}
+
+		.ui-slider .ui-slider-handle {
+			width: 15px;
+			height: 15px;
+			background: #ff681a;
+			border-radius: 50%;
+			border: none;
+			cursor: pointer;
+			top: -6px;
+		}
+
+		.ui-slider .ui-slider-range {
+			background: #ff681a;
+		}
+
+		.price_label {
+			margin-top: 10px;
+			text-align: center;
+			font-size: 14px;
+			color: #666;
 		}
 	</style>
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
-	<!-- Facebook SDK with error handling -->
-	<div id="fb-root"></div>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="https://accounts.google.com/gsi/client"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="{{ asset('js/reservation.js') }}"></script>
+
 	<script>
-		// Initialize Facebook SDK
-		window.fbAsyncInit = function() {
-			FB.init({
-				appId: '654796463732563',
-				xfbml: true,
-				version: 'v18.0'
-			});
-		};
+		document.addEventListener('DOMContentLoaded', function () { // Google Calendar API configuration
+const CLIENT_ID = '755932758530-1beemhnj4glqsuis9l1rigtnrr9rretn.apps.googleusercontent.com';
+const API_KEY = 'AIzaSyDPv0ZV6j5UF-fhZxw0LWBzBq2d6CLhFLY';
+const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events';
 
-		// Load Facebook SDK
-		(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) return;
-			js = d.createElement(s);
-			js.id = id;
-			js.src = "https://connect.facebook.net/fr_FR/sdk.js";
-			fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));
+let tokenClient;
+let gapiInited = false;
+let gisInited = false;
 
-		// Simpler Facebook Share Function
-		function shareOnFacebook(activityName, activityType, activityPrice) {
-			console.log('Share function called with:', { activityName, activityType, activityPrice });
-			
-			try {
-				// Base URL for sharing
-				const baseUrl = 'http://127.0.0.1:8000/circuit';
-				
-				// Construct Facebook share URL directly
-				const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(baseUrl)}`;
-				
-				console.log('Opening share URL:', fbShareUrl);
-				
-				// Open the share dialog
-				const width = 600;
-				const height = 400;
-				const left = (window.innerWidth - width) / 2;
-				const top = (window.innerHeight - height) / 2;
-				
-				const popup = window.open(
-					fbShareUrl,
-					'facebook-share-dialog',
-					`width=${width},height=${height},left=${left},top=${top},toolbar=0,status=0`
-				);
-				
-				if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-					console.error('Popup blocked or failed to open');
-					alert('Le popup de partage a été bloqué. Veuillez autoriser les popups pour ce site.');
-				}
-				
-			} catch (error) {
-				console.error('Error in shareOnFacebook:', error);
-				alert('Une erreur est survenue lors du partage. Veuillez réessayer.');
-			}
-		}
+const calendarModal = document.getElementById('calendarModal');
+const calendarBtn = document.getElementById('showCalendarBtn');
+const closeBtn = document.querySelector('.calendar-close');
+let calendar = null;
 
-		const WEATHER_API_KEY = "1bca0ccc6c06a3ec4663f2baa688aa0d";
-		const WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/forecast";
+function gapiLoaded() {
+gapi.load('client', initializeGapiClient);
+}
 
-		async function getWeatherForDate(date) {
-			const targetDate = new Date(date);
-			const today = new Date();
-			const diffTime = Math.abs(targetDate - today);
-			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+async function initializeGapiClient() {
+try {
+await gapi.client.init({apiKey: API_KEY, discoveryDocs: [DISCOVERY_DOC]});
+gapiInited = true;
+maybeEnableButtons();
+} catch (err) {
+console.error('Error initializing GAPI client:', err);
+}
+}
 
-			// If date is more than 5 days away, return indeterminate
-			if (diffDays > 5) {
-				return {
-					status: 'indeterminate',
-					icon: '',
-					temp: '',
-					description: 'Météo non disponible pour cette date'
-				};
-			}
+function gisLoaded() {
+try {
+tokenClient = google.accounts.oauth2.initTokenClient({
+client_id: CLIENT_ID,
+scope: SCOPES,
+ux_mode: 'popup',
+callback: '', // Will be set later
+});
+gisInited = true;
+maybeEnableButtons();
+} catch (err) {
+console.error('Error initializing token client:', err);
+}
+}
 
-			const response = await fetch(`${WEATHER_API_URL}?q=${targetDate.toLocaleDateString()}&appid=${WEATHER_API_KEY}`);
-			const data = await response.json();
+function maybeEnableButtons() {
+if (gapiInited && gisInited) {
+calendarBtn.style.display = 'inline-flex';
+}
+}
 
-			if (data.cod === '404') {
-				return {
-					status: 'indeterminate',
-					icon: '',
-					temp: '',
-					description: 'Météo non disponible pour cette date'
-				};
-			}
+async function handleAuthClick() {
+try {
+tokenClient.callback = async (resp) => {
+if (resp.error !== undefined) {
+throw resp;
+}
+await loadCalendarAndEvents();
+};
 
-			const weather = data.list[0].main;
-			const weatherDescription = data.list[0].weather[0].description;
-			const weatherIcon = data.list[0].weather[0].icon;
+if (gapi.client.getToken() === null) {
+tokenClient.requestAccessToken({prompt: 'consent', hint: 'esprit.healthbridge@gmail.com'});
+} else {
+tokenClient.requestAccessToken({prompt: ''});
+}
+} catch (err) {
+console.error('Error handling auth click:', err);
+}
+}
 
-			return {
-				status: 'success',
-				icon: weatherIcon,
-				temp: weather.temp,
-				description: weatherDescription
-			};
-		}
+// Initialize the APIs
+gapiLoaded();
+gisLoaded();
+
+async function loadCalendarAndEvents() {
+try {
+console.log('Loading calendar and events...');
+const response = await fetch('/session/api/all-sessions');
+if (! response.ok) {
+throw new Error('Failed to fetch sessions');
+}
+const sessions = await response.json();
+console.log('Fetched sessions:', sessions);
+
+// Destroy existing calendar if it exists
+if (calendar) {
+calendar.fullCalendar('destroy');
+}
+
+// Initialize new calendar
+calendar = $('#calendar').fullCalendar({
+header: {
+left: 'prev,next today',
+center: 'title',
+right: 'month'
+},
+defaultView: 'month',
+height: 'parent',
+contentHeight: 'auto',
+fixedWeekCount: false,
+displayEventTime: true,
+displayEventEnd: false,
+timezone: 'local',
+eventLimit: true,
+selectable: true,
+select: async function (start, end) {
+if (gapi.client.getToken()) {
+const selectedDate = start.format('YYYY-MM-DD');
+const activity = await promptForActivity();
+
+if (activity) {
+try {
+const event = {
+'summary': activity.nom,
+'description': `Type: ${
+activity.type
+}\nPrice: ${
+activity.prix
+} DT`,
+'start': {
+'dateTime': `${selectedDate}T09:00:00`,
+'timeZone': 'Africa/Tunis'
+},
+'end': {
+'dateTime': `${selectedDate}T10:00:00`,
+'timeZone': 'Africa/Tunis'
+},
+'colorId': getGoogleColorId(activity.type)
+};
+
+const request = gapi.client.calendar.events.insert({'calendarId': 'primary', 'resource': event});
+
+request.execute(function (event) {
+if (event.htmlLink) {
+alert('Activity added to Google Calendar successfully!');
+calendar.fullCalendar('refetchEvents');
+}
+});
+} catch (error) {
+console.error('Error adding event to Google Calendar:', error);
+alert('Failed to add activity to Google Calendar. Please try again.');
+}
+}
+} else {
+alert('Please sign in to Google Calendar first to add activities.');
+} calendar.fullCalendar('unselect');
+},
+dayRender: function (date, cell) {
+const cellDate = date.format('YYYY-MM-DD');
+const dayEvents = sessions.filter(session => moment(session.date).format('YYYY-MM-DD') === cellDate);
+
+if (dayEvents.length > 0) {
+const eventContainer = $('<div class="day-events"></div>');
+dayEvents.forEach(session => {
+const eventDiv = $(`
+										<div class="day-event" style="
+											background-color: ${
+getActivityColor(session.activite.type)
+};
+											color: white;
+											margin: 2px;
+											padding: 4px 8px;
+											border-radius: 4px;
+											font-size: 0.9em;
+											white-space: nowrap;
+											overflow: hidden;
+											text-overflow: ellipsis;
+											box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+										">
+											<div class="event-title" style="font-weight: 500;">${
+session.activite.nom
+}</div>
+											<div class="event-time" style="font-size: 0.85em; opacity: 0.9;">${
+moment(session.heure, 'HH:mm:ss').format('HH:mm')
+}</div>
+										</div>
+									`);
+
+// Add click handler to add to Google Calendar
+eventDiv.click(async function () {
+if (gapi.client.getToken()) {
+try {
+const event = {
+'summary': session.activite.nom,
+'description': `Type: ${
+session.activite.type
+}\nCapacity: ${
+session.capacite
+}\nAvailable Places: ${
+session.nbPlace
+}`,
+'start': {
+'dateTime': `${
+session.date
+}T${
+session.heure
+}`,
+'timeZone': 'Africa/Tunis'
+},
+'end': {
+'dateTime': moment(`${
+session.date
+}T${
+session.heure
+}`).add(1, 'hours').format('YYYY-MM-DDTHH:mm:ss'),
+'timeZone': 'Africa/Tunis'
+},
+'colorId': getGoogleColorId(session.activite.type)
+};
+
+const request = gapi.client.calendar.events.insert({'calendarId': 'primary', 'resource': event});
+
+request.execute(function (event) {
+if (event.htmlLink) {
+alert('Activity added to Google Calendar successfully!');
+}
+});
+} catch (error) {
+console.error('Error adding event to Google Calendar:', error);
+alert('Failed to add activity to Google Calendar. Please try again.');
+}
+} else {
+alert('Please sign in to Google Calendar first to add activities.');
+}
+});
+
+eventContainer.append(eventDiv);
+});
+cell.append(eventContainer);
+}
+},
+eventRender: function (event, element) {
+element.css('display', 'none'); // Hide the default event rendering
+
+element.qtip({
+content: {
+text: `
+										<strong>${
+event.title
+}</strong><br>
+										Type: ${
+event.type
+}<br>
+										Time: ${
+moment(event.start).format('HH:mm')
+}<br>
+										Capacity: ${
+event.capacity
+}<br>
+										Available: ${
+event.availablePlaces
+}
+									`
+},
+position: {
+my: 'bottom center',
+at: 'top center'
+},
+style: {
+classes: 'qtip-bootstrap'
+}
+});
+},
+viewRender: function (view, element) { // Ensure proper height for day grid
+$('.fc-day-grid').css('min-height', '300px');
+
+// Adjust cell heights to accommodate events
+$('.fc-day').css('min-height', '100px');
+
+loadUpcomingEvents(sessions);
+}
+});
+
+loadUpcomingEvents(sessions);
+calendarModal.style.display = 'block';
+} catch (err) {
+console.error('Error loading calendar:', err);
+}
+}
+
+function getActivityColor(type) {
+const colors = {
+'Aventure': '#ff7f50',
+'Combiné': '#6495ed',
+'National': '#32cd32',
+'Sportif': '#ff69b4'
+};
+return colors[type] || '#666666';
+}
+
+function loadUpcomingEvents(sessions) {
+const upcomingContainer = document.querySelector('.upcoming-events-list');
+const today = moment();
+
+const upcomingSessions = sessions.filter(session => moment(session.date + ' ' + session.heure).isAfter(today)).sort((a, b) => moment(a.date + ' ' + a.heure).diff(moment(b.date + ' ' + b.heure)));
+
+upcomingContainer.innerHTML = '';
+
+if (upcomingSessions.length === 0) {
+upcomingContainer.innerHTML = '<p class="text-muted">No upcoming events</p>';
+return;
+}
+
+upcomingSessions.forEach(session => {
+const eventElement = document.createElement('div');
+eventElement.className = 'upcoming-event-item';
+eventElement.style.borderLeft = `4px solid ${
+getActivityColor(session.activite.type)
+}`;
+eventElement.innerHTML = `
+						<h4>${
+session.activite.nom
+}</h4>
+						<p><i class="fas fa-calendar"></i> ${
+moment(session.date).format('MMM DD, YYYY')
+}</p>
+						<p><i class="fas fa-clock"></i> ${
+moment(session.heure, 'HH:mm:ss').format('HH:mm')
+}</p>
+						<p><i class="fas fa-users"></i> ${
+session.nbPlace
+} places available</p>
+						<p><i class="fas fa-tag"></i> ${
+session.activite.type
+}</p>
+					`;
+upcomingContainer.appendChild(eventElement);
+});
+}
+
+// Add click handler for calendar button
+calendarBtn.addEventListener('click', handleAuthClick);
+
+// Add click handler for close button
+closeBtn.addEventListener('click', function () {
+calendarModal.style.display = 'none';
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', function (event) {
+if (event.target == calendarModal) {
+calendarModal.style.display = 'none';
+}
+});
+
+// Add helper function to get Google Calendar color ID
+function getGoogleColorId(activityType) {
+const colorMap = {
+'Aventure': '11', // Red
+'Combiné': '9', // Blue
+'National': '10', // Green
+'Sportif': '6' // Purple
+};
+return colorMap[activityType] || '1';
+}
+
+// Add helper function to prompt for activity details
+function promptForActivity() {
+return new Promise((resolve) => {
+const activityTypes = ['Aventure', 'Combiné', 'National', 'Sportif'];
+const form = $ (`
+						<div class="activity-prompt">
+							<h3>Add Activity to Calendar</h3>
+							<div class="form-group">
+								<label>Activity Name:</label>
+								<input type="text" id="activityName" class="form-control">
+							</div>
+							<div class="form-group">
+								<label>Type:</label>
+								<select id="activityType" class="form-control">
+									${
+activityTypes.map(type => `<option value="${type}">${type}</option>`).join('')
+}
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Price (DT):</label>
+								<input type="number" id="activityPrice" class="form-control">
+							</div>
+						</div>
+					`).dialog({
+modal: true,
+buttons: {
+"Add": function () {
+const activity = {
+nom: $('#activityName').val(),
+type: $('#activityType').val(),
+prix: $('#activityPrice').val()
+};
+$(this).dialog("close");
+resolve(activity);
+},
+"Cancel": function () {
+$(this).dialog("close");
+resolve(null);
+}
+}
+});
+});
+}
+
+function checkReservations() { // Show loading state
+Swal.fire({
+title: 'Loading Reservations...',
+allowOutsideClick: false,
+didOpen: () => {
+Swal.showLoading();
+}
+});
+
+// Fetch user's reservations
+fetch('/reservation/activite/user/reservations', {
+method: 'GET',
+headers: {
+'Accept': 'application/json'
+}
+}).then(response => {
+if (!response.ok) {
+throw new Error (`HTTP error! status: ${
+response.status
+}`);
+}
+return response.json();
+}).then(data => {
+if (data.error) {
+throw new Error(data.error);
+}
+
+if (data.length === 0) {
+Swal.fire({title: 'No Reservations', text: 'You have no reservations yet.', icon: 'info', confirmButtonText: 'OK'});
+return;
+}
+
+// Create HTML for reservations list
+const reservationsHtml = data.map(reservation => `
+						<div class="reservation-item">
+							<div class="reservation-details">
+								<strong>Activity:</strong> ${
+reservation.session.activite.nom
+}<br>
+								<strong>Date:</strong> ${
+reservation.session.date
+}<br>
+								<strong>Time:</strong> ${
+reservation.session.heure
+}<br>
+								<strong>Reservation Date:</strong> ${
+reservation.dateReservation
+}
+							</div>
+							<button onclick="downloadReservationPdf(${
+reservation.id
+})" class="btn btn-primary btn-sm download-btn">
+								<i class="material-icons">download</i> PDF
+							</button>
+						</div>
+					`).join('');
+
+// Show reservations in modal
+Swal.fire({
+title: 'Your Reservations',
+html: `
+							<div class="reservation-list">
+								${reservationsHtml}
+							</div>
+						`,
+width: '800px',
+showCloseButton: true,
+showConfirmButton: false,
+focusConfirm: false
+});
+}).catch(error => {
+console.error('Error:', error);
+Swal.fire({
+title: 'Error!',
+text: error.message || 'An error occurred while fetching reservations.',
+icon: 'error',
+confirmButtonText: 'OK'
+});
+});
+}
+
+function downloadReservationPdf(reservationId) { // Show loading state
+Swal.fire({
+title: 'Generating PDF...',
+allowOutsideClick: false,
+didOpen: () => {
+Swal.showLoading();
+}
+});
+
+// Fetch PDF for specific reservation
+fetch (`/reservation/activite/pdf/${reservationId}`, {
+method: 'GET',
+headers: {
+'Accept': 'application/json'
+}
+}).then(response => {
+if (!response.ok) {
+throw new Error (`HTTP error! status: ${
+response.status
+}`);
+}
+return response.json();
+}).then(data => {
+if (data.error) {
+throw new Error(data.error);
+}
+
+if (data.pdf) { // Convert base64 to binary
+const binaryStr = window.atob(data.pdf);
+const bytes = new Uint8Array(binaryStr.length);
+for (let i = 0; i < binaryStr.length; i++) {
+bytes[i] = binaryStr.charCodeAt(i);
+}
+
+// Create and download PDF
+const blob = new Blob([bytes], {type: 'application/pdf'});
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = `reservation_${reservationId}.pdf`;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+
+// Show success message
+Swal.fire({
+title: 'Success!',
+text: 'PDF downloaded successfully.',
+icon: 'success',
+timer: 2000,
+showConfirmButton: false
+});
+}
+}).catch(error => {
+console.error('Error:', error);
+Swal.fire({
+title: 'Error!',
+text: error.message || 'An error occurred while downloading the PDF.',
+icon: 'error',
+confirmButtonText: 'OK'
+});
+});
+}
+});
+	</script>
+
+	<!-- Separate script for filter functionality -->
+	<script>
+		$(document).ready(function () { // Initialize price slider
+$("#price-slider").slider({
+range: true,
+min: 0,
+max: 1000,
+values: [
+0, 1000
+],
+slide: function (event, ui) {
+$("#minPrice").val(ui.values[0]);
+$("#maxPrice").val(ui.values[1]);
+}
+});
+
+// Function to extract price from text
+function extractPrice(priceText) {
+const matches = priceText.match(/(\d+(\.\d+)?)/);
+return matches ? parseFloat(matches[1]) : 0;
+}
+
+// Function to extract type from text
+function extractType(typeText) { // Remove "Type:" and any extra whitespace
+return typeText.replace('Type:', '').trim();
+}
+
+// Main filter function
+function filterActivities() {
+const searchTerm = $("#searchActivity").val().toLowerCase();
+const selectedType = $("#activityType").val();
+const minPrice = parseFloat($("#minPrice").val());
+const maxPrice = parseFloat($("#maxPrice").val());
+
+console.log('Selected Type:', selectedType); // Debug log
+
+$(".col-xl-4.col-lg-6.col-sm-6").each(function () {
+const card = $(this);
+const title = card.find(".package-title").text().toLowerCase();
+const typeText = card.find(".package-meta a:first-child").text();
+const type = extractType(typeText);
+const price = extractPrice(card.find(".package-meta a:last-child").text());
+
+console.log('Card Type:', type); // Debug log
+
+const matchesSearch = title.includes(searchTerm);
+const matchesType = selectedType === "" || type === selectedType;
+const matchesPrice = price >= minPrice && price <= maxPrice;
+
+console.log('Matches - Search:', matchesSearch, 'Type:', matchesType, 'Price:', matchesPrice); // Debug log
+
+if (matchesSearch && matchesType && matchesPrice) {
+card.show();
+} else {
+card.hide();
+}
+});
+}
+
+// Event listeners
+$("#searchActivity").on('input', filterActivities);
+$("#activityType").on('change', filterActivities);
+
+// Price slider change event
+$("#price-slider").on('slidechange', function (event, ui) {
+$("#minPrice").val(ui.values[0]);
+$("#maxPrice").val(ui.values[1]);
+filterActivities();
+});
+
+// Manual price input change
+$("#minPrice, #maxPrice").on('change', function () {
+const minPrice = parseFloat($("#minPrice").val());
+const maxPrice = parseFloat($("#maxPrice").val());
+
+// Validate and adjust values
+if (minPrice < 0) 
+$("#minPrice").val(0);
+
+
+
+if (maxPrice > 1000) 
+$("#maxPrice").val(1000);
+
+
+
+if (minPrice > maxPrice) {
+$("#minPrice").val(maxPrice);
+}
+
+// Update slider
+$("#price-slider").slider("values", [
+parseFloat($("#minPrice").val()),
+parseFloat($("#maxPrice").val())
+]);
+
+filterActivities();
+});
+
+// Apply filters button
+$("#applyFilters").on('click', filterActivities);
+
+// Reset filters
+$("#resetFilters").on('click', function () {
+$("#searchActivity").val('');
+$("#activityType").val('');
+$("#minPrice").val(0);
+$("#maxPrice").val(1000);
+$("#price-slider").slider("values", [0, 1000]);
+
+// Show all activities
+$(".col-xl-4.col-lg-6.col-sm-6").show();
+});
+
+// Initialize tooltips if you're using them
+$('[data-toggle="tooltip"]').tooltip();
+});
 	</script>
 {% endblock %}
 
@@ -527,20 +1571,99 @@
 		</nav>
 		<!-- End Navbar -->
 		<div class="content">
-			<div class="container-fluid">
+			<div
+				class="container-fluid">
+				<!-- Calendar and Reservation Buttons -->
+				<div class="row mb-4">
+					<div class="col-12">
+						<button id="showCalendarBtn" class="calendar-btn">
+							<i class="fas fa-calendar-alt"></i>
+							View Calendar
+						</button>
+						<button id="showReservationBtn" class="reservation-btn">
+							<i class="fas fa-bookmark"></i>
+							Make Reservation
+						</button>
+						<button id="checkReservationsBtn" class="reservation-btn" style="background: #17a2b8;" onclick="checkReservations()">
+							<i class="fas fa-list-alt"></i>
+							Check Reservations
+						</button>
+					</div>
+				</div>
+
+				<!-- Calendar Modal -->
+				<div id="calendarModal" class="calendar-modal">
+					<div class="calendar-modal-content">
+						<span class="calendar-close">&times;</span>
+						<div class="calendar-container">
+							<div id="calendar"></div>
+							<div class="upcoming-events">
+								<h3>Upcoming Events</h3>
+								<div
+									class="upcoming-events-list"><!-- Events will be loaded here -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Reservation Modal -->
+				<div id="reservationModal" class="reservation-modal">
+					<div class="reservation-modal-content">
+						<span class="close">&times;</span>
+						<h2>Make a Reservation</h2>
+						<div id="activitySelection">
+							<h3>Select an Activity</h3>
+							<div class="activity-list">
+								{% for activite in activites %}
+									<div class="activity-item" data-activity-id="{{ activite.id }}">
+										<h4>{{ activite.nom }}</h4>
+										<p>
+											<i class="fas fa-tag"></i>
+											{{ activite.type }}</p>
+										<p>
+											<i class="fas fa-money-bill"></i>
+											{{ activite.prix }}
+											DT</p>
+									</div>
+								{% endfor %}
+							</div>
+							<div class="modal-buttons">
+								<button class="modal-btn modal-btn-secondary" onclick="closeReservationModal()">Cancel</button>
+								<button class="modal-btn modal-btn-primary" onclick="showSessionSelection()" disabled id="nextButton">Next</button>
+							</div>
+						</div>
+						<div id="sessionSelection" style="display: none;">
+							<h3>Select a Session</h3>
+							<div
+								class="session-list" id="sessionList"><!-- Sessions will be loaded here -->
+							</div>
+							<div class="modal-buttons">
+								<button class="modal-btn modal-btn-secondary" onclick="showActivitySelection()">Back</button>
+								<button class="modal-btn modal-btn-primary" onclick="makeReservation()" disabled id="reserveButton">Reserve</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Filter Menu -->
 				<div class="filter-menu1">
 					<button class="tab-button active" data-filter="*">
 						<i class="fas fa-sort-alpha-up"></i>
-						Nom (A - Z)</button>
+						Nom (A - Z)
+					</button>
 					<button class="tab-button" data-filter=".date">
 						<i class="fas fa-calendar-alt"></i>
-						Date</button>
+						Date
+					</button>
 					<button class="tab-button" data-filter=".hightTolow">
 						<i class="fas fa-upload"></i>
-						Prix Croissant</button>
+						Prix Croissant
+					</button>
 					<button class="tab-button" data-filter=".lowToHigh">
 						<i class="fas fa-download"></i>
-						Prix Décroissant</button>
+						Prix Décroissant
+					</button>
 				</div>
 
 				<div class="row">
@@ -579,10 +1702,10 @@
 													<i class="fas fa-calendar-alt"></i>
 													Sessions
 												</button>
-												<button class="share-btn" onclick="shareOnFacebook('{{ activite.nom }}', '{{ activite.type }}', '{{ activite.prix }} DT')">
+												<a href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_activite_index')|url_encode }}&quote=Check out {{ activite.nom }} - {{ activite.type }} activity at TripToGo! Price: {{ activite.prix }} DT" target="_blank" class="share-btn">
 													<i class="fab fa-facebook-f"></i>
 													Partager sur Facebook
-												</button>
+												</a>
 											</div>
 										</div>
 									</div>
@@ -594,50 +1717,38 @@
 						<div class="sidebar-area tours-sidebar">
 							<div class="widget">
 								<h3 class="widget_title">Filtrer les Activités</h3>
-								<form class="booking-form">
+								<form class="booking-form" id="filterForm" onsubmit="return false;">
 									<div class="form-group">
 										<i class="fas fa-search"></i>
-										<input type="text" class="form-control" placeholder="Rechercher une activité"/>
+										<input type="text" class="form-control" id="searchActivity" placeholder="Rechercher une activité"/>
 									</div>
 									<div class="form-group">
 										<i class="fas fa-thumbtack"></i>
-										<select class="form-select">
-											<option value="" selected disabled hidden>Sélectionner le Type</option>
+										<select class="form-select" id="activityType">
+											<option value="">Tous les Types</option>
 											<option value="Aventure">Aventure</option>
 											<option value="Combiné">Combiné</option>
 											<option value="Sportif">Sportif</option>
 											<option value="National">National</option>
 										</select>
 									</div>
-									<div class="form-group">
-										<i class="fas fa-calendar-alt"></i>
-										<select class="form-select">
-											<option value="" selected disabled hidden>Sélectionner le Mois</option>
-											<option value="1">Janvier</option>
-											<option value="2">Février</option>
-											<option value="3">Mars</option>
-											<option value="4">Avril</option>
-											<option value="5">Mai</option>
-											<option value="6">Juin</option>
-											<option value="7">Juillet</option>
-											<option value="8">Août</option>
-											<option value="9">Septembre</option>
-											<option value="10">Octobre</option>
-											<option value="11">Novembre</option>
-											<option value="12">Décembre</option>
-										</select>
-									</div>
-									<div class="price_slider_wrapper">
+									<div class="price-range">
 										<h3 class="widget_title">Filtrer par Prix</h3>
-										<div class="price_slider"></div>
-										<div class="price_label">
-											Prix:
-											<span class="from">10 DT</span>
-											—
-											<span class="to">1000 DT</span>
+										<div class="price-inputs">
+											<input type="number" id="minPrice" class="price-input" value="0" min="0" max="1000">
+											<span>à</span>
+											<input type="number" id="maxPrice" class="price-input" value="1000" min="0" max="1000">
 										</div>
+										<div id="price-slider"></div>
 									</div>
-									<button class="vs-btn style4 w-100">Rechercher</button>
+									<button type="button" class="filter-btn search" id="applyFilters">
+										<i class="fas fa-search"></i>
+										Rechercher
+									</button>
+									<button type="button" class="filter-btn reset" id="resetFilters">
+										<i class="fas fa-undo"></i>
+										Réinitialiser
+									</button>
 								</form>
 							</div>
 						</div>
@@ -662,6 +1773,9 @@
 		</div>
 	</div>
 </div>
+
+<!-- Add this hidden input for CSRF token -->
+<input type="hidden" name="csrf_token" value="{{ csrf_token('reservation_token') }}">
 
 <script>
 	document.addEventListener('DOMContentLoaded', function () { // Filter functionality
@@ -714,17 +1828,17 @@ price: activityCard.querySelector('.package-meta a:nth-child(2)').textContent
 };
 
 // Fetch sessions for this activity
-fetch(`/session/api/sessions/activity/${activityId}`).then(response => {
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
+fetch (`/session/api/sessions/activity/${activityId}`).then(response => {
+if (!response.ok) {
+throw new Error('Network response was not ok');
+}
+return response.json();
 }).then(async sessions => {
-    if (sessions && sessions.length > 0) {
-        for (const session of sessions) {
-            const sessionCard = document.createElement('div');
-            sessionCard.className = 'session-card';
-            sessionCard.style.cssText = `
+if (sessions && sessions.length > 0) {
+for (const session of sessions) {
+const sessionCard = document.createElement('div');
+sessionCard.className = 'session-card';
+sessionCard.style.cssText = `
                 background: #fff;
                 border-radius: 10px;
                 padding: 15px;
@@ -733,65 +1847,75 @@ fetch(`/session/api/sessions/activity/${activityId}`).then(response => {
                 transition: transform 0.3s ease;
             `;
 
-            const date = new Date(session.date);
-            const formattedDate = date.toLocaleDateString('fr-FR');
-            const formattedTime = session.heure;
+const date = new Date(session.date);
+const formattedDate = date.toLocaleDateString('fr-FR');
+const formattedTime = session.heure;
 
-            // Get weather for this session's date
-            const weather = await getWeatherForDate(session.date);
-            let weatherHtml = '';
+// Get weather for this session's date
+const weather = await getWeatherForDate(session.date);
+let weatherHtml = '';
 
-            if (weather.status === 'success') {
-                weatherHtml = `
+if (weather.status === 'success') {
+weatherHtml = `
                     <div class="weather-info">
                         <div class="weather-container">
-                            <img src="http://openweathermap.org/img/w/${weather.icon}.png" class="weather-icon" alt="Weather">
+                            <img src="http://openweathermap.org/img/w/${
+weather.icon
+}.png" class="weather-icon" alt="Weather">
                             <div class="weather-details">
-                                <span class="weather-temp">${weather.temp}°C</span>
-                                <span class="weather-desc">${weather.description}</span>
+                                <span class="weather-temp">${
+weather.temp
+}°C</span>
+                                <span class="weather-desc">${
+weather.description
+}</span>
                             </div>
                         </div>
                     </div>
                 `;
-            } else if (weather.status === 'indeterminate') {
-                weatherHtml = `
+} else if (weather.status === 'indeterminate') {
+weatherHtml = `
                     <div class="weather-info">
                         <div class="weather-indeterminate">
                             Météo non disponible pour cette date
                         </div>
                     </div>
                 `;
-            }
+}
 
-            sessionCard.innerHTML = `
+sessionCard.innerHTML = `
                 <div class="session-info" style="margin-bottom: 10px;">
                     <div style="margin-bottom: 5px;"><i class="fas fa-calendar"></i> ${formattedDate}</div>
                     <div style="margin-bottom: 5px;"><i class="fas fa-clock"></i> ${formattedTime}</div>
-                    <div style="margin-bottom: 10px;"><i class="fas fa-users"></i> ${session.nbPlace} places disponibles</div>
+                    <div style="margin-bottom: 10px;"><i class="fas fa-users"></i> ${
+session.nbPlace
+} places disponibles</div>
                     ${weatherHtml}
                 </div>
             `;
 
-            sessionCard.addEventListener('click', () => {
-                document.getElementById('modal-date').textContent = `Date: ${formattedDate}`;
-                document.getElementById('modal-time').textContent = `Heure: ${formattedTime}`;
-                document.getElementById('modal-available').textContent = `Places disponibles: ${session.nbPlace}`;
-                document.getElementById('modal-activity').textContent = 'Activité: ' + activityData.name;
-                document.getElementById('modal-type').textContent = activityData.type;
-                document.getElementById('modal-price').textContent = activityData.price;
+sessionCard.addEventListener('click', () => {
+document.getElementById('modal-date').textContent = `Date: ${formattedDate}`;
+document.getElementById('modal-time').textContent = `Heure: ${formattedTime}`;
+document.getElementById('modal-available').textContent = `Places disponibles: ${
+session.nbPlace
+}`;
+document.getElementById('modal-activity').textContent = 'Activité: ' + activityData.name;
+document.getElementById('modal-type').textContent = activityData.type;
+document.getElementById('modal-price').textContent = activityData.price;
 
-                modal.style.display = 'block';
-                sessionsModal.style.display = 'none';
-            });
+modal.style.display = 'block';
+sessionsModal.style.display = 'none';
+});
 
-            sessionsGrid.appendChild(sessionCard);
-        }
-    } else {
-        sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Aucune session disponible pour le moment</p>';
-    }
+sessionsGrid.appendChild(sessionCard);
+}
+} else {
+sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Aucune session disponible pour le moment</p>';
+}
 }).catch(error => {
-    console.error('Error fetching sessions:', error);
-    sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Erreur lors du chargement des sessions</p>';
+console.error('Error fetching sessions:', error);
+sessionsGrid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1 / -1;">Erreur lors du chargement des sessions</p>';
 });
 
 sessionsModal.style.display = 'block';
@@ -821,6 +1945,162 @@ e.target.closest('.session-card').style.transform = 'translateY(-5px)';
 document.addEventListener('mouseout', function (e) {
 if (e.target.closest('.session-card')) {
 e.target.closest('.session-card').style.transform = 'translateY(0)';
+}
+});
+
+// Add this to your existing JavaScript code
+document.addEventListener('DOMContentLoaded', function () {
+const reservationModal = document.getElementById('reservationModal');
+const reservationBtn = document.getElementById('showReservationBtn');
+const closeBtn = reservationModal.querySelector('.close');
+const activityItems = document.querySelectorAll('.activity-item');
+const nextButton = document.getElementById('nextButton');
+const reserveButton = document.getElementById('reserveButton');
+let selectedActivityId = null;
+let selectedSessionId = null;
+
+reservationBtn.addEventListener('click', function () {
+reservationModal.style.display = 'block';
+showActivitySelection();
+});
+
+closeBtn.addEventListener('click', function () {
+closeReservationModal();
+});
+
+window.addEventListener('click', function (event) {
+if (event.target == reservationModal) {
+closeReservationModal();
+}
+});
+
+activityItems.forEach(item => {
+item.addEventListener('click', function () {
+activityItems.forEach(i => i.classList.remove('selected'));
+this.classList.add('selected');
+selectedActivityId = this.getAttribute('data-activity-id');
+nextButton.disabled = false;
+});
+});
+
+window.showActivitySelection = function () {
+document.getElementById('activitySelection').style.display = 'block';
+document.getElementById('sessionSelection').style.display = 'none';
+selectedSessionId = null;
+reserveButton.disabled = true;
+}
+
+window.showSessionSelection = function () {
+if (! selectedActivityId) 
+return;
+
+
+
+document.getElementById('activitySelection').style.display = 'none';
+document.getElementById('sessionSelection').style.display = 'block';
+
+// Fetch sessions for selected activity
+fetch (`/session/api/sessions/activity/${selectedActivityId}`).then(response => response.json()).then(sessions => {
+const sessionList = document.getElementById('sessionList');
+sessionList.innerHTML = '';
+
+if (sessions.length === 0) {
+sessionList.innerHTML = '<p class="text-center text-muted">No sessions available for this activity</p>';
+return;
+}
+
+sessions.forEach(session => {
+const sessionElement = document.createElement('div');
+sessionElement.className = 'session-item';
+
+// Make sure we have a valid session ID
+const sessionId = session.id_sess || session.id;
+if (! sessionId) {
+console.error('Invalid session data:', session);
+return;
+}
+
+sessionElement.setAttribute('data-session-id', sessionId);
+
+const date = new Date(session.date);
+const formattedDate = date.toLocaleDateString('fr-FR');
+const formattedTime = session.heure;
+
+sessionElement.innerHTML = `
+                        <p><i class="fas fa-calendar"></i> ${formattedDate}</p>
+                        <p><i class="fas fa-clock"></i> ${formattedTime}</p>
+                        <p><i class="fas fa-users"></i> ${
+session.nbPlace
+} places available</p>
+                    `;
+
+sessionElement.addEventListener('click', function () {
+document.querySelectorAll('.session-item').forEach(i => i.classList.remove('selected'));
+this.classList.add('selected');
+selectedSessionId = sessionId;
+reserveButton.disabled = false;
+});
+
+sessionList.appendChild(sessionElement);
+});
+}).catch(error => {
+console.error('Error fetching sessions:', error);
+document.getElementById('sessionList').innerHTML = '<p class="text-center text-danger">Error loading sessions. Please try again.</p>';
+});
+}
+
+window.makeReservation = function () {
+if (! selectedSessionId || selectedSessionId === 'undefined') {
+alert('Please select a valid session first');
+return;
+}
+
+const token = document.querySelector('input[name="csrf_token"]').value;
+
+// Convert sessionId to number to ensure it's an integer
+const sessionId = parseInt(selectedSessionId, 10);
+if (isNaN(sessionId)) {
+alert('Invalid session selected');
+return;
+}
+
+fetch (`/reservation/activite/add/${sessionId}`, {
+method: 'POST',
+headers: {
+'X-CSRF-TOKEN': token,
+'Accept': 'application/json',
+'Content-Type': 'application/json'
+},
+credentials: 'same-origin'
+}).then(response => {
+if (!response.ok) {
+return response.json().then(data => {
+throw new Error(data.error || 'An error occurred while making the reservation');
+});
+}
+return response.json();
+}).then(data => {
+alert('Reservation created successfully!');
+closeReservationModal();
+location.reload(); // Refresh the page to update session counts
+}).catch(error => {
+console.error('Reservation error:', error);
+if (error.message.includes('User not authenticated')) {
+alert('Please log in to make a reservation');
+} else {
+alert('Error creating reservation: ' + error.message);
+}
+});
+}
+
+window.closeReservationModal = function () {
+reservationModal.style.display = 'none';
+selectedActivityId = null;
+selectedSessionId = null;
+nextButton.disabled = true;
+reserveButton.disabled = true;
+document.querySelectorAll('.activity-item').forEach(i => i.classList.remove('selected'));
+showActivitySelection();
 }
 });
 </script>{% endblock %}

@@ -17,8 +17,29 @@ class ActiviteController extends AbstractController
     #[Route('/', name: 'app_activite_index', methods: ['GET'])]
     public function index(ActiviteRepository $activiteRepository): Response
     {
-        return $this->render('activite/index.html.twig', [
-            'activites' => $activiteRepository->findAll(),
+        $activities = $activiteRepository->findAll();
+        
+        // Calculate activity type statistics
+        $typeStats = [];
+        $total = count($activities);
+        
+        foreach ($activities as $activity) {
+            $type = $activity->getType();
+            if (!isset($typeStats[$type])) {
+                $typeStats[$type] = 0;
+            }
+            $typeStats[$type]++;
+        }
+        
+        $activityStats = [
+            'total' => $total,
+            'labels' => array_keys($typeStats),
+            'data' => array_values($typeStats)
+        ];
+
+        return $this->render('back_activite/TableActivite.html.twig', [
+            'activites' => $activities,
+            'activityStats' => $activityStats
         ]);
     }
 

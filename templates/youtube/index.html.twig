@@ -1,0 +1,312 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}YouTube Videos{% endblock %}
+
+{% block body %}
+    <div class="refresh-container">
+        <button id="refresh-videos" class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+        <span id="last-update" class="last-update"></span>
+    </div>
+
+    <div class="videos-container">
+        {% if videos|length > 0 %}
+            {% for video in videos %}
+                <div class="video-card" data-video-id="{{ video.id }}">
+                    <div class="video-player">
+                        <iframe
+                            width="100%"
+                            height="315"
+                            src="{{ video.embedUrl }}"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>{{ video.title }}</h3>
+                        {% if video.description %}
+                            <p class="description">{{ video.description|slice(0, 150) }}...</p>
+                        {% endif %}
+                        <div class="video-meta">
+                            <span class="published-date">{{ video.publishedAt|date('M d, Y') }}</span>
+                            <span class="position">#{{ video.position + 1 }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-warning">
+                No videos found in the playlist.
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .refresh-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .refresh-container .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .last-update {
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .videos-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .video-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .video-player {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-player iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .video-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            line-height: 1.4;
+        }
+
+        .description {
+            color: #666;
+            font-size: 14px;
+            margin: 0 0 10px 0;
+            line-height: 1.5;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .videos-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .video-counter {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 20px auto;
+            text-align: center;
+            max-width: 300px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .video-counter .count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .video-counter .label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        $(document).ready(function() {
+            const refreshInterval = {{ constant('App\\Service\\YouTubeService::REFRESH_INTERVAL') }} * 1000;
+            let lastUpdate = new Date();
+            let isUpdating = false;
+            let isVideoPlaying = false;
+            
+            $(document).on('play', 'iframe', function() {
+                isVideoPlaying = true;
+                console.log('Video started playing');
+            });
+
+            $(document).on('pause', 'iframe', function() {
+                isVideoPlaying = false;
+                console.log('Video paused');
+            });
+
+            function hasContentChanged(currentVideos, newVideos) {
+                if (currentVideos.length !== newVideos.length) {
+                    return true;
+                }
+
+                for (let i = 0; i < currentVideos.length; i++) {
+                    const current = currentVideos[i];
+                    const newVideo = newVideos[i];
+
+                    if (current.id !== newVideo.id ||
+                        current.title !== newVideo.title ||
+                        current.position !== newVideo.position) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            function getCurrentVideos() {
+                const videos = [];
+                $('.video-card').each(function() {
+                    const $card = $(this);
+                    videos.push({
+                        id: $card.data('video-id'),
+                        title: $card.find('h3').text(),
+                        position: parseInt($card.find('.position').text().replace('#', '')) - 1
+                    });
+                });
+                return videos;
+            }
+            
+            function updateVideoList() {
+                if (isUpdating) {
+                    console.log('Update already in progress, skipping...');
+                    return;
+                }
+
+                if (isVideoPlaying) {
+                    console.log('Video is playing, skipping update...');
+                    return;
+                }
+                
+                isUpdating = true;
+                console.log('Starting video list update...');
+                
+                $.ajax({
+                    url: '{{ path('app_youtube_api') }}',
+                    type: 'GET',
+                    dataType: 'json',
+                    cache: false,
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    },
+                    success: function(newVideos) {
+                        console.log('Received response:', newVideos);
+                        const container = $('.videos-container');
+                        
+                        if (!Array.isArray(newVideos)) {
+                            console.error('Invalid response format:', newVideos);
+                            container.html('<div class="alert alert-danger">Invalid response format</div>');
+                            return;
+                        }
+                        
+                        if (newVideos.length === 0) {
+                            console.log('No videos received');
+                            container.html('<div class="alert alert-warning">No videos found in the playlist.</div>');
+                            return;
+                        }
+
+                        const currentVideos = getCurrentVideos();
+                        const hasChanged = hasContentChanged(currentVideos, newVideos);
+
+                        if (!hasChanged) {
+                            console.log('No changes detected in video list');
+                            return;
+                        }
+                        
+                        let newContent = '';
+                        newVideos.forEach(function(video, index) {
+                            console.log('Processing video', index + 1, 'of', newVideos.length, ':', video.title);
+                            newContent += `
+                                <div class="video-card" data-video-id="${video.id}">
+                                    <div class="video-player">
+                                        <iframe
+                                            width="100%"
+                                            height="315"
+                                            src="${video.embedUrl}"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                    <div class="video-info">
+                                        <h3>${video.title}</h3>
+                                        ${video.description ? `<p class="description">${video.description.substring(0, 150)}...</p>` : ''}
+                                        <div class="video-meta">
+                                            <span class="published-date">${new Date(video.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                            <span class="position">#${video.position + 1}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        container.html(newContent);
+                        lastUpdate = new Date();
+                        console.log('Update completed at:', lastUpdate);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching videos:', error);
+                        console.log('Status:', status);
+                        console.log('Response:', xhr.responseText);
+                    },
+                    complete: function() {
+                        isUpdating = false;
+                        console.log('Update process completed');
+                    }
+                });
+            }
+
+            updateVideoList();
+
+            setInterval(updateVideoList, refreshInterval);
+            
+            $('#refresh-videos').on('click', function() {
+                console.log('Manual refresh triggered');
+                updateVideoList();
+            });
+            
+            setInterval(function() {
+                const now = new Date();
+                const diff = Math.floor((now - lastUpdate) / 1000);
+                $('#last-update').text(`Last updated: ${diff} seconds ago`);
+            }, 1000);
+        });
+    </script>
+{% endblock %}

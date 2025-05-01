@@ -70,163 +70,142 @@
 					<div class="col text-end text-xl-center">
 						<nav class="main-menu menu-style1 d-none d-lg-block">
 							<ul>
-								<!-- Toujours afficher Accueil -->
 								<li>
 									<a href="{{ path('app_home') }}">Accueil</a>
 								</li>
 
 
-								<li class="menu-item-has-children mega-menu-wrap">
+								<li class="menu-item-has-children ">
 									<a>Nos offres</a>
-									<ul class="mega-menu">
+									<ul class="sub-menu">
 
 										<li>
-											<a>Liste des pages 1</a>
-											<ul></li>
+											<ul>
+												<li>
+													{% if app.user %}
+														<a href="{{ path('app_circuit') }}">Circuits</a>
+													{% else %}
+														<a href="{{ path('app_seconnecter') }}">
+															Circuits
+														</a>
+													{% endif %}
+												</li>
+												<li>
+													{% if app.user %}
+														<a href="{{ path('app_hotel_chambre_index') }}">Hotels</a>
+													{% else %}
+														<a href="{{ path('app_seconnecter') }}">
+															Hotels
+														</a>
+													{% endif %}
+												</li>
 
-											<a href="{{ path('app_about_us') }}">À propos de nous</a>
+												<li>
+													{% if app.user %}
+														<a href="{{ path('app_front_post_index') }}">Forum</a>
+													{% else %}
+														<a href="{{ path('app_seconnecter') }}">
+															Forum
+														</a>
+													{% endif %}
+												</li>
+												<li>
+													{% if app.user %}
+														<a href="{{ path('app_youtube') }}">TripToTube</a>
+													{% else %}
+														<a href="{{ path('app_seconnecter') }}">
+															TripToTube
+														</a>
+													{% endif %}
+												</li>
+												<li>
+													{% if app.user %}
+														<a href="{{ path('app_vol_index') }}">Réservation de Vol</a>
+													{% else %}
+														<a href="{{ path('app_seconnecter') }}">
+															TripToTube
+														</a>
+													{% endif %}
+												</li>
 
-										</li>
-										<li></li>
-										<li>
-											{% if app.user %}
-												<a href="{{ path('app_circuit') }}">Circuits</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													Circuits
-												</a>
-											{% endif %}
-										</li>
-										<li>
-											{% if app.user %}
-												<a href="{{ path('app_hotel_chambre_index') }}">Hotels</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													Hotels
-												</a>
-											{% endif %}
+											</ul>
 										</li>
 
-										<li>
-											{% if app.user %}
-												<a href="{{ path('app_front_post_index') }}">Forum</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													Forum
-												</a>
-											{% endif %}
-										</li>
-										<li>
-											{% if app.user %}
-												<a href="about.html">Réservation de tours</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													Réservation de tours
-												</a>
-											{% endif %}
-										</li>
+
 									</ul>
 								</li>
 
 								<li>
-									<a href="#">Liste des pages 2</a>
-									<ul>
-
-										<li>
-											{% if app.user %}
-												<a href="about.html">Grille des blogs</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													Grille des blogs
-												</a>
-											{% endif %}
-										</li>
-										<li>
-											{% if app.user %}
-												<a href="about.html">Détails du blog</a>
-											{% else %}
-												<a href="{{ path('app_seconnecter') }}">
-													Détails du blog
-												</a>
-											{% endif %}
-										</li>
-
-									</ul>
+									<a href="{{path('app_about_us')}}">à propos de nous
+									</a>
+									<!-- Toujours afficher Contact -->
+								</li>
+								<li>
+									<a href="{{path('app_contact')}}">Contact</a>
 								</li>
 							</ul>
-						</li>
-
-						<li>
-							<a href="{{path('app_about_us')}}">à propos de nous
-							</a>
-							<!-- Toujours afficher Contact -->
-						</li>
-						<li>
-							<a href="{{path('app_contact')}}">Contact</a>
-						</li>
-					</ul>
-				</nav>
-				<button class="vs-menu-toggle d-inline-block d-lg-none">
-					<i class="fal fa-bars"></i>
-				</button>
-			</div>
+						</nav>
+						<button class="vs-menu-toggle d-inline-block d-lg-none">
+							<i class="fal fa-bars"></i>
+						</button>
+					</div>
 
 
-			<div class="col-auto d-none d-xl-block">
-				<div class="header-btns">
-					<button class="searchBoxTggler">
-						<i class="fas fa-robot"></i>
-					</button>
+					<div class="col-auto d-none d-xl-block">
+						<div class="header-btns">
+							<button class="searchBoxTggler">
+								<i class="fas fa-robot"></i>
+							</button>
 
 
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-	<style>
-		/* Style général du dropdown */
-		.dropdown-menu {
-			background-color: var(--theme-color2);
-			border: 1px solid var(--theme-color);
-			border-radius: 4px;
-			padding: 0;
-			margin: 0;
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-		}
+			<style>
+				/* Style général du dropdown */
+				.dropdown-menu {
+					background-color: var(--theme-color2);
+					border: 1px solid var(--theme-color);
+					border-radius: 4px;
+					padding: 0;
+					margin: 0;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+				}
 
-		/* Suppression du style par défaut de la liste */
-		.dropdown-menu li {
-			list-style: none;
-		}
+				/* Suppression du style par défaut de la liste */
+				.dropdown-menu li {
+					list-style: none;
+				}
 
-		/* Style de chaque item du menu */
-		.dropdown-item {
-			display: block;
-			padding: 10px 15px;
-			color: #ffffff; /* Texte en blanc pour le contraste */
-			text-decoration: none;
-			transition: background-color 0.3s, color 0.3s;
-		}
+				/* Style de chaque item du menu */
+				.dropdown-item {
+					display: block;
+					padding: 10px 15px;
+					color: #ffffff; /* Texte en blanc pour le contraste */
+					text-decoration: none;
+					transition: background-color 0.3s, color 0.3s;
+				}
 
-		/* Effet de survol et focus pour un retour visuel interactif */
-		.dropdown-item:hover,
-		.dropdown-item:focus {
-			background-color: var(--theme-color);
-			color: #ffffff;
-		}
+				/* Effet de survol et focus pour un retour visuel interactif */
+				.dropdown-item:hover,
+				.dropdown-item:focus {
+					background-color: var(--theme-color);
+					color: #ffffff;
+				}
 
-		/* Optionnel : style pour l'item actif */
-		.dropdown-item.active,
-		.dropdown-item:active {
-			background-color: var(--theme-color);
-			color: #ffffff;
-		}
-	</style>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+				/* Optionnel : style pour l'item actif */
+				.dropdown-item.active,
+				.dropdown-item:active {
+					background-color: var(--theme-color);
+					color: #ffffff;
+				}
+			</style>
+			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-	<!-- Script JavaScript pour afficher la confirmation -->
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
+			<!-- Script JavaScript pour afficher la confirmation -->
+			<script>
+				document.addEventListener('DOMContentLoaded', function () {
 var logoutLink = document.querySelector('.logout');
 
 logoutLink.addEventListener('click', function (e) { // Empêche le comportement par défaut du lien
@@ -249,5 +228,7 @@ window.location.href = logoutLink.getAttribute('href');
 });
 });
 });
-	</script>
-</div></div></header>
+			</script>
+		</div>
+	</div>
+</header>

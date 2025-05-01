@@ -1,0 +1,27 @@
+{% for activite in activites %}
+    <tr>
+        <td>{{ activite.nom }}</td>
+        <td>{{ activite.description }}</td>
+        <td>{{ activite.type }}</td>
+        <td>{{ activite.prix }} DT</td>
+        <td class="text-right">
+            <a href="{{ path('app_activite_index', {'id': activite.id}) }}" class="btn btn-link btn-info btn-just-icon" title="Voir détails">
+                <i class="material-icons">visibility</i>
+            </a>
+            <a href="{{ path('app_activite_edit', {'id': activite.id}) }}" class="btn btn-link btn-warning btn-just-icon" title="Modifier">
+                <i class="material-icons">edit</i>
+            </a>
+            <form method="post" action="{{ path('app_activite_delete', {'id': activite.id}) }}" style="display: inline-block" onsubmit="return false;" class="delete-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ activite.id) }}">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="button" class="btn btn-link btn-danger btn-just-icon" title="Supprimer" onclick="handleDelete('{{ path('app_activite_delete', {'id': activite.id}) }}', this)">
+                    <i class="material-icons">close</i>
+                </button>
+            </form>
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="5" class="text-center">Aucune activité trouvée</td>
+    </tr>
+{% endfor %} 
