@@ -6,7 +6,11 @@ class YouTubeService
 {
     private const API_KEY = 'AIzaSyDeCQi_RXKiEQDjhWP3hJQUfkecUhyywSA';
     private const PLAYLIST_ID = 'PLfSfQ-u0IZ4T919z1Kaeat4e2N75GmsQR';
+<<<<<<< Updated upstream
     public const REFRESH_INTERVAL = 60; // Refresh interval in seconds
+=======
+    public const REFRESH_INTERVAL = 60; 
+>>>>>>> Stashed changes
 
     public function getVideos(): array
     {
@@ -19,14 +23,22 @@ class YouTubeService
 
             error_log('YouTubeService: Fetching from URL: ' . $url);
             $response = file_get_contents($url);
+<<<<<<< Updated upstream
             
+=======
+
+>>>>>>> Stashed changes
             if ($response === false) {
                 throw new \Exception('Failed to fetch YouTube API');
             }
 
             $data = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
             error_log('YouTubeService: Raw API response: ' . print_r($data, true));
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
             if (!isset($data['items']) || empty($data['items'])) {
                 throw new \Exception('No items found in playlist response');
             }
@@ -39,7 +51,11 @@ class YouTubeService
                     error_log('YouTubeService: Skipping invalid video item: ' . print_r($item, true));
                     continue;
                 }
+<<<<<<< Updated upstream
                 
+=======
+
+>>>>>>> Stashed changes
                 $videoId = $item['snippet']['resourceId']['videoId'];
                 $videos[] = [
                     'id' => $videoId,
@@ -51,7 +67,11 @@ class YouTubeService
                     'embedUrl' => $this->getVideoEmbedUrl($videoId)
                 ];
             }
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
             if (empty($videos)) {
                 throw new \Exception('No valid videos found in playlist items');
             }
@@ -60,7 +80,11 @@ class YouTubeService
             error_log('YouTubeService: First video sample: ' . print_r($videos[0], true));
 
             return $videos;
+<<<<<<< Updated upstream
             
+=======
+
+>>>>>>> Stashed changes
         } catch (\Exception $e) {
             error_log('YouTube API Error: ' . $e->getMessage());
             return [];

@@ -122,6 +122,15 @@
 										</li>
 										<li>
 											{% if app.user %}
+												<a href="{{ path('app_youtube') }}">TripToTube</a>
+											{% else %}
+												<a href="{{ path('app_seconnecter') }}">
+													TripToTube
+												</a>
+											{% endif %}
+										</li>
+										<li>
+											{% if app.user %}
 												<a href="about.html">Réservation de tours</a>
 											{% else %}
 												<a href="{{ path('app_seconnecter') }}">

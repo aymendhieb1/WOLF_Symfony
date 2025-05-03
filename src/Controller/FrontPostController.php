@@ -7,6 +7,7 @@ use App\Entity\Forum;
 use App\Entity\Comment;
 use App\Form\PostType;
 use App\Form\CommentType;
+use App\Form\PostEditType;
 use App\Repository\PostRepository;
 use App\Repository\ForumRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -56,6 +57,7 @@ class FrontPostController extends AbstractController
     {
         $user = $this->security->getUser();
         $userId = $user?->getId();
+<<<<<<< Updated upstream
     
         // Get accessible forums
         $forums = $this->forumRepository->findAccessibleForums($userId);
@@ -77,6 +79,17 @@ class FrontPostController extends AbstractController
         }
         
         // Get posts for current forum
+=======
+
+        $forums = $this->forumRepository->findAccessibleForums($userId);
+
+        $forumId = $request->query->get('forum');
+        $searchTerm = $request->query->get('search');
+        $sortBy = $request->query->get('sort', 'date');
+
+        $currentForum = $forumId ? $this->forumRepository->find($forumId) : null;
+
+>>>>>>> Stashed changes
         $posts = $this->postRepository->findByForumAndSearch(
             $forumId,
             $searchTerm,
@@ -88,7 +101,18 @@ class FrontPostController extends AbstractController
             'action' => $this->generateUrl('app_front_post_new')
         ]);
 
+<<<<<<< Updated upstream
         // Get Disqus configuration
+=======
+        // Create edit form for each post
+        $editForms = [];
+        foreach ($posts as $post) {
+            $editForms[$post->getPostId()] = $this->createForm(PostEditType::class, $post, [
+                'action' => $this->generateUrl('app_post_edit', ['id' => $post->getPostId()])
+            ])->createView();
+        }
+
+>>>>>>> Stashed changes
         $disqusConfig = [
             'shortname' => 'triptogo-1',
             'url' => $request->getUri(),
@@ -108,6 +132,7 @@ class FrontPostController extends AbstractController
             'sortBy' => $sortBy,
             'currentTab' => $request->query->get('tab', 'posts'),
             'create_form' => $createForm->createView(),
+            'edit_forms' => $editForms,
             'current_user' => $user,
             'disqus_config' => $disqusConfig
         ]);
@@ -121,21 +146,37 @@ class FrontPostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+<<<<<<< Updated upstream
             // Validate content using BadWordService
+=======
+            // Get the current user
+            $user = $this->security->getUser();
+            if (!$user) {
+                $this->addFlash('error', 'You must be logged in to create a post.');
+                return $this->redirectToRoute('app_front_post_index');
+            }
+
+            // Set the user for the post
+            $post->setIdUser($user);
+
+>>>>>>> Stashed changes
             if ($this->badWordService->validatePost($post)) {
                 $this->addFlash('error', 'Your post contains inappropriate content. Please review and try again.');
                 return $this->redirectToRoute('app_front_post_index');
             }
 
             $this->handleFileUpload($form, $post);
-            
+
             $post->setDateCreation(new \DateTime());
             $post->setDateModification(new \DateTime());
-            
+
             $this->entityManager->persist($post);
             $this->entityManager->flush();
 
+<<<<<<< Updated upstream
             // Create an auto-comment after post creation
+=======
+>>>>>>> Stashed changes
             try {
                 $commentResult = $this->disqusService->createComment(
                     $this->disqusService->getDefaultThreadId(),
@@ -164,11 +205,19 @@ class FrontPostController extends AbstractController
         try {
             $user = $this->security->getUser();
             $userId = $user?->getId();
+<<<<<<< Updated upstream
             
             $forumId = $request->query->get('forum');
             $searchTerm = $request->query->get('search');
             $sortBy = $request->query->get('sort', 'date');
             
+=======
+
+            $forumId = $request->query->get('forum');
+            $searchTerm = $request->query->get('search');
+            $sortBy = $request->query->get('sort', 'date');
+
+>>>>>>> Stashed changes
             $posts = $this->postRepository->findByForumAndSearch(
                 $forumId,
                 $searchTerm,
@@ -195,14 +244,23 @@ class FrontPostController extends AbstractController
     #[Route('/post/{id}', name: 'app_front_post_show')]
     public function show(Post $post, DisqusService $disqusService, AutoBotCommentService $autoBotCommentService): Response
     {
+<<<<<<< Updated upstream
         // Create a Disqus thread for this post if it doesn't exist
         $threadResult = $disqusService->createThread($post);
         
+=======
+
+        $threadResult = $disqusService->createThread($post);
+
+>>>>>>> Stashed changes
         if (!$threadResult['success']) {
             $this->addFlash('error', 'Failed to create discussion thread: ' . $threadResult['error']);
         }
 
+<<<<<<< Updated upstream
         // Auto-comment on the post using the bot
+=======
+>>>>>>> Stashed changes
         $autoBotCommentService->autoCommentOnPost($post);
 
         return $this->render('front_post/show.html.twig', [
@@ -211,16 +269,27 @@ class FrontPostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_front_post_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/show', name: 'app_front_post_show', methods: ['GET'])]
+    public function showPostDetails(Post $post): Response
+    {
+        return $this->render('post/show.html.twig', [
+            'post' => $post
+        ]);
+    }
+
+    #[Route('/post/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Post $post): Response
     {
-        $this->denyAccessUnlessGranted('EDIT', $post);
+        
+        if ($post->getIdUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You are not authorized to edit this post.');
+        }
 
-        $originalFile = $post->getCheminFichier();
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(PostEditType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+<<<<<<< Updated upstream
             // Validate content using BadWordService
             if ($this->badWordService->validatePost($post)) {
                 $this->addFlash('error', 'Your post contains inappropriate content. Please review and try again.');
@@ -230,37 +299,104 @@ class FrontPostController extends AbstractController
                 ]);
             }
 
+=======
+            // Handle file upload if a new file was provided
+            $file = $form->get('chemin_fichier')->getData();
+            if ($file) {
+                $this->handleFileUpload($form, $post, $post->getCheminFichier());
+            }
+
+            // Update modification date
+            $post->setDateModification(new \DateTime());
+
+>>>>>>> Stashed changes
             try {
-                $this->handleFileUpload($form, $post, $originalFile);
-                
-                $post->setDateModification(new \DateTime());
                 $this->entityManager->flush();
-                
-                $this->addFlash('success', 'Post updated successfully!');
-                return $this->redirectToRoute('app_front_post_show', ['id' => $post->getId()]);
+
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => true,
+                        'message' => 'Post updated successfully'
+                    ]);
+                }
+
+                $this->addFlash('success', 'Post updated successfully');
+                return $this->redirectToRoute('app_front_post_index');
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Error updating post: '.$e->getMessage());
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => false,
+                        'message' => 'Error updating post: ' . $e->getMessage()
+                    ], 500);
+                }
+
+                $this->addFlash('error', 'Error updating post: ' . $e->getMessage());
+                return $this->redirectToRoute('app_front_post_index');
             }
         }
 
-        return $this->render('post/edit.html.twig', [
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid form data',
+                'errors' => $this->getFormErrors($form)
+            ], 422);
+        }
+
+        return $this->render('post/_edit_form.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/{id}', name: 'app_front_post_delete', methods: ['DELETE', 'POST'])]
+    private function getFormErrors($form): array
+    {
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+        return $errors;
+    }
+
+    #[Route('/{id}/edit-form', name: 'app_front_post_edit_form', methods: ['GET'])]
+    public function editForm(Post $post): Response
+    {
+        $user = $this->security->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('You must be logged in to edit a post.');
+        }
+
+        if ($user->getRole() !== 0 && $user->getMail() !== $post->getIdUser()->getMail()) {
+            throw $this->createAccessDeniedException('You do not have permission to edit this post.');
+        }
+
+        $form = $this->createForm(PostEditType::class, $post);
+
+        return $this->render('post/_edit_form.html.twig', [
+            'post' => $post,
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/{id}/delete', name: 'app_front_post_delete', methods: ['DELETE', 'POST'])]
     public function delete(Request $request, Post $post): Response
     {
-        $this->denyAccessUnlessGranted('DELETE', $post);
+        $user = $this->security->getUser();
+        
+        if (!$user) {
+            throw $this->createAccessDeniedException('You must be logged in to delete a post.');
+        }
 
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+        if ($user->getRole() !== 0 && $user->getMail() !== $post->getIdUser()->getMail()) {
+            throw $this->createAccessDeniedException('You do not have permission to delete this post.');
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$post->getIdUser()->getMail(), $request->request->get('_token'))) {
             try {
                 $this->deletePostFile($post);
-                
                 $this->entityManager->remove($post);
                 $this->entityManager->flush();
-                
                 $this->addFlash('success', 'Post deleted successfully!');
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Error deleting post: '.$e->getMessage());
@@ -274,6 +410,7 @@ class FrontPostController extends AbstractController
     public function vote(Post $post, string $type): Response
     {
         $user = $this->security->getUser();
+<<<<<<< Updated upstream
         
         // Check if user is logged in
         if (!$user) {
@@ -327,9 +464,54 @@ class FrontPostController extends AbstractController
                 // Add to downvote list
                 $downVoteList[] = $userEmail;
                 $post->setDownVoteList(implode(',', $downVoteList));
+=======
+
+        if (!$user) {
+            return $this->json([
+                'success' => false,
+                'error' => 'You must be logged in to vote'
+            ], 401);
+        }
+
+        $userEmail = $user->getMail();
+        $upVoteList = $post->getUpVoteList() ?? '';
+        $downVoteList = $post->getDownVoteList() ?? '';
+        $upVoteEmails = $upVoteList ? explode(',', $upVoteList) : [];
+        $downVoteEmails = $downVoteList ? explode(',', $downVoteList) : [];
+
+        if ($type === 'up') {
+            if (in_array($userEmail, $upVoteEmails)) {
+                // Remove upvote
+                $upVoteEmails = array_diff($upVoteEmails, [$userEmail]);
+>>>>>>> Stashed changes
                 $post->setVotes($post->getVotes() - 1);
+            } else {
+                // Add upvote and remove from downvotes if exists
+                if (in_array($userEmail, $downVoteEmails)) {
+                    $downVoteEmails = array_diff($downVoteEmails, [$userEmail]);
+                    $post->setVotes($post->getVotes() + 2); // +1 for removing downvote, +1 for adding upvote
+                } else {
+                    $post->setVotes($post->getVotes() + 1);
+                }
+                $upVoteEmails[] = $userEmail;
+            }
+        } else if ($type === 'down') {
+            if (in_array($userEmail, $downVoteEmails)) {
+                // Remove downvote
+                $downVoteEmails = array_diff($downVoteEmails, [$userEmail]);
+                $post->setVotes($post->getVotes() + 1);
+            } else {
+                // Add downvote and remove from upvotes if exists
+                if (in_array($userEmail, $upVoteEmails)) {
+                    $upVoteEmails = array_diff($upVoteEmails, [$userEmail]);
+                    $post->setVotes($post->getVotes() - 2); // -1 for removing upvote, -1 for adding downvote
+                } else {
+                    $post->setVotes($post->getVotes() - 1);
+                }
+                $downVoteEmails[] = $userEmail;
             }
         }
+<<<<<<< Updated upstream
         
         try {
             $this->entityManager->flush();
@@ -339,6 +521,20 @@ class FrontPostController extends AbstractController
                 'votes' => $post->getVotes(),
                 'upVoteList' => $post->getUpVoteList() ?? '',
                 'downVoteList' => $post->getDownVoteList() ?? ''
+=======
+
+        $post->setUpVoteList(implode(',', $upVoteEmails));
+        $post->setDownVoteList(implode(',', $downVoteEmails));
+
+        try {
+            $this->entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'votes' => $post->getVotes(),
+                'upVoteList' => $post->getUpVoteList(),
+                'downVoteList' => $post->getDownVoteList()
+>>>>>>> Stashed changes
             ]);
         } catch (\Exception $e) {
             return $this->json([
@@ -351,8 +547,8 @@ class FrontPostController extends AbstractController
     #[Route('/{id}/report', name: 'app_front_post_report', methods: ['POST'])]
     public function report(Post $post): Response
     {
-        $this->denyAccessUnlessGranted('REPORT', $post);
         $user = $this->security->getUser();
+<<<<<<< Updated upstream
         
         // Check if user is logged in
         if (!$user) {
@@ -385,8 +581,41 @@ class FrontPostController extends AbstractController
                     'error' => 'Error updating report: ' . $e->getMessage()
                 ], 500);
             }
+=======
+
+        if (!$user) {
+            return $this->json([
+                'success' => false,
+                'error' => 'You must be logged in to report'
+            ], 401);
+>>>>>>> Stashed changes
         }
-        
+
+        $userEmail = $user->getMail();
+        $signalList = $post->getSignalList() ?? '';
+        $signalEmails = $signalList ? explode(',', $signalList) : [];
+
+        if (!in_array($userEmail, $signalEmails)) {
+            $signalEmails[] = $userEmail;
+            $post->setSignalList(implode(',', $signalEmails));
+            $post->setNbrSignal($post->getNbrSignal() + 1);
+
+            try {
+                $this->entityManager->flush();
+
+                return $this->json([
+                    'success' => true,
+                    'reports' => $post->getNbrSignal(),
+                    'signalList' => $post->getSignalList()
+                ]);
+            } catch (\Exception $e) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Error updating report: ' . $e->getMessage()
+                ], 500);
+            }
+        }
+
         return $this->json([
             'success' => false,
             'error' => 'You have already reported this post'
@@ -443,7 +672,11 @@ class FrontPostController extends AbstractController
     {
         try {
             $comment = $autoBotCommentService->autoCommentOnPost($post);
+<<<<<<< Updated upstream
             
+=======
+
+>>>>>>> Stashed changes
             if ($comment) {
                 return new JsonResponse([
                     'success' => true,
@@ -470,9 +703,9 @@ class FrontPostController extends AbstractController
 
     private function handleFileUpload($form, Post $post, ?string $originalFile = null): void
     {
-        /** @var UploadedFile|null $file */
+
         $file = $form->get('chemin_fichier')->getData();
-        
+
         if ($file) {
             if (!in_array($file->getMimeType(), self::ALLOWED_MIME_TYPES)) {
                 throw new \InvalidArgumentException('Invalid file type');
@@ -480,15 +713,23 @@ class FrontPostController extends AbstractController
 
             $projectDir = $this->getParameter('kernel.project_dir');
             $uploadPath = $projectDir.self::UPLOAD_DIR;
+<<<<<<< Updated upstream
             
             $newFilename = uniqid().'.'.$file->guessExtension();
             
             $file->move($uploadPath, $newFilename);
             
+=======
+
+            $newFilename = uniqid().'.'.$file->guessExtension();
+
+            $file->move($uploadPath, $newFilename);
+
+>>>>>>> Stashed changes
             if ($originalFile) {
                 $this->deleteFile($originalFile);
             }
-            
+
             $post->setCheminFichier($newFilename);
         } elseif ($originalFile) {
             $post->setCheminFichier($originalFile);
@@ -520,7 +761,10 @@ class FrontPostController extends AbstractController
 
             $filename = sprintf('post-%d.pdf', $post->getPostId());
 
+<<<<<<< Updated upstream
             // Add some debugging
+=======
+>>>>>>> Stashed changes
             $binary = $knpSnappyPdf->getBinary();
             if (!file_exists($binary)) {
                 throw new \RuntimeException(sprintf(

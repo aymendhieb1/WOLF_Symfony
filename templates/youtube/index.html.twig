@@ -160,7 +160,10 @@
             let isUpdating = false;
             let isVideoPlaying = false;
             
+<<<<<<< Updated upstream
             // Track video playing state
+=======
+>>>>>>> Stashed changes
             $(document).on('play', 'iframe', function() {
                 isVideoPlaying = true;
                 console.log('Video started playing');
@@ -176,7 +179,10 @@
                     return true;
                 }
 
+<<<<<<< Updated upstream
                 // Compare each video's properties
+=======
+>>>>>>> Stashed changes
                 for (let i = 0; i < currentVideos.length; i++) {
                     const current = currentVideos[i];
                     const newVideo = newVideos[i];
@@ -295,10 +301,15 @@
                 });
             }
 
+<<<<<<< Updated upstream
             // Initial call
             updateVideoList();
 
             // Set up periodic refresh
+=======
+            updateVideoList();
+
+>>>>>>> Stashed changes
             setInterval(updateVideoList, refreshInterval);
             
             $('#refresh-videos').on('click', function() {
@@ -306,7 +317,10 @@
                 updateVideoList();
             });
             
+<<<<<<< Updated upstream
             // Update last update time display
+=======
+>>>>>>> Stashed changes
             setInterval(function() {
                 const now = new Date();
                 const diff = Math.floor((now - lastUpdate) / 1000);

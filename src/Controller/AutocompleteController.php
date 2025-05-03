@@ -21,8 +21,12 @@ class AutocompleteController extends AbstractController
         $source = $request->query->get('source', 'google');
         $entity = $request->query->get('entity');
         $searchField = $request->query->get('field', 'name');
+<<<<<<< Updated upstream
         
         // Debug information
+=======
+
+>>>>>>> Stashed changes
         $debug = [
             'query' => $query,
             'source' => $source,
@@ -30,6 +34,7 @@ class AutocompleteController extends AbstractController
             'searchField' => $searchField,
             'timestamp' => (new \DateTime())->format('Y-m-d H:i:s')
         ];
+<<<<<<< Updated upstream
         
         try {
             // Only use database if explicitly requested and entity is provided
@@ -39,11 +44,23 @@ class AutocompleteController extends AbstractController
             
             $suggestions = $this->autocompleteService->getSuggestions($query, $source, $entity, $searchField);
             
+=======
+
+        try {
+
+            if ($source === 'database' && !$entity) {
+                $source = 'google'; 
+            }
+
+            $suggestions = $this->autocompleteService->getSuggestions($query, $source, $entity, $searchField);
+
+>>>>>>> Stashed changes
             $response = new JsonResponse([
                 'query' => $query,
                 'results' => $suggestions,
                 'debug' => $debug
             ]);
+<<<<<<< Updated upstream
             
             // Add CORS headers
             $response->headers->set('Access-Control-Allow-Origin', '*');
@@ -54,16 +71,35 @@ class AutocompleteController extends AbstractController
         } catch (\Exception $e) {
             error_log("Autocomplete Error: " . $e->getMessage());
             
+=======
+
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+
+            return $response;
+        } catch (\Exception $e) {
+            error_log("Autocomplete Error: " . $e->getMessage());
+
+>>>>>>> Stashed changes
             $response = new JsonResponse([
                 'error' => 'An error occurred while fetching suggestions',
                 'debug' => $debug
             ], 500);
+<<<<<<< Updated upstream
             
             // Add CORS headers even for error responses
             $response->headers->set('Access-Control-Allow-Origin', '*');
             $response->headers->set('Access-Control-Allow-Methods', 'GET');
             $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
             
+=======
+
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+
+>>>>>>> Stashed changes
             return $response;
         }
     }

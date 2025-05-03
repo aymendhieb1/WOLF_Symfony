@@ -15,7 +15,12 @@
          data-up-vote-list="{{ post.upVoteList }}"
          data-down-vote-list="{{ post.downVoteList }}"
          data-signal-list="{{ post.signalList }}"
+<<<<<<< Updated upstream
          data-user-email="{{ post.idUser.mail }}">
+=======
+         data-user-email="{{ app.user ? app.user.mail : '' }}"
+         data-forum-id="{{ post.forumId.getForumId() }}">
+>>>>>>> Stashed changes
         <div class="post-header">
             <h2 class="post-title">
                 {% if post.type == 'announcement' %}
@@ -67,6 +72,7 @@
 
         <div class="post-footer">
             <div class="vote-controls">
+<<<<<<< Updated upstream
                 <button class="upvote-btn{% if app.user and app.user.mail in post.upVoteList|split(',') %} disabled{% endif %}"
                         @click="handleVote($el.closest('.forum-post-item').dataset, 'up')"
                         {% if not app.user or app.user.mail in post.upVoteList|split(',') %}disabled{% endif %}>
@@ -76,6 +82,17 @@
                 <button class="downvote-btn{% if app.user and app.user.mail in post.downVoteList|split(',') %} disabled{% endif %}"
                         @click="handleVote($el.closest('.forum-post-item').dataset, 'down')"
                         {% if not app.user or app.user.mail in post.downVoteList|split(',') %}disabled{% endif %}>
+=======
+                <button class="upvote-btn{% if app.user and app.user.mail in post.upVoteList|split(',') %} active{% endif %}"
+                        onclick="handleVote({{ post.postId }}, 'up')"
+                        {% if not app.user %}disabled{% endif %}>
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+                <span class="vote-count">{{ post.votes ?? 0 }}</span>
+                <button class="downvote-btn{% if app.user and app.user.mail in post.downVoteList|split(',') %} active{% endif %}"
+                        onclick="handleVote({{ post.postId }}, 'down')"
+                        {% if not app.user %}disabled{% endif %}>
+>>>>>>> Stashed changes
                     <i class="fas fa-arrow-down"></i>
                 </button>
             </div>
@@ -85,11 +102,16 @@
                     <i class="fas fa-comments"></i> View Details
                 </button>
                 <button class="signal-btn{% if app.user and app.user.mail in post.signalList|split(',') %} disabled{% endif %}"
+<<<<<<< Updated upstream
                         @click="handleReport($el.closest('.forum-post-item').dataset)"
+=======
+                        onclick="handleReport({{ post.postId }})"
+>>>>>>> Stashed changes
                         {% if not app.user or app.user.mail in post.signalList|split(',') %}disabled{% endif %}>
                     <i class="fas fa-flag"></i> Report <span class="report-count">({{ post.nbrSignal }})</span>
                 </button>
                 
+<<<<<<< Updated upstream
                 {% if app.user and (app.user.mail == post.idUser.mail or app.user.role == 0) %}
                     <button class="edit-post-btn">
                         <i class="fas fa-edit"></i> Edit
@@ -97,6 +119,19 @@
                     <button class="delete-post-btn">
                         <i class="fas fa-trash"></i> Delete
                     </button>
+=======
+                {% if app.user and (app.user.role == 0 or app.user.mail == post.idUser.mail) %}
+                    <button type="button" class="edit-post-btn" onclick="loadEditForm({{ post.postId }})">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <form method="post" action="{{ path('app_front_post_delete', {'id': post.postId}) }}" style="display: inline;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.idUser.mail) }}">
+                        <button type="submit" class="delete-post-btn" onclick="return confirm('Are you sure you want to delete this post?')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+>>>>>>> Stashed changes
                 {% endif %}
             </div>
         </div>
@@ -111,6 +146,172 @@
     </div>
 {% endfor %}
 
+<<<<<<< Updated upstream
+=======
+<script>
+function handleReport(postId) {
+    const signalBtn = document.querySelector(`.forum-post-item[data-post-id="${postId}"] .signal-btn`);
+    const reportCount = signalBtn.querySelector('.report-count');
+
+    fetch(`/front/post/${postId}/report`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            signalBtn.disabled = true;
+            signalBtn.classList.add('disabled');
+            reportCount.textContent = `(${data.reports})`;
+        } else {
+            alert(data.error || 'Failed to report post');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while reporting the post');
+    });
+}
+
+function handleVote(postId, type) {
+    const postElement = document.querySelector(`.forum-post-item[data-post-id="${postId}"]`);
+    const upvoteBtn = postElement.querySelector('.upvote-btn');
+    const downvoteBtn = postElement.querySelector('.downvote-btn');
+    const voteCount = postElement.querySelector('.vote-count');
+    const userEmail = postElement.dataset.userEmail;
+
+    if (!userEmail) {
+        alert('You must be logged in to vote');
+        return;
+    }
+
+    fetch(`/front/post/${postId}/vote/${type}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update vote count
+            voteCount.textContent = data.votes;
+            
+            // Update button states
+            const upVoteList = data.upVoteList ? data.upVoteList.split(',') : [];
+            const downVoteList = data.downVoteList ? data.downVoteList.split(',') : [];
+
+            // Update upvote button
+            if (upVoteList.includes(userEmail)) {
+                upvoteBtn.classList.add('active');
+                downvoteBtn.classList.remove('active');
+            } else {
+                upvoteBtn.classList.remove('active');
+            }
+
+            // Update downvote button
+            if (downVoteList.includes(userEmail)) {
+                downvoteBtn.classList.add('active');
+                upvoteBtn.classList.remove('active');
+            } else {
+                downvoteBtn.classList.remove('active');
+            }
+
+            // Update the dataset
+            postElement.dataset.upVoteList = data.upVoteList;
+            postElement.dataset.downVoteList = data.downVoteList;
+            postElement.dataset.votes = data.votes;
+        } else {
+            alert(data.error || 'Failed to vote');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while voting');
+    });
+}
+
+function loadEditForm(postId) {
+    fetch(`/front/post/${postId}/edit-form`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(html => {
+            const container = document.getElementById('editFormContainer');
+            container.innerHTML = html;
+            
+            // Initialize form-specific JavaScript
+            const form = container.querySelector('#post-edit-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Show success message
+                            const successToast = document.getElementById('successToast');
+                            const successToastMessage = document.getElementById('successToastMessage');
+                            successToastMessage.textContent = data.message || 'Post updated successfully';
+                            const bsToast = new bootstrap.Toast(successToast);
+                            bsToast.show();
+                            
+                            // Close modal
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('editPostModal'));
+                            modal.hide();
+                            
+                            // Refresh posts list
+                            refreshPosts();
+                        } else {
+                            // Show error message
+                            const errorToast = document.getElementById('errorToast');
+                            const errorToastMessage = document.getElementById('errorToastMessage');
+                            errorToastMessage.textContent = data.message || 'Error updating post';
+                            const bsToast = new bootstrap.Toast(errorToast);
+                            bsToast.show();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Show error message
+                        const errorToast = document.getElementById('errorToast');
+                        const errorToastMessage = document.getElementById('errorToastMessage');
+                        errorToastMessage.textContent = 'An error occurred while updating the post';
+                        const bsToast = new bootstrap.Toast(errorToast);
+                        bsToast.show();
+                    });
+                });
+            }
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('editPostModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Show error message
+            const errorToast = document.getElementById('errorToast');
+            const errorToastMessage = document.getElementById('errorToastMessage');
+            errorToastMessage.textContent = 'An error occurred while loading the edit form';
+            const bsToast = new bootstrap.Toast(errorToast);
+            bsToast.show();
+        });
+}
+</script>
+
+>>>>>>> Stashed changes
 <style>
     .forum-post-item {
         background: #f5f5f5;
@@ -212,12 +413,25 @@
         justify-content: center;
     }
 
+<<<<<<< Updated upstream
     .vote-controls button:hover:not(.disabled) {
+=======
+    .vote-controls button:hover:not(:disabled) {
+>>>>>>> Stashed changes
         background: #e78d1e;
         color: white;
     }
 
+<<<<<<< Updated upstream
     .vote-controls button.disabled {
+=======
+    .vote-controls button.active {
+        background: #e78d1e;
+        color: white;
+    }
+
+    .vote-controls button:disabled {
+>>>>>>> Stashed changes
         opacity: 0.5;
         cursor: not-allowed;
     }
@@ -295,4 +509,16 @@
             margin: 0 10px 20px;
         }
     }
+<<<<<<< Updated upstream
+=======
+
+    .signal-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .signal-btn:hover:not(.disabled) {
+        background: #c82333;
+    }
+>>>>>>> Stashed changes
 </style> 

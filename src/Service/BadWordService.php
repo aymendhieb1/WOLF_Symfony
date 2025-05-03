@@ -16,12 +16,15 @@ class BadWordService
     private const API_URL = 'https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze';
     private const TOXICITY_THRESHOLD = 0.7;
 
+<<<<<<< Updated upstream
     /**
      * Validates if a text contains inappropriate content
      *
      * @param string $text The text to validate
      * @return bool True if inappropriate content is detected, false otherwise
      */
+=======
+>>>>>>> Stashed changes
     public function containsBadWords(string $text): bool
     {
         if (empty(trim($text))) {
@@ -55,18 +58,26 @@ class BadWordService
 
             return false;
         } catch (\Exception $e) {
+<<<<<<< Updated upstream
             // Log the error but don't block the content
             // You might want to add proper logging here
+=======
+
+>>>>>>> Stashed changes
             return false;
         }
     }
 
+<<<<<<< Updated upstream
     /**
      * Validates if a Post entity contains inappropriate content
      *
      * @param Post $post The post to validate
      * @return bool True if inappropriate content is detected, false otherwise
      */
+=======
+
+>>>>>>> Stashed changes
     public function validatePost(Post $post): bool
     {
         if ($post->getType() === 'announcement') {
@@ -81,17 +92,22 @@ class BadWordService
         return false;
     }
 
+<<<<<<< Updated upstream
     /**
      * Validates if a Comment entity contains inappropriate content
      *
      * @param Comment $comment The comment to validate
      * @return bool True if inappropriate content is detected, false otherwise
      */
+=======
+
+>>>>>>> Stashed changes
     public function validateComment(Comment $comment): bool
     {
         return $this->containsBadWords($comment->getCommentContent());
     }
 
+<<<<<<< Updated upstream
     /**
      * Validates any text content for inappropriate language
      *
@@ -102,6 +118,9 @@ class BadWordService
      *     'scores' => array
      * ]
      */
+=======
+
+>>>>>>> Stashed changes
     public function validateContent(string $content): array
     {
         if (empty(trim($content))) {
