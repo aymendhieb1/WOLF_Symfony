@@ -17,7 +17,10 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -29,11 +32,15 @@ class LoginAuthenticator extends AbstractAuthenticator
     private EntityManagerInterface $entityManager;
     private RequestStack $requestStack;
     private UserPasswordHasherInterface $passwordHasher;
+<<<<<<< Updated upstream
 
 <<<<<<< Updated upstream
 
 
 =======
+>>>>>>> Stashed changes
+=======
+
 >>>>>>> Stashed changes
     public function __construct(
         RouterInterface $router,
@@ -46,8 +53,11 @@ class LoginAuthenticator extends AbstractAuthenticator
         $this->requestStack = $requestStack;
         $this->passwordHasher = $passwordHasher;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     }
@@ -83,7 +93,10 @@ class LoginAuthenticator extends AbstractAuthenticator
             $captchaData = json_decode($response->getBody()->getContents(), true);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         } catch (\Exception $e) {
@@ -91,8 +104,11 @@ class LoginAuthenticator extends AbstractAuthenticator
             throw new CustomUserMessageAuthenticationException('Erreur hCaptcha');
         }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 

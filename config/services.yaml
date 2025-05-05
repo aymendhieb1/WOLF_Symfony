@@ -12,6 +12,10 @@ parameters:
   google_calendar_redirect_uri: "http://127.0.0.1:8000/back/contrat/google-calendar/callback"
   mailer_from: "%env(MAILER_FROM)%"
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+  exchange_rate_api_key: '191d06448921407aff3db9f7'
+>>>>>>> Stashed changes
 =======
   exchange_rate_api_key: '191d06448921407aff3db9f7'
 >>>>>>> Stashed changes
@@ -47,7 +51,10 @@ services:
       $chambreImagesDirectory: "%chambre_images_directory%"
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
   App\Service\CurrencyService:
     arguments:
       $apiKey: '%exchange_rate_api_key%'  # Inject the API key from parameters
@@ -56,6 +63,9 @@ services:
     arguments:
       $apiKey: '%env(AIRCRAFT_API_KEY)%'
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   # Configuration du client Stripe
   Stripe\StripeClient:

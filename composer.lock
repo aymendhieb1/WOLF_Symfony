@@ -5,7 +5,11 @@
         "This file is @generated automatically"
     ],
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "content-hash": "698190afa6d5f4fe693a0b8f9b71a1e3",
+=======
+    "content-hash": "8cb3643988e77b2ffb48a398249dd746",
+>>>>>>> Stashed changes
 =======
     "content-hash": "8cb3643988e77b2ffb48a398249dd746",
 >>>>>>> Stashed changes
@@ -2790,7 +2794,10 @@
         },
         {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
             "name": "masterminds/html5",
             "version": "2.9.0",
             "source": {
@@ -2858,6 +2865,9 @@
             "time": "2024-03-31T07:05:07+00:00"
         },
         {
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             "name": "mercuryseries/flashy-bundle",
             "version": "v5.1.0",

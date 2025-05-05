@@ -28,7 +28,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 200)]
     private ?string $num_tel = null;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -44,9 +47,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?int $role = null;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     private ?string $resetToken = null;
 
 
+=======
+
+    private ?string $resetToken = null;
+
+>>>>>>> Stashed changes
 =======
 
     private ?string $resetToken = null;
@@ -152,7 +161,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     public function getRoles(): array
@@ -164,9 +176,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     public function getPassword(): string
@@ -175,7 +190,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     public function eraseCredentials(): void
@@ -192,6 +210,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return null;
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
