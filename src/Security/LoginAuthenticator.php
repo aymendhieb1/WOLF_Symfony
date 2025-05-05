@@ -16,7 +16,10 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+<<<<<<< Updated upstream
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+=======
+>>>>>>> Stashed changes
 
 class LoginAuthenticator extends AbstractAuthenticator
 {
@@ -27,8 +30,11 @@ class LoginAuthenticator extends AbstractAuthenticator
     private RequestStack $requestStack;
     private UserPasswordHasherInterface $passwordHasher;
 
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
     public function __construct(
         RouterInterface $router,
         EntityManagerInterface $entityManager,
@@ -39,9 +45,13 @@ class LoginAuthenticator extends AbstractAuthenticator
         $this->entityManager = $entityManager;
         $this->requestStack = $requestStack;
         $this->passwordHasher = $passwordHasher;
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
     }
+
     public function supports(Request $request): ?bool
     {
         return $request->attributes->get('_route') === 'app_seconnecter' && $request->isMethod('POST');
@@ -72,13 +82,19 @@ class LoginAuthenticator extends AbstractAuthenticator
 
             $captchaData = json_decode($response->getBody()->getContents(), true);
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         } catch (\Exception $e) {
             $session?->getFlashBag()->add('warning', 'Erreur de validation du captcha.');
             throw new CustomUserMessageAuthenticationException('Erreur hCaptcha');
         }
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['mail' => $mail]);
 
@@ -126,7 +142,4 @@ class LoginAuthenticator extends AbstractAuthenticator
 
         return new RedirectResponse($this->router->generate('app_seconnecter'));
     }
-
-
-
 }

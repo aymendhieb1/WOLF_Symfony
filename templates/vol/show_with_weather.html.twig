@@ -1,0 +1,17 @@
+{% extends 'vol/show.html.twig' %}
+
+{% block weather_section %}
+    <div class="container mt-4">
+        <h3 class="mb-4">Conditions Météo</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Météo au Départ ({{ vol.depart }})</h4>
+                {% include 'weather_vol/widget.html.twig' with {'city': vol.depart} %}
+            </div>
+            <div class="col-md-6">
+                <h4>Météo à l'Arrivée ({{ vol.destination }})</h4>
+                {% include 'weather_vol/widget.html.twig' with {'city': vol.destination} %}
+            </div>
+        </div>
+    </div>
+{% endblock %} 

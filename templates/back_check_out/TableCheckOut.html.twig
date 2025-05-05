@@ -1,11 +1,10 @@
 {% extends 'base1.html.twig' %}
 {% block body %}
-
 	<!-- Extra details for Live View on GitHub Pages -->
 	<!-- Google Tag Manager (noscript) -->
-		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKDMSK6" height="0" width="0" style="display:none;visibility:hidden"> </iframe>
-	</noscript>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKDMSK6" height="0" width="0" style="display:none;visibility:hidden"> </iframe></noscript>
 	<!-- End Google Tag Manager (noscript) -->
+<<<<<<< Updated upstream
 	<div class="wrapper ">
 		<div
 			class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
@@ -14,85 +13,27 @@
 									
 									        Tip 2: you can also add an image using data-image tag
 									    -->
+=======
+    <div class="wrapper">
+        <div class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
+>>>>>>> Stashed changes
 			<div class="logo">
-				<a href="http://www.creative-tim.com/" class="simple-text logo-mini">
-					Picture
-				</a>
-				<a href="http://www.creative-tim.com/" class="simple-text logo-normal">
-					Logo
-				</a>
+                <img src="{{ asset('assets/img/secondry - Copie.png') }}" class="simple-text logo-mini" alt="Logo">
 			</div>
 			<div class="sidebar-wrapper">
-				<div class="user">
-					<div class="photo">
-						<img src="{{ asset('assets/img/faces/avatar.jpg') }}"/>
-					</div>
-					<div class="user-info">
-						<a data-toggle="collapse" href="#collapseExample" class="username">
-							<span>
-								USER NAME
-								<b class="caret"></b>
-							</span>
-						</a>
-						<div class="collapse" id="collapseExample">
 							<ul class="nav">
 								<li class="nav-item">
-									<a class="nav-link" href="#">
-										<span class="sidebar-mini">
-											MP
-										</span>
-										<span class="sidebar-normal">
-											My Profile
-										</span>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">
-										<span class="sidebar-mini">
-											EP
-										</span>
-										<span class="sidebar-normal">
-											Edit Profile
-										</span>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">
-										<span class="sidebar-mini">
-											S
-										</span>
-										<span class="sidebar-normal">
-											Settings
-										</span>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<ul class="nav">
-					<li class="nav-item ">
-						<a class="nav-link" href="dashboard.html">
+                        <a class="nav-link" href="{{ path('app_dash_board') }}">
 							<i class="material-icons">dashboard</i>
-							<p>
-								Dashboard
-							</p>
+                            <p>Dashboard</p>
 						</a>
 					</li>
-
-
-					<!-- Sector Gestion User Nav bar-->
-					<li class="nav-item ">
+                    <li class="nav-item">
 						<a class="nav-link" href="{{path('app_back_office')}}">
-							<i class="material-icons">User</i>
-							<p>
-								Gestion User
-							</p>
+                            <i class="material-icons">person</i>
+                            <p>Gestion User</p>
 						</a>
 					</li>
-					<!-- End Sector Gestion User Nav bar-->
-
-					<!-- Sector Gestion Hotel Nav bar -->
 					<li class="nav-item">
 						<a class="nav-link" data-toggle="collapse" href="#gestionHotelMenu">
 							<i class="material-icons">apartment</i>
@@ -102,13 +43,13 @@
 						</a>
 						<div class="collapse" id="gestionHotelMenu">
 							<ul class="nav">
-								<li class="nav-item  ">
-									<a class="nav-link" href="{{path('app_back_hotel')}}">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{path('app_back_hotel_index')}}">
 										<span class="sidebar-mini">H</span>
 										<span class="sidebar-normal">Hotel</span>
 									</a>
 								</li>
-								<li class="nav-item ">
+                                <li class="nav-item">
 									<a class="nav-link" href="{{path('app_back_chambre')}}">
 										<span class="sidebar-mini">C</span>
 										<span class="sidebar-normal">Chambre</span>
@@ -117,11 +58,6 @@
 							</ul>
 						</div>
 					</li>
-
-
-					<!-- End  Sector Gestion Hotel  Nav bar -->
-
-					<!-- Sector Gestion Hotel Nav bar -->
 					<li class="nav-item">
 						<a class="nav-link" data-toggle="collapse" href="#gestionCircuitMenu">
 							<i class="material-icons">map</i>
@@ -146,27 +82,23 @@
 							</ul>
 						</div>
 					</li>
-
-
-					<!-- End  Sector Gestion Hotel  Nav bar -->
-					<!-- Sector Gestion Vol Nav bar -->
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="collapse" href="#gestionVolMenu">
+                    <li class="nav-item active">
+                        <a class="nav-link" data-toggle="collapse" href="#gestionVolMenu" aria-expanded="true">
 							<i class="material-icons">flight</i>
 							<p>Gestion Vols
 								<b class="caret"></b>
 							</p>
 						</a>
-						<div class="collapse" id="gestionVolMenu">
+                        <div class="collapse show" id="gestionVolMenu">
 							<ul class="nav">
 								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_back_vol')}}">
+									<a class="nav-link" href="{{path('app_back_vol_index')}}">
 										<span class="sidebar-mini">V</span>
 										<span class="sidebar-normal">Vols</span>
 									</a>
 								</li>
 								<li class="nav-item active">
-									<a class="nav-link" href="{{path('app_back_checkout')}}">
+									<a class="nav-link" href="{{path('app_back_checkoutvol_list')}}">
 										<span class="sidebar-mini">C</span>
 										<span class="sidebar-normal">Check Out</span>
 									</a>
@@ -174,11 +106,6 @@
 							</ul>
 						</div>
 					</li>
-
-
-					<!-- End  Sector Gestion Vol  Nav bar -->
-
-					<!-- Sector Gestion Vehicule Nav bar -->
 					<li class="nav-item">
 						<a class="nav-link" data-toggle="collapse" href="#gestionVehiculeMenu">
 							<i class="material-icons">directions_car</i>
@@ -203,11 +130,6 @@
 							</ul>
 						</div>
 					</li>
-
-
-					<!-- End  Sector Gestion Vehicule  Nav bar -->
-
-					<!-- Sector Gestion Forum Nav bar -->
 					<li class="nav-item">
 						<a class="nav-link" data-toggle="collapse" href="#gestionForumMenu">
 							<i class="material-icons">forum</i>
@@ -232,45 +154,27 @@
 							</ul>
 						</div>
 					</li>
-
-
-					<!-- End  Sector Gestion Forum  Nav bar -->
-
-					<!-- Sector Gestion Reclamation Nav bar -->
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="collapse" href="#gestionReclamationMenu">
-							<i class="material-icons">restore</i>
-							<p>Gestion Reclamation
-								<b class="caret"></b>
-							</p>
-						</a>
-						<div class="collapse" id="gestionReclamationMenu">
-							<ul class="nav">
 								<li class="nav-item">
 									<a class="nav-link" href="{{path('app_back_reclamation')}}">
-										<span class="sidebar-mini">R</span>
-										<span class="sidebar-normal">Reclamation</span>
+                            <i class="material-icons">report_problem</i>
+                            <p>Reclamations</p>
 									</a>
 								</li>
+                    {# Temporarily commented out until Avis feature is integrated
 								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_back_reponse')}}">
-										<span class="sidebar-mini">R</span>
-										<span class="sidebar-normal">Reponse</span>
+                        <a class="nav-link" href="{{path('app_back_avis')}}">
+                            <i class="material-icons">star</i>
+                            <p>Avis</p>
 									</a>
 								</li>
+                    #}
 							</ul>
-						</div>
-					</li>
-
-
-					<!-- End  Sector Gestion Reclamation  Nav bar -->
 				</div>
 				<div class="sidebar-background"></div>
 			</div>
-			<div
-				class="main-panel">
+        <div class="main-panel">
 				<!-- Navbar -->
-				<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+            <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
 					<div class="container-fluid">
 						<div class="navbar-wrapper">
 							<div class="navbar-minimize">
@@ -297,315 +201,808 @@
 									</button>
 								</div>
 							</form>
-							<ul class="navbar-nav">
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- Main Navigation Tabs -->
+                    <div class="nav-wrapper">
+                        <ul class="nav nav-tabs nav-tabs-primary" id="mainTab" role="tablist">
 								<li class="nav-item">
-									<a class="nav-link" href="javascript:;">
-										<i class="material-icons">dashboard</i>
-										<p class="d-lg-none d-md-block">
-											Stats
-										</p>
+                                <a class="nav-link active" id="checkout-tab" data-toggle="tab" href="#checkout" role="tab" aria-controls="checkout" aria-selected="true">
+                                    <i class="material-icons">list</i> Checkouts
 									</a>
 								</li>
-								<li class="nav-item dropdown">
-									<a class="nav-link" href="http://example.com/" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										<i class="material-icons">notifications</i>
-										<span class="notification">5</span>
-										<p class="d-lg-none d-md-block">
-											Some Actions
-										</p>
-									</a>
-									<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-										<a class="dropdown-item" href="#">Mike John responded to your email</a>
-										<a class="dropdown-item" href="#">You have 5 new tasks</a>
-										<a class="dropdown-item" href="#">You're now friend with Andrew</a>
-										<a class="dropdown-item" href="#">Another Notification</a>
-										<a class="dropdown-item" href="#">Another One</a>
-									</div>
+                            <li class="nav-item">
+                                <a class="nav-link" id="exchange-tab" data-toggle="tab" href="#exchange" role="tab" aria-controls="exchange" aria-selected="false">
+                                    <i class="material-icons">currency_exchange</i> Taux de Change
+                                </a>
 								</li>
-								<li class="nav-item dropdown">
-									<a class="nav-link" href="javascript:;" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										<i class="material-icons">person</i>
-										<p class="d-lg-none d-md-block">
-											Account
-										</p>
-									</a>
-									<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-										<a class="dropdown-item" href="#">Profile</a>
-										<a class="dropdown-item" href="#">Settings</a>
-										<div class="dropdown-divider"></div>
-										<a class="dropdown-item" href="#">Log out</a>
-									</div>
+                            <li class="nav-item">
+                                <a class="nav-link" id="calculator-tab" data-toggle="tab" href="#calculator" role="tab" aria-controls="calculator" aria-selected="false">
+                                    <i class="material-icons">calculate</i> Calculatrice
+                                </a>
 								</li>
 							</ul>
 						</div>
-					</div>
-				</nav>
-				<!-- End Navbar -->
-				<div class="content">
-					<div class="container-fluid">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="card">
-									<div class="card-header card-header-primary card-header-icon card-header-warning ">
-										<div class="card-icon ">
-											<i class="material-icons">people</i>
 
-										</div>
-										<h4 class="card-title ">Table CheckOut</h4>
-									</div>
-									<div class="card-body">
-
-
-										<div
-											class="toolbar"><!--        Here you can write extra buttons/actions for the toolbar              -->
-										</div>
-										<div class="material-datatables">
-											<table id="datatables" class="table table-striped table-no-bordered table-hover " cellspacing="0" width="100%" style="width:100%">
-												<thead>
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="mainTabContent">
+                        <!-- Checkout Tab -->
+                        <div class="tab-pane fade show active" id="checkout" role="tabpanel" aria-labelledby="checkout-tab">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="card">
+                                        <div class="card-header card-header-primary card-header-icon">
+                                            <div class="card-icon">
+												<i class="material-icons">people</i>
+											</div>
+                                            <h4 class="card-title">Table CheckOut</h4>
+                                            <a href="{{ path('app_back_checkoutvol_create') }}" class="btn btn-warning btn-round float-right">
+                                                <i class="material-icons">add</i> Nouveau Checkout
+												</a>
+											</div>
+                                        <div class="card-body">
+                                            <!-- Your existing checkout table content -->
+											<div class="material-datatables">
+												<table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%">
+													<thead>
 													<tr>
+														<th>Flight</th>
+														<th>Aircraft</th>
+														<th>Crew Size</th>
+														<th>Gate</th>
 														<th>Reservation Date</th>
-														<th>Total Passengers
-														</th>
-														<th>Reservation Status</th>
-														<th>Total Price</th>
-														<th class="disabled-sorting text-right">Actions</th>
-													</tr>
-												</thead>
-												<tfoot>
-													<tr>
-														<th>Reservation Date</th>
-														<th>Total Passengers
-														</th>
-														<th>Reservation Status</th>
+														<th>Passengers</th>
+														<th>Status</th>
 														<th>Total Price</th>
 														<th class="text-right">Actions</th>
 													</tr>
-												</tfoot>
-												<tbody>
-													<tr>
-														<td>2011/04/25</td>
-														<td>5</td>
-														<td>...</td>
-														<td>61</td>
-														<td class="text-right">
-															<a href="#" class="btn btn-link btn-info btn-just-icon like">
-																<i class="material-icons">edit</i>
-															</a>
-															<a href="#" class="btn btn-link btn-danger btn-just-icon remove">
-																<i class="material-icons">close</i>
-															</a>
-														</td>
+													</thead>
+													<tbody>
+													{% for checkout in checkouts %}
+														<tr>
+															<td>{{ checkout.flightID }}</td>
+															<td>{{ checkout.aircraft }}</td>
+															<td>{{ checkout.flightCrew }}</td>
+															<td>{{ checkout.gate }}</td>
+															<td>{{ checkout.reservationDate|date('Y-m-d H:i') }}</td>
+															<td>{{ checkout.totalPassengers }}</td>
+															<td>
+                                                <span class="badge
+                                                    {% if checkout.reservationStatus == 'Confirmee' %}badge-success
+                                                    {% elseif checkout.reservationStatus == 'En Attente' %}badge-warning
+                                                    {% else %}badge-danger
+                                                    {% endif %}">
+                                                    {{ checkout.reservationStatus }}
+                                                </span>
+															</td>
+                                                                <td>{{ checkout.totalPrice }} €</td>
+															<td class="text-right">
+																<a href="{{ path('app_back_checkoutvol_edit', {'id': checkout.checkoutID}) }}"
+                                                                       class="btn btn-link btn-warning btn-just-icon">
+																	<i class="material-icons">edit</i>
+																</a>
+                                                                    <form method="post" action="{{ path('app_back_checkoutvol_delete', {'id': checkout.checkoutID}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr?')">
+																	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ checkout.checkoutID) }}">
+																	<button type="submit" class="btn btn-link btn-danger btn-just-icon">
+																		<i class="material-icons">close</i>
+																	</button>
+																</form>
+															</td>
+														</tr>
+													{% else %}
+														<tr>
+                                                                <td colspan="9" class="text-center">Aucun checkout trouvé</td>
+														</tr>
+													{% endfor %}
+													</tbody>
+												</table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-													</tr>
-
-												</tbody>
-											</table>
+                        <!-- Exchange Rate Tab -->
+                        <div class="tab-pane fade" id="exchange" role="tabpanel" aria-labelledby="exchange-tab">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header card-header-primary">
+                                            <h4 class="card-title text-center">
+                                                <i class="material-icons">currency_exchange</i>
+                                                Taux de Change en Direct
+                                            </h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="exchange-container">
+                                                <div class="base-currency">
+                                                    <div class="currency-flag">
+                                                        <span class="flag-emoji">🇹🇳</span>
+                                                    </div>
+                                                    <div class="currency-info">
+                                                        <h3>Dinar Tunisien (TND)</h3>
+                                                        <p class="last-update">Dernière mise à jour: <span id="lastUpdate">{{ "now"|date("H:i:s") }}</span></p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="exchange-rates-grid">
+														{% for currency, rate in rates %}
+                                                        <div class="exchange-card" data-currency="{{ currency }}">
+                                                            <div class="currency-header">
+                                                                <div class="currency-flag">
+                                                                    {% if currency == 'EUR' %}
+                                                                        <span class="flag-emoji">🇩🇪</span>
+                                                                    {% elseif currency == 'USD' %}
+                                                                        <span class="flag-emoji">🇺🇸</span>
+                                                                    {% elseif currency == 'GBP' %}
+                                                                        <span class="flag-emoji">🇬🇧</span>
+                                                                    {% elseif currency == 'TND' %}
+                                                                        <span class="flag-emoji">🇹🇳</span>
+                                                                    {% elseif currency == 'JPY' %}
+                                                                        <span class="flag-emoji">🇯🇵</span>
+                                                                    {% elseif currency == 'AUD' %}
+                                                                        <span class="flag-emoji">🇦🇺</span>
+                                                                    {% elseif currency == 'CAD' %}
+                                                                        <span class="flag-emoji">🇨🇦</span>
+                                                                    {% elseif currency == 'CHF' %}
+                                                                        <span class="flag-emoji">🇨🇭</span>
+                                                                    {% elseif currency == 'CNY' %}
+                                                                        <span class="flag-emoji">🇨🇳</span>
+                                                                    {% elseif currency == 'INR' %}
+                                                                        <span class="flag-emoji">🇮🇳</span>
+                                                                    {% elseif currency == 'BRL' %}
+                                                                        <span class="flag-emoji">🇧🇷</span>
+                                                                    {% elseif currency == 'RUB' %}
+                                                                        <span class="flag-emoji">🇷🇺</span>
+                                                                    {% elseif currency == 'ZAR' %}
+                                                                        <span class="flag-emoji">🇿🇦</span>
+                                                                    {% elseif currency == 'MXN' %}
+                                                                        <span class="flag-emoji">🇲🇽</span>
+                                                                    {% elseif currency == 'SGD' %}
+                                                                        <span class="flag-emoji">🇸🇬</span>
+                                                                    {% elseif currency == 'HKD' %}
+                                                                        <span class="flag-emoji">🇭🇰</span>
+                                                                    {% elseif currency == 'NZD' %}
+                                                                        <span class="flag-emoji">🇳🇿</span>
+                                                                    {% elseif currency == 'SEK' %}
+                                                                        <span class="flag-emoji">🇸🇪</span>
+                                                                    {% elseif currency == 'NOK' %}
+                                                                        <span class="flag-emoji">🇳🇴</span>
+                                                                    {% elseif currency == 'DKK' %}
+                                                                        <span class="flag-emoji">🇩🇰</span>
+                                                                    {% elseif currency == 'PLN' %}
+                                                                        <span class="flag-emoji">🇵🇱</span>
+                                                                    {% elseif currency == 'TRY' %}
+                                                                        <span class="flag-emoji">🇹🇷</span>
+                                                                    {% elseif currency == 'SAR' %}
+                                                                        <span class="flag-emoji">🇸🇦</span>
+                                                                    {% elseif currency == 'AED' %}
+                                                                        <span class="flag-emoji">🇦🇪</span>
+                                                                    {% elseif currency == 'EGP' %}
+                                                                        <span class="flag-emoji">🇪🇬</span>
+                                                                    {% elseif currency == 'MAD' %}
+                                                                        <span class="flag-emoji">🇲🇦</span>
+                                                                    {% elseif currency == 'DZD' %}
+                                                                        <span class="flag-emoji">🇩🇿</span>
+                                                                    {% elseif currency == 'QAR' %}
+                                                                        <span class="flag-emoji">🇶🇦</span>
+                                                                    {% elseif currency == 'KWD' %}
+                                                                        <span class="flag-emoji">🇰🇼</span>
+                                                                    {% elseif currency == 'BHD' %}
+                                                                        <span class="flag-emoji">🇧🇭</span>
+                                                                    {% elseif currency == 'OMR' %}
+                                                                        <span class="flag-emoji">🇴🇲</span>
+                                                                    {% elseif currency == 'JOD' %}
+                                                                        <span class="flag-emoji">🇯🇴</span>
+                                                                    {% elseif currency == 'LBP' %}
+                                                                        <span class="flag-emoji">🇱🇧</span>
+                                                                    {% elseif currency == 'ILS' %}
+                                                                        <span class="flag-emoji">🇮🇱</span>
+                                                                    {% elseif currency == 'THB' %}
+                                                                        <span class="flag-emoji">🇹🇭</span>
+                                                                    {% elseif currency == 'MYR' %}
+                                                                        <span class="flag-emoji">🇲🇾</span>
+                                                                    {% elseif currency == 'IDR' %}
+                                                                        <span class="flag-emoji">🇮🇩</span>
+                                                                    {% elseif currency == 'PHP' %}
+                                                                        <span class="flag-emoji">🇵🇭</span>
+                                                                    {% elseif currency == 'VND' %}
+                                                                        <span class="flag-emoji">🇻🇳</span>
+                                                                    {% elseif currency == 'KRW' %}
+                                                                        <span class="flag-emoji">🇰🇷</span>
+                                                                    {% elseif currency == 'TWD' %}
+                                                                        <span class="flag-emoji">🇹🇼</span>
+                                                                    {% elseif currency == 'PKR' %}
+                                                                        <span class="flag-emoji">🇵🇰</span>
+                                                                    {% elseif currency == 'BDT' %}
+                                                                        <span class="flag-emoji">🇧🇩</span>
+                                                                    {% elseif currency == 'LKR' %}
+                                                                        <span class="flag-emoji">🇱🇰</span>
+                                                                    {% elseif currency == 'NPR' %}
+                                                                        <span class="flag-emoji">🇳🇵</span>
+                                                                    {% elseif currency == 'KZT' %}
+                                                                        <span class="flag-emoji">🇰🇿</span>
+                                                                    {% elseif currency == 'UAH' %}
+                                                                        <span class="flag-emoji">🇺🇦</span>
+                                                                    {% elseif currency == 'RON' %}
+                                                                        <span class="flag-emoji">🇷🇴</span>
+                                                                    {% elseif currency == 'HUF' %}
+                                                                        <span class="flag-emoji">🇭🇺</span>
+                                                                    {% elseif currency == 'CZK' %}
+                                                                        <span class="flag-emoji">🇨🇿</span>
+                                                                    {% elseif currency == 'BGN' %}
+                                                                        <span class="flag-emoji">🇧🇬</span>
+                                                                    {% elseif currency == 'HRK' %}
+                                                                        <span class="flag-emoji">🇭🇷</span>
+                                                                    {% elseif currency == 'RSD' %}
+                                                                        <span class="flag-emoji">🇷🇸</span>
+                                                                    {% elseif currency == 'UYU' %}
+                                                                        <span class="flag-emoji">🇺🇾</span>
+                                                                    {% elseif currency == 'CLP' %}
+                                                                        <span class="flag-emoji">🇨🇱</span>
+                                                                    {% elseif currency == 'COP' %}
+                                                                        <span class="flag-emoji">🇨🇴</span>
+                                                                    {% elseif currency == 'PEN' %}
+                                                                        <span class="flag-emoji">🇵🇪</span>
+                                                                    {% elseif currency == 'ARS' %}
+                                                                        <span class="flag-emoji">🇦🇷</span>
+                                                                    {% elseif currency == 'NGN' %}
+                                                                        <span class="flag-emoji">🇳🇬</span>
+                                                                    {% elseif currency == 'KES' %}
+                                                                        <span class="flag-emoji">🇰🇪</span>
+                                                                    {% elseif currency == 'GHS' %}
+                                                                        <span class="flag-emoji">🇬🇭</span>
+                                                                    {% elseif currency == 'UGX' %}
+                                                                        <span class="flag-emoji">🇺🇬</span>
+                                                                    {% elseif currency == 'TZS' %}
+                                                                        <span class="flag-emoji">🇹🇿</span>
+                                                                    {% elseif currency == 'ETB' %}
+                                                                        <span class="flag-emoji">🇪🇹</span>
+                                                                    {% elseif currency == 'MUR' %}
+                                                                        <span class="flag-emoji">🇲🇺</span>
+                                                                    {% elseif currency == 'MAD' %}
+                                                                        <span class="flag-emoji">🇲🇦</span>
+                                                                    {% elseif currency == 'XOF' %}
+                                                                        <span class="flag-emoji">🇧🇯</span>
+                                                                    {% elseif currency == 'XAF' %}
+                                                                        <span class="flag-emoji">🇨🇲</span>
+                                                                    {% elseif currency == 'CDF' %}
+                                                                        <span class="flag-emoji">🇨🇩</span>
+                                                                    {% elseif currency == 'GNF' %}
+                                                                        <span class="flag-emoji">🇬🇳</span>
+                                                                    {% elseif currency == 'RWF' %}
+                                                                        <span class="flag-emoji">🇷🇼</span>
+                                                                    {% elseif currency == 'BIF' %}
+                                                                        <span class="flag-emoji">🇧🇮</span>
+                                                                    {% elseif currency == 'DJF' %}
+                                                                        <span class="flag-emoji">🇩🇯</span>
+                                                                    {% elseif currency == 'KMF' %}
+                                                                        <span class="flag-emoji">🇰🇲</span>
+                                                                    {% elseif currency == 'MGA' %}
+                                                                        <span class="flag-emoji">🇲🇬</span>
+                                                                    {% elseif currency == 'SCR' %}
+                                                                        <span class="flag-emoji">🇸🇨</span>
+                                                                    {% elseif currency == 'SLL' %}
+                                                                        <span class="flag-emoji">🇸🇱</span>
+                                                                    {% elseif currency == 'SOS' %}
+                                                                        <span class="flag-emoji">🇸🇴</span>
+                                                                    {% elseif currency == 'SSP' %}
+                                                                        <span class="flag-emoji">🇸🇸</span>
+                                                                    {% elseif currency == 'SDG' %}
+                                                                        <span class="flag-emoji">🇸🇩</span>
+                                                                    {% elseif currency == 'ZMW' %}
+                                                                        <span class="flag-emoji">🇿🇲</span>
+                                                                    {% elseif currency == 'ZWL' %}
+                                                                        <span class="flag-emoji">🇿🇼</span>
+                                                                    {% elseif currency == 'AOA' %}
+                                                                        <span class="flag-emoji">🇦🇴</span>
+                                                                    {% elseif currency == 'BWP' %}
+                                                                        <span class="flag-emoji">🇧🇼</span>
+                                                                    {% elseif currency == 'LSL' %}
+                                                                        <span class="flag-emoji">🇱🇸</span>
+                                                                    {% elseif currency == 'NAD' %}
+                                                                        <span class="flag-emoji">🇳🇦</span>
+                                                                    {% elseif currency == 'SZL' %}
+                                                                        <span class="flag-emoji">🇸🇿</span>
+                                                                    {% elseif currency == 'MWK' %}
+                                                                        <span class="flag-emoji">🇲🇼</span>
+                                                                    {% elseif currency == 'MZN' %}
+                                                                        <span class="flag-emoji">🇲🇿</span>
+                                                                    {% elseif currency == 'MOP' %}
+                                                                        <span class="flag-emoji">🇲🇴</span>
+                                                                    {% elseif currency == 'MMK' %}
+                                                                        <span class="flag-emoji">🇲🇲</span>
+                                                                    {% elseif currency == 'LAK' %}
+                                                                        <span class="flag-emoji">🇱🇦</span>
+                                                                    {% elseif currency == 'KHR' %}
+                                                                        <span class="flag-emoji">🇰🇭</span>
+                                                                    {% elseif currency == 'BND' %}
+                                                                        <span class="flag-emoji">🇧🇳</span>
+                                                                    {% elseif currency == 'FJD' %}
+                                                                        <span class="flag-emoji">🇫🇯</span>
+                                                                    {% elseif currency == 'PGK' %}
+                                                                        <span class="flag-emoji">🇵🇬</span>
+                                                                    {% elseif currency == 'SBD' %}
+                                                                        <span class="flag-emoji">🇸🇧</span>
+                                                                    {% elseif currency == 'TOP' %}
+                                                                        <span class="flag-emoji">🇹🇴</span>
+                                                                    {% elseif currency == 'VUV' %}
+                                                                        <span class="flag-emoji">🇻🇺</span>
+                                                                    {% elseif currency == 'WST' %}
+                                                                        <span class="flag-emoji">🇼🇸</span>
+                                                                    {% elseif currency == 'XPF' %}
+                                                                        <span class="flag-emoji">🇵🇫</span>
+                                                                    {% elseif currency == 'CUP' %}
+                                                                        <span class="flag-emoji">🇨🇺</span>
+                                                                    {% elseif currency == 'DOP' %}
+                                                                        <span class="flag-emoji">🇩🇴</span>
+                                                                    {% elseif currency == 'GTQ' %}
+                                                                        <span class="flag-emoji">🇬🇹</span>
+                                                                    {% elseif currency == 'HNL' %}
+                                                                        <span class="flag-emoji">🇭🇳</span>
+                                                                    {% elseif currency == 'NIO' %}
+                                                                        <span class="flag-emoji">🇳🇮</span>
+                                                                    {% elseif currency == 'PAB' %}
+                                                                        <span class="flag-emoji">🇵🇦</span>
+                                                                    {% elseif currency == 'PYG' %}
+                                                                        <span class="flag-emoji">🇵🇾</span>
+                                                                    {% elseif currency == 'CRC' %}
+                                                                        <span class="flag-emoji">🇨🇷</span>
+                                                                    {% elseif currency == 'SVC' %}
+                                                                        <span class="flag-emoji">🇸🇻</span>
+                                                                    {% elseif currency == 'TTD' %}
+                                                                        <span class="flag-emoji">🇹🇹</span>
+                                                                    {% elseif currency == 'BBD' %}
+                                                                        <span class="flag-emoji">🇧🇧</span>
+                                                                    {% elseif currency == 'JMD' %}
+                                                                        <span class="flag-emoji">🇯🇲</span>
+                                                                    {% elseif currency == 'BMD' %}
+                                                                        <span class="flag-emoji">🇧🇲</span>
+                                                                    {% elseif currency == 'KYD' %}
+                                                                        <span class="flag-emoji">🇰🇾</span>
+                                                                    {% elseif currency == 'BZD' %}
+                                                                        <span class="flag-emoji">🇧🇿</span>
+                                                                    {% elseif currency == 'HTG' %}
+                                                                        <span class="flag-emoji">🇭🇹</span>
+                                                                    {% elseif currency == 'XCD' %}
+                                                                        <span class="flag-emoji">🇦🇮</span>
+                                                                    {% elseif currency == 'ANG' %}
+                                                                        <span class="flag-emoji">🇨🇼</span>
+                                                                    {% elseif currency == 'AWG' %}
+                                                                        <span class="flag-emoji">🇦🇼</span>
+                                                                    {% elseif currency == 'GYD' %}
+                                                                        <span class="flag-emoji">🇬🇾</span>
+                                                                    {% elseif currency == 'SRD' %}
+                                                                        <span class="flag-emoji">🇸🇷</span>
+                                                                    {% elseif currency == 'FKP' %}
+                                                                        <span class="flag-emoji">🇫🇰</span>
+                                                                    {% elseif currency == 'GIP' %}
+                                                                        <span class="flag-emoji">🇬🇮</span>
+                                                                    {% elseif currency == 'SHP' %}
+                                                                        <span class="flag-emoji">🇸🇭</span>
+                                                                    {% elseif currency == 'IMP' %}
+                                                                        <span class="flag-emoji">🇮🇲</span>
+                                                                    {% elseif currency == 'JEP' %}
+                                                                        <span class="flag-emoji">🇯🇪</span>
+                                                                    {% elseif currency == 'GGP' %}
+                                                                        <span class="flag-emoji">🇬🇬</span>
+                                                                    {% elseif currency == 'AUD' %}
+                                                                        <span class="flag-emoji">🇦🇺</span>
+                                                                    {% elseif currency == 'NZD' %}
+                                                                        <span class="flag-emoji">🇳🇿</span>
+                                                                    {% elseif currency == 'FJD' %}
+                                                                        <span class="flag-emoji">🇫🇯</span>
+                                                                    {% elseif currency == 'SBD' %}
+                                                                        <span class="flag-emoji">🇸🇧</span>
+                                                                    {% elseif currency == 'TOP' %}
+                                                                        <span class="flag-emoji">🇹🇴</span>
+                                                                    {% elseif currency == 'VUV' %}
+                                                                        <span class="flag-emoji">🇻🇺</span>
+                                                                    {% elseif currency == 'WST' %}
+                                                                        <span class="flag-emoji">🇼🇸</span>
+                                                                    {% elseif currency == 'XPF' %}
+                                                                        <span class="flag-emoji">🇵🇫</span>
+                                                                    {% elseif currency == 'CUP' %}
+                                                                        <span class="flag-emoji">🇨🇺</span>
+                                                                    {% elseif currency == 'DOP' %}
+                                                                        <span class="flag-emoji">🇩🇴</span>
+                                                                    {% elseif currency == 'GTQ' %}
+                                                                        <span class="flag-emoji">🇬🇹</span>
+                                                                    {% elseif currency == 'HNL' %}
+                                                                        <span class="flag-emoji">🇭🇳</span>
+                                                                    {% elseif currency == 'NIO' %}
+                                                                        <span class="flag-emoji">🇳🇮</span>
+                                                                    {% elseif currency == 'PAB' %}
+                                                                        <span class="flag-emoji">🇵🇦</span>
+                                                                    {% elseif currency == 'PYG' %}
+                                                                        <span class="flag-emoji">🇵🇾</span>
+                                                                    {% elseif currency == 'CRC' %}
+                                                                        <span class="flag-emoji">🇨🇷</span>
+                                                                    {% elseif currency == 'SVC' %}
+                                                                        <span class="flag-emoji">🇸🇻</span>
+                                                                    {% elseif currency == 'TTD' %}
+                                                                        <span class="flag-emoji">🇹🇹</span>
+                                                                    {% elseif currency == 'BBD' %}
+                                                                        <span class="flag-emoji">🇧🇧</span>
+                                                                    {% elseif currency == 'JMD' %}
+                                                                        <span class="flag-emoji">🇯🇲</span>
+                                                                    {% elseif currency == 'BMD' %}
+                                                                        <span class="flag-emoji">🇧🇲</span>
+                                                                    {% elseif currency == 'KYD' %}
+                                                                        <span class="flag-emoji">🇰🇾</span>
+                                                                    {% elseif currency == 'BZD' %}
+                                                                        <span class="flag-emoji">🇧🇿</span>
+                                                                    {% elseif currency == 'HTG' %}
+                                                                        <span class="flag-emoji">🇭🇹</span>
+                                                                    {% elseif currency == 'XCD' %}
+                                                                        <span class="flag-emoji">🇦🇮</span>
+                                                                    {% elseif currency == 'ANG' %}
+                                                                        <span class="flag-emoji">🇨🇼</span>
+                                                                    {% elseif currency == 'AWG' %}
+                                                                        <span class="flag-emoji">🇦🇼</span>
+                                                                    {% elseif currency == 'GYD' %}
+                                                                        <span class="flag-emoji">🇬🇾</span>
+                                                                    {% elseif currency == 'SRD' %}
+                                                                        <span class="flag-emoji">🇸🇷</span>
+                                                                    {% elseif currency == 'FKP' %}
+                                                                        <span class="flag-emoji">🇫🇰</span>
+                                                                    {% elseif currency == 'GIP' %}
+                                                                        <span class="flag-emoji">🇬🇮</span>
+                                                                    {% elseif currency == 'SHP' %}
+                                                                        <span class="flag-emoji">🇸🇭</span>
+                                                                    {% elseif currency == 'IMP' %}
+                                                                        <span class="flag-emoji">🇮🇲</span>
+                                                                    {% elseif currency == 'JEP' %}
+                                                                        <span class="flag-emoji">🇯🇪</span>
+                                                                    {% elseif currency == 'GGP' %}
+                                                                        <span class="flag-emoji">🇬🇬</span>
+                                                                    {% else %}
+                                                                        <span class="flag-emoji">🏳️</span>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="currency-code">{{ currency }}</div>
+                                                            </div>
+                                                            <div class="rate-value">
+                                                                <span class="rate-number">{{ rate }}</span>
+                                                                <div class="trend-indicator">
+                                                                    <i class="material-icons">trending_up</i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="rate-change">
+                                                                <span class="change-value">+0.0001</span>
+                                                                <span class="change-percentage">(+0.01%)</span>
+                                                            </div>
+                                                        </div>
+														{% endfor %}
+												</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+											</div>
 										</div>
-									</div>
-									<!-- end content-->
+
+                        <!-- Calculator Tab -->
+                        <div class="tab-pane fade" id="calculator" role="tabpanel" aria-labelledby="calculator-tab">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header card-header-primary">
+                                            <h4 class="card-title text-center">Calculatrice</h4>
+                                        </div>
+                                        <div class="card-body">
+											<div class="calculator">
+												<form id="calculator-form">
+													<input type="text" id="display" class="form-control" disabled>
+													<div class="buttons">
+														<div class="button-row">
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('7')">7</button>
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('8')">8</button>
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('9')">9</button>
+															<button type="button" class="btn btn-danger" onclick="appendToDisplay('/')">/</button>
+														</div>
+														<div class="button-row">
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('4')">4</button>
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('5')">5</button>
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('6')">6</button>
+															<button type="button" class="btn btn-danger" onclick="appendToDisplay('*')">*</button>
+														</div>
+														<div class="button-row">
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('1')">1</button>
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('2')">2</button>
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('3')">3</button>
+															<button type="button" class="btn btn-danger" onclick="appendToDisplay('-')">-</button>
+														</div>
+														<div class="button-row">
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('0')">0</button>
+															<button type="button" class="btn btn-secondary" onclick="appendToDisplay('.')">.</button>
+															<button type="button" class="btn btn-success" onclick="calculate()">=</button>
+															<button type="button" class="btn btn-danger" onclick="appendToDisplay('+')">+</button>
+														</div>
+														<div class="button-row">
+															<button type="button" class="btn btn-warning" onclick="clearDisplay()">C</button>
+														</div>
+													</div>
+												</form>
+											</div>
+										</div>
 								</div>
-								<!--  end card  -->
+								</div>
 							</div>
-							<!-- end col-md-12 -->
 						</div>
-						<!-- end row -->
 					</div>
-				</div>
-				<footer class="footer">
-					<div class="container-fluid">
-						<nav class="float-left">
-							<ul>
-								<li><a href="https://www.creative-tim.com/">Creative Tim</a></li>
-								<li><a href="https://creative-tim.com/presentation">About Us</a></li>
-								<li><a href="http://blog.creative-tim.com/">Blog</a></li>
-								<li><a href="https://www.creative-tim.com/license">Licenses</a></li>
-							</ul>
-						</nav>
-						<div class="copyright float-right">
-							&copy;
-							<script>
-								document.write(new Date().getFullYear())
-							</script>, made with
-							<i class="material-icons">favorite</i>
-							by
-							<a href="https://www.creative-tim.com/" target="_blank">Creative Tim</a>
-							for a better web.
 						</div>
 					</div>
-				</footer>
-			</div>
-		</div>
-		<div class="fixed-plugin">
-			<div class="dropdown show-dropdown">
-				<a href="#" data-toggle="dropdown">
-					<i class="fa fa-cog fa-2x"></i>
-				</a>
-				<ul class="dropdown-menu">
-					<li class="header-title">
-						Sidebar Filters</li>
-					<li class="adjustments-line">
-						<a href="javascript:void(0)" class="switch-trigger active-color">
-							<div class="badge-colors ml-auto mr-auto">
-								<span class="badge filter badge-purple" data-color="purple"></span>
-								<span class="badge filter badge-azure" data-color="azure"></span>
-								<span class="badge filter badge-green" data-color="green"></span>
-								<span class="badge filter badge-warning" data-color="orange"></span>
-								<span class="badge filter badge-danger" data-color="danger"></span>
-								<span class="badge filter badge-rose active" data-color="rose"></span>
-							</div>
-							<div class="clearfix"></div>
-						</a>
-					</li>
-					<li class="header-title">Sidebar Background</li>
-					<li class="adjustments-line">
-						<a href="javascript:void(0)" class="switch-trigger background-color">
-							<div class="ml-auto mr-auto">
-								<span class="badge filter badge-black active" data-background-color="black"></span>
-								<span class="badge filter badge-white" data-background-color="white"></span>
-								<span class="badge filter badge-red" data-background-color="red"></span>
-							</div>
-							<div class="clearfix"></div>
-						</a>
-					</li>
-					<li class="adjustments-line">
-						<a href="javascript:void(0)" class="switch-trigger">
-							<p>Sidebar Mini</p>
-							<label class="ml-auto">
-								<div class="togglebutton switch-sidebar-mini">
-									<label>
-										<input type="checkbox">
-										<span class="toggle"></span>
-									</label>
-								</div>
-							</label>
-							<div class="clearfix"></div>
-						</a>
-					</li>
-					<li class="adjustments-line">
-						<a href="javascript:void(0)" class="switch-trigger">
-							<p>Sidebar Images</p>
-							<label class="switch-mini ml-auto">
-								<div class="togglebutton switch-sidebar-image">
-									<label>
-										<input type="checkbox" checked="">
-										<span class="toggle"></span>
-									</label>
-								</div>
-							</label>
-							<div class="clearfix"></div>
-						</a>
-					</li>
-					<li class="header-title">Images</li>
-					<li class="active">
-						<a class="img-holder switch-trigger" href="javascript:void(0)">
-							<img src="{{ asset('assets/img/sidebar-1.jpg')}}" alt="">
-						</a>
-					</li>
-					<li>
-						<a class="img-holder switch-trigger" href="javascript:void(0)">
-							<img src="{{ asset('assets/img/sidebar-2.jpg')}}" alt="">
-						</a>
-					</li>
-					<li>
-						<a class="img-holder switch-trigger" href="javascript:void(0)">
-							<img src="{{ asset('assets/img/sidebar-3.jpg')}}" alt="">
-						</a>
-					</li>
-					<li>
-						<a class="img-holder switch-trigger" href="javascript:void(0)">
-							<img src="{{ asset('assets/img/sidebar-4.jpg')}}" alt="">
-						</a>
-					</li>
-					<li class="button-container">
-						<a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-rose btn-block btn-fill">Buy Now</a>
-						<a href="https://demos.creative-tim.com/material-dashboard-pro/docs/2.1/getting-started/introduction.html" target="_blank" class="btn btn-default btn-block">
-							Documentation
-						</a>
-						<a href="https://www.creative-tim.com/product/material-dashboard" target="_blank" class="btn btn-info btn-block">
-							Get Free Demo!
-						</a>
-					</li>
-					<li class="button-container github-star">
-						<a class="github-button" href="https://github.com/creativetimofficial/ct-material-dashboard-pro" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star ntkme/github-buttons on GitHub">Star</a>
-					</li>
-					<li class="header-title">Thank you for 95 shares!</li>
-					<li class="button-container text-center">
-						<button id="twitter" class="btn btn-round btn-twitter">
-							<i class="fa fa-twitter"></i>
-							&middot; 45</button>
-						<button id="facebook" class="btn btn-round btn-facebook">
-							<i class="fa fa-facebook-f"></i>
-							&middot; 50</button>
-						<br>
-						<br>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<!-- Core JS Files -->
-		<script src="{{ asset('assets/js/core/jquery.min.js') }}"></script>
-		<script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-		<script src="{{ asset('assets/js/core/bootstrap-material-design.min.js') }}"></script>
-		<script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
 
-		<!-- Plugin for Moment.js -->
-		<script src="{{ asset('assets/js/plugins/moment.min.js') }}"></script>
+            <style>
+                .calculator {
+                    max-width: 300px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+                .button-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                }
+                .button-row button {
+                    flex: 1;
+                    margin: 0 5px;
+                }
+                .table th, .table td {
+                    text-align: center;
+                }
+                .table tr:hover {
+                    background-color: #f1f1f1;
+                }
+                /* Main Tab Navigation Styles */
+                .nav-wrapper {
+                    background: #f8f9fa;
+                    padding: 0 15px;
+                    border-radius: 4px;
+                    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+                    margin-bottom: 20px;
+                }
+                .nav-tabs {
+                    border: none;
+                    margin: 0;
+                    padding: 0;
+                }
+                .nav-tabs .nav-link {
+                    border: none;
+                    color: #000 !important;
+                    padding: 15px 25px;
+                    margin: 0;
+                    border-radius: 0;
+                    transition: all 0.3s ease;
+                    position: relative;
+                    font-weight: 500;
+                    background-color: #f8f9fa;
+                }
+                .nav-tabs .nav-link:hover {
+                    background-color: #e9ecef;
+                    color: #000 !important;
+                }
+                .nav-tabs .nav-link.active {
+                    color: #000 !important;
+                    background-color: #fff;
+                    font-weight: 600;
+                    box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+                }
+                .nav-tabs .nav-link.active:after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 3px;
+                    background: #ff5722;
+                }
+                .nav-tabs .nav-link i {
+                    margin-right: 8px;
+                    vertical-align: middle;
+                    color: inherit;
+                }
+                /* Force black color for all tab states */
+                .nav-tabs .nav-link,
+                .nav-tabs .nav-link:hover,
+                .nav-tabs .nav-link:focus,
+                .nav-tabs .nav-link.active,
+                .nav-tabs .nav-link:not(.active) {
+                    color: #000 !important;
+                }
+                
+                /* Exchange Rate Styles */
+                .exchange-container {
+                    padding: 20px;
+                }
+                
+                .base-currency {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 30px;
+                    padding: 20px;
+                    background: linear-gradient(135deg, #ff5722, #ff9800);
+                    border-radius: 10px;
+                    color: white;
+                }
+                
+                .currency-flag {
+                    width: 60px;
+                    height: 40px;
+                    margin-right: 20px;
+                    border-radius: 5px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    background-color: #f5f5f5;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .flag-emoji {
+                    font-size: 2em;
+                    line-height: 1;
+                }
+                
+                /* Remove old image-related styles */
+                .currency-flag img {
+                    display: none;
+                }
+                
+                .currency-info h3 {
+                    margin: 0;
+                    font-size: 24px;
+                    font-weight: 600;
+                }
+                
+                .last-update {
+                    margin: 5px 0 0;
+                    font-size: 14px;
+                    opacity: 0.9;
+                }
+                
+                .exchange-rates-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 20px;
+                    margin-top: 20px;
+                }
+                
+                .exchange-card {
+                    background: white;
+                    border-radius: 10px;
+                    padding: 20px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .exchange-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+                }
+                
+                .exchange-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 4px;
+                    background: linear-gradient(90deg, #ff5722, #ff9800);
+                }
+                
+                .currency-header {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                }
+                
+                .currency-code {
+                    font-size: 20px;
+                    font-weight: 600;
+                    margin-left: 15px;
+                    color: #333;
+                }
+                
+                .rate-value {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                }
+                
+                .rate-number {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #333;
+                    font-family: 'Roboto Mono', monospace;
+                }
+                
+                .trend-indicator {
+                    color: #4CAF50;
+                    animation: pulse 2s infinite;
+                }
+                
+                .rate-change {
+                    font-size: 14px;
+                    color: #666;
+                }
+                
+                .change-value {
+                    color: #4CAF50;
+                    font-weight: 600;
+                }
+                
+                .change-percentage {
+                    margin-left: 5px;
+                }
+                
+                @keyframes pulse {
+                    0% {
+                        opacity: 1;
+                    }
+                    50% {
+                        opacity: 0.5;
+                    }
+                    100% {
+                        opacity: 1;
+                    }
+                }
+                
+                .exchange-card {
+                    animation: slideIn 0.5s ease forwards;
+                }
+                
+                .exchange-card:nth-child(2) {
+                    animation-delay: 0.1s;
+                }
+                
+                .exchange-card:nth-child(3) {
+                    animation-delay: 0.2s;
+                }
+                
+                .exchange-card:nth-child(4) {
+                    animation-delay: 0.3s;
+                }
+                
+                /* Remove loading animation since we're using emojis */
+                .currency-flag.loading {
+                    background: none;
+                    animation: none;
+                }
+            </style>
 
-		<!-- Plugin for Sweet Alert -->
-		<script src="{{ asset('assets/js/plugins/sweetalert2.js') }}"></script>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <nav class="float-left">
+                        <ul>
+                            <li><a href="https://www.creative-tim.com/">Creative Tim</a></li>
+                            <li><a href="https://creative-tim.com/presentation">About Us</a></li>
+                            <li><a href="https://www.creative-tim.com/license">Licenses</a></li>
+                        </ul>
+                    </nav>
+                    <div class="copyright float-right">
+                        &copy; <script>document.write(new Date().getFullYear())</script>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+{% endblock %}
 
-		<!-- Forms Validation Plugin -->
-		<script src="{{ asset('assets/js/plugins/jquery.validate.min.js') }}"></script>
-
-		<!-- Plugin for the Wizard -->
-		<script src="{{ asset('assets/js/plugins/jquery.bootstrap-wizard.js') }}"></script>
-
-		<!-- Plugin for Select -->
-		<script src="{{ asset('assets/js/plugins/bootstrap-selectpicker.js') }}"></script>
-
-		<!-- Plugin for the DateTimePicker -->
-		<script src="{{ asset('assets/js/plugins/bootstrap-datetimepicker.min.js') }}"></script>
-
-		<!-- DataTables.net Plugin -->
-		<script src="{{ asset('assets/js/plugins/jquery.dataTables.min.js') }}"></script>
-
-		<!-- Plugin for Tags -->
-		<script src="{{ asset('assets/js/plugins/bootstrap-tagsinput.js') }}"></script>
-
-		<!-- Plugin for File Upload -->
-		<script src="{{ asset('assets/js/plugins/jasny-bootstrap.min.js') }}"></script>
-
-		<!-- Full Calendar Plugin -->
-		<script src="{{ asset('assets/js/plugins/fullcalendar.min.js') }}"></script>
-
-		<!-- Vector Map Plugin -->
-		<script src="{{ asset('assets/js/plugins/jquery-jvectormap.js') }}"></script>
-
-		<!-- Plugin for Sliders -->
-		<script src="{{ asset('assets/js/plugins/nouislider.min.js') }}"></script>
-
-		<!-- ES6 Promises Polyfill (optional) -->
-		<script src="{{ asset('assets/js/core-js/2.4.1/core.js') }}"></script>
-
-		<!-- Library for adding dynamic elements -->
-		<script src="{{ asset('assets/js/plugins/arrive.min.js') }}"></script>
-
-		<!-- Google Maps Plugin -->
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2Yno10-YTnLjjn_Vtk0V8cdcY5lC4plU"></script>
-
-		<!-- GitHub Buttons -->
-		<script async defer src="https://buttons.github.io/buttons.js"></script>
-
-		<!-- Chartist JS -->
-		<script src="{{ asset('assets/js/plugins/chartist.min.js') }}"></script>
-
-		<!-- Notifications Plugin -->
-		<script src="{{ asset('assets/js/plugins/bootstrap-notify.js') }}"></script>
-
-		<!-- Control Center for Material Dashboard -->
-		<script src="{{ asset('assets/js/material-dashboard.min.js') }}" type="text/javascript"></script>
-		<!-- Material Dashboard DEMO methods, don't include it in your project! -->
+{% block javascripts %}
+    {{ parent() }}
 		<script>
+<<<<<<< Updated upstream
 			$(document).ready(function () {
 $().ready(function () {
 $sidebar = $('.sidebar');
@@ -933,3 +1330,79 @@ console.log('Facebook Track Error:', err);
 		<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"926215487d4a5bca","version":"2025.3.0","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"token":"1b7cbb72744b40c580f8633c6b62637e","b":1}' crossorigin="anonymous"></script>
 
 	{% endblock %}
+=======
+        $(document).ready(function() {
+            // Initialize DataTable
+$('#datatables').DataTable({
+"pagingType": "full_numbers",
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+responsive: true,
+language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Rechercher...",
+                }
+            });
+
+            // Handle main tab clicks
+            $('.nav-tabs a').on('click', function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+                $('.nav-tabs .nav-link').removeClass('active');
+                $(this).addClass('active');
+                // Force black color on all tabs
+                $('.nav-tabs .nav-link').css('color', '#000');
+            });
+
+            // Ensure text color on tab shown
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $('.nav-tabs .nav-link').css('color', '#000');
+            });
+
+            // Force initial text color
+            $('.nav-tabs .nav-link').css('color', '#000');
+
+            // Simulate real-time updates for exchange rates
+            function updateRates() {
+                $('.exchange-card').each(function() {
+                    const rateElement = $(this).find('.rate-number');
+                    const currentRate = parseFloat(rateElement.text());
+                    const change = (Math.random() - 0.5) * 0.0002;
+                    const newRate = (currentRate + change).toFixed(4);
+                    
+                    rateElement.text(newRate);
+                    
+                    const changeElement = $(this).find('.change-value');
+                    const percentageElement = $(this).find('.change-percentage');
+                    
+                    const changeValue = change.toFixed(4);
+                    const percentage = ((change / currentRate) * 100).toFixed(2);
+                    
+                    changeElement.text(changeValue > 0 ? '+' + changeValue : changeValue);
+                    percentageElement.text('(' + (percentage > 0 ? '+' : '') + percentage + '%)');
+                    
+                    // Update colors based on change
+                    const color = change >= 0 ? '#4CAF50' : '#F44336';
+                    changeElement.css('color', color);
+                    percentageElement.css('color', color);
+                    $(this).find('.trend-indicator i').text(change >= 0 ? 'trending_up' : 'trending_down');
+                    $(this).find('.trend-indicator').css('color', color);
+                });
+                
+                // Update last update time
+                const now = new Date();
+                $('#lastUpdate').text(now.toLocaleTimeString());
+            }
+            
+            // Update rates every 5 seconds
+            setInterval(updateRates, 5000);
+
+            // Remove flag loading code since we're using emojis
+            $('.currency-flag').each(function() {
+                const flagContainer = $(this);
+                flagContainer.removeClass('loading');
+            });
+});
+});
+		</script>
+	{% endblock %}
+>>>>>>> Stashed changes

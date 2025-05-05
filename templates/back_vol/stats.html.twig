@@ -1,0 +1,205 @@
+{% extends 'base1.html.twig' %}
+{% block body %}
+	<div class="wrapper">
+		<!-- Sidebar -->
+		<div class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
+			<!-- ... existing sidebar code ... -->
+		</div>
+
+		<div class="main-panel">
+			<!-- Navbar -->
+			<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
+				<!-- ... existing navbar code ... -->
+			</nav>
+
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="card">
+								<div class="card-header card-header-primary card-header-icon">
+									<div class="card-icon">
+										<i class="material-icons">analytics</i>
+									</div>
+									<h4 class="card-title">Statistiques des Vols</h4>
+									<a href="{{ path('app_back_vol_index') }}" class="btn btn-warning btn-round float-right">
+										<i class="material-icons">arrow_back</i> Retour aux Vols
+									</a>
+								</div>
+								<div class="card-body">
+									<div class="row">
+										<div class="col-md-4">
+											<div class="stats-card">
+												<div class="stats-icon">
+													<i class="material-icons">attach_money</i>
+												</div>
+												<div class="stats-info">
+													<h3>{{ averages.avgPrice|number_format(2, '.', ',') }} TND</h3>
+													<p>Prix Moyen</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="stats-card">
+												<div class="stats-icon">
+													<i class="material-icons">event_seat</i>
+												</div>
+												<div class="stats-info">
+													<h3>{{ averages.avgSeats|number_format(0) }}</h3>
+													<p>Sièges Moyens</p>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="stats-card">
+												<div class="stats-icon">
+													<i class="material-icons">flight_class</i>
+												</div>
+												<div class="stats-info">
+													<h3>{{ averages.avgClasse|number_format(2, '.', ',') }}</h3>
+													<p>Classe Moyenne</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row mt-4">
+										<div class="col-md-6">
+											<div class="card">
+												<div class="card-header card-header-primary">
+													<h4 class="card-title">Distribution des Prix</h4>
+												</div>
+												<div class="card-body">
+													<canvas id="priceChart"></canvas>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="card">
+												<div class="card-header card-header-primary">
+													<h4 class="card-title">Occupation des Sièges</h4>
+												</div>
+												<div class="card-body">
+													<canvas id="seatsChart"></canvas>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		.stats-card {
+			background: #fff;
+			border-radius: 8px;
+			padding: 20px;
+			text-align: center;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			transition: transform 0.3s ease;
+		}
+		.stats-card:hover {
+			transform: translateY(-5px);
+		}
+		.stats-icon {
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			background: #ff5722;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 auto 15px;
+		}
+		.stats-icon i {
+			color: #fff;
+			font-size: 30px;
+		}
+		.stats-info h3 {
+			color: #333;
+			font-size: 24px;
+			margin: 0;
+			font-weight: 600;
+		}
+		.stats-info p {
+			color: #666;
+			margin: 5px 0 0;
+			font-size: 16px;
+		}
+		.card {
+			margin-bottom: 20px;
+		}
+		.card-header-primary {
+			background: linear-gradient(60deg, #ff5722, #ff9800);
+		}
+		.card-header-primary .card-title {
+			color: #fff;
+			margin: 0;
+		}
+	</style>
+
+	<!-- Core JS Files -->
+	<script src="{{ asset('assets/js/core/jquery.min.js') }}"></script>
+	<script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
+	<script src="{{ asset('assets/js/core/bootstrap-material-design.min.js') }}"></script>
+	<script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
+	<script src="{{ asset('assets/js/plugins/chartist.min.js') }}"></script>
+	<script src="{{ asset('assets/js/plugins/arrive.min.js') }}"></script>
+	<script src="{{ asset('assets/js/plugins/bootstrap-notify.js') }}"></script>
+	<script src="{{ asset('assets/js/material-dashboard.min.js') }}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<script>
+		$(document).ready(function() {
+			// Price Distribution Chart
+			const priceCtx = document.getElementById('priceChart').getContext('2d');
+			new Chart(priceCtx, {
+				type: 'line',
+				data: {
+					labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+					datasets: [{
+						label: 'Prix Moyen',
+						data: [{{ averages.avgPrice }}, {{ averages.avgPrice * 1.1 }}, {{ averages.avgPrice * 0.9 }}, {{ averages.avgPrice * 1.2 }}, {{ averages.avgPrice * 0.8 }}, {{ averages.avgPrice }}],
+						borderColor: '#ff5722',
+						tension: 0.4,
+						fill: false
+					}]
+				},
+				options: {
+					responsive: true,
+					plugins: {
+						legend: {
+							position: 'top',
+						}
+					}
+				}
+			});
+
+			// Seats Occupancy Chart
+			const seatsCtx = document.getElementById('seatsChart').getContext('2d');
+			new Chart(seatsCtx, {
+				type: 'doughnut',
+				data: {
+					labels: ['Occupés', 'Disponibles'],
+					datasets: [{
+						data: [{{ averages.avgSeats * 0.7 }}, {{ averages.avgSeats * 0.3 }}],
+						backgroundColor: ['#ff5722', '#e0e0e0']
+					}]
+				},
+				options: {
+					responsive: true,
+					plugins: {
+						legend: {
+							position: 'top',
+						}
+					}
+				}
+			});
+		});
+	</script>
+{% endblock %} 
