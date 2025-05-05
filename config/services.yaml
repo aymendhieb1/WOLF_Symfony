@@ -13,6 +13,10 @@ parameters:
   mailer_from: "%env(MAILER_FROM)%"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+  exchange_rate_api_key: '191d06448921407aff3db9f7'
+>>>>>>> Stashed changes
 =======
   exchange_rate_api_key: '191d06448921407aff3db9f7'
 >>>>>>> Stashed changes
@@ -52,7 +56,10 @@ services:
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
   App\Service\CurrencyService:
@@ -64,6 +71,9 @@ services:
       $apiKey: '%env(AIRCRAFT_API_KEY)%'
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

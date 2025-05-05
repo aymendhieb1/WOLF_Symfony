@@ -18,7 +18,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -33,11 +36,15 @@ class LoginAuthenticator extends AbstractAuthenticator
     private RequestStack $requestStack;
     private UserPasswordHasherInterface $passwordHasher;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 <<<<<<< Updated upstream
 
 
 =======
+>>>>>>> Stashed changes
+=======
+
 >>>>>>> Stashed changes
 =======
 
@@ -54,8 +61,11 @@ class LoginAuthenticator extends AbstractAuthenticator
         $this->passwordHasher = $passwordHasher;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -94,7 +104,10 @@ class LoginAuthenticator extends AbstractAuthenticator
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -105,8 +118,11 @@ class LoginAuthenticator extends AbstractAuthenticator
         }
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

@@ -29,7 +29,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $num_tel = null;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -48,9 +51,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $role = null;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     private ?string $resetToken = null;
 
 
+=======
+
+    private ?string $resetToken = null;
+
+>>>>>>> Stashed changes
 =======
 
     private ?string $resetToken = null;
@@ -162,7 +171,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -177,9 +189,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -191,7 +206,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -211,6 +229,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes

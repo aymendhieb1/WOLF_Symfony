@@ -16,6 +16,10 @@
         "doctrine/orm": "^3.3",
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+        "dompdf/dompdf": "^3.1",
+>>>>>>> Stashed changes
 =======
         "dompdf/dompdf": "^3.1",
 >>>>>>> Stashed changes
