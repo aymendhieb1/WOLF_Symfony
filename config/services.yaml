@@ -4,9 +4,18 @@ parameters:
   permits_directory: "uploads/permits"
   uploads_directory: "%kernel.project_dir%/public/uploads"
   hotel_images_directory: "%kernel.project_dir%/public/uploads/hotels"
+
   twilio_account_sid: "%env(TWILIO_ACCOUNT_SID)%"
   twilio_auth_token: "%env(TWILIO_AUTH_TOKEN)%"
   twilio_from_number: "%env(TWILIO_PHONE_NUMBER)%"
+
+
+
+  twilio_account_sid1: "%env(TWILIO_ACCOUNT_SID1)%"
+  twilio_auth_token1: "%env(TWILIO_AUTH_TOKEN)%"
+  twilio_from_number1: "%env(TWILIO_PHONE_NUMBER)%"
+  admin_phone_number1: "%env(TWILIO_ADMIN_NUMBER)%"
+
   google_calendar_client_id: "522491585292-v87ju258ql3lfvjm06s5959bsjh50fp4.apps.googleusercontent.com"
   google_calendar_client_secret: "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"
   google_calendar_redirect_uri: "http://127.0.0.1:8000/back/contrat/google-calendar/callback"
@@ -58,3 +67,10 @@ services:
   App\Controller\PaymentController:
     arguments:
       $stripe: '@Stripe\StripeClient'
+
+  App\Service\TwilioService1:
+    arguments:
+      $accountSid: "%twilio_account_sid1%"
+      $authToken: "%twilio_auth_token1%"
+      $twilioPhoneNumber: "%twilio_from_number1%"
+      $adminPhoneNumber: "%admin_phone_number1%"

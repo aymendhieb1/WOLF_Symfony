@@ -1,0 +1,327 @@
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --success-color: #2ec4b6;
+        --error-color: #e63946;
+        --text-color: #2b2d42;
+        --background-color: #f8f9fa;
+        --border-radius: 8px;
+        --transition: all 0.3s ease;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1rem;
+        border: 2px solid #e9ecef;
+        transition: var(--transition);
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+    }
+
+    .form-control-file {
+        padding: 0.5rem;
+        border: 2px dashed #e9ecef;
+        border-radius: var(--border-radius);
+        background: #fff;
+        transition: var(--transition);
+    }
+
+    .form-control-file:hover {
+        border-color: var(--primary-color);
+    }
+
+    .form-error {
+        color: var(--error-color);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .is-invalid {
+        border-color: var(--error-color) !important;
+    }
+
+    .is-valid {
+        border-color: var(--success-color) !important;
+    }
+
+    .error-label, .field-error {
+        color: var(--error-color);
+        display: none;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .field-success {
+        color: var(--success-color);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+        display: none;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        transition: var(--transition);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background-color: #2c4be3;
+        border-color: #2c4be3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.15);
+    }
+
+    .btn-disabled {
+        background-color: #b4b4b4 !important;
+        border-color: #b4b4b4 !important;
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+
+    .post-form {
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .image-preview {
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .post-type-fields {
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-control.is-valid {
+        border-color: var(--success-color) !important;
+        background-image: none;
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--error-color) !important;
+        background-image: none;
+    }
+
+    .form-control-file.is-valid {
+        border-color: var(--success-color) !important;
+    }
+
+    .form-control-file.is-invalid {
+        border-color: var(--error-color) !important;
+    }
+</style>
+
+{{ form_start(form, {
+    'attr': {
+        'novalidate': 'novalidate',
+        'id': 'post-edit-form',
+        'class': 'post-form',
+        'action': path('app_post_edit', {'id': form.vars.data.postId})
+    }
+}) }}
+    <div class="form-group">
+        {{ form_label(form.type) }}
+        {{ form_widget(form.type, {
+            'attr': {
+                'class': 'form-control',
+                'id': 'post_edit_type',
+                'onchange': 'updateFields()'
+            }
+        }) }}
+        {{ form_errors(form.type) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.id_user) }}
+        {{ form_widget(form.id_user, {
+            'attr': {
+                'class': 'form-control',
+                'id': 'post_edit_id_user'
+            }
+        }) }}
+        {{ form_errors(form.id_user) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.forum_id) }}
+        {{ form_widget(form.forum_id, {
+            'attr': {
+                'class': 'form-control',
+                'id': 'post_edit_forum_id'
+            }
+        }) }}
+        {{ form_errors(form.forum_id) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.chemin_fichier) }}
+        {% if form.vars.data and form.vars.data.cheminFichier %}
+            <div class="mb-2">
+                Current image:
+                <img src="{{ asset('uploads/' ~ form.vars.data.cheminFichier) }}" 
+                     class="image-preview" style="max-width: 200px;">
+            </div>
+        {% endif %}
+        {{ form_widget(form.chemin_fichier, {
+            'attr': {
+                'class': 'form-control-file',
+                'accept': '.jpg,.jpeg,.png',
+                'id': 'post_edit_chemin_fichier'
+            }
+        }) }}
+        {{ form_errors(form.chemin_fichier) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.status) }}
+        {{ form_widget(form.status, {
+            'attr': {
+                'class': 'form-control',
+                'id': 'post_edit_status'
+            }
+        }) }}
+        {{ form_errors(form.status) }}
+    </div>
+
+    <!-- Survey Fields -->
+    <div id="edit-survey-fields" class="post-type-fields" style="display: none;">
+        <div class="form-group">
+            {{ form_label(form.survey_question) }}
+            {{ form_widget(form.survey_question, {
+                'attr': {
+                    'class': 'form-control',
+                    'rows': 3,
+                    'id': 'post_edit_survey_question'
+                }
+            }) }}
+            {{ form_errors(form.survey_question) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.survey_tags) }}
+            {{ form_widget(form.survey_tags, {
+                'attr': {
+                    'class': 'form-control',
+                    'id': 'post_edit_survey_tags'
+                }
+            }) }}
+            {{ form_errors(form.survey_tags) }}
+        </div>
+    </div>
+
+    <!-- Announcement Fields -->
+    <div id="edit-announcement-fields" class="post-type-fields" style="display: none;">
+        <div class="form-group">
+            {{ form_label(form.announcement_title) }}
+            {{ form_widget(form.announcement_title, {
+                'attr': {
+                    'class': 'form-control',
+                    'id': 'post_edit_announcement_title'
+                }
+            }) }}
+            {{ form_errors(form.announcement_title) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.announcement_content) }}
+            {{ form_widget(form.announcement_content, {
+                'attr': {
+                    'class': 'form-control',
+                    'rows': 5,
+                    'id': 'post_edit_announcement_content'
+                }
+            }) }}
+            {{ form_errors(form.announcement_content) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.announcement_tags) }}
+            {{ form_widget(form.announcement_tags, {
+                'attr': {
+                    'class': 'form-control',
+                    'id': 'post_edit_announcement_tags'
+                }
+            }) }}
+            {{ form_errors(form.announcement_tags) }}
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+{{ form_end(form) }}
+
+<script>
+function updateFields() {
+    const typeSelect = document.getElementById('post_edit_type');
+    const surveyFields = document.getElementById('edit-survey-fields');
+    const announcementFields = document.getElementById('edit-announcement-fields');
+    
+    if (!typeSelect || !surveyFields || !announcementFields) {
+        console.error('Required elements not found');
+        return;
+    }
+
+    const selectedType = typeSelect.value;
+    console.log('Selected type:', selectedType); // Debug log
+    
+    // Hide all type-specific fields first
+    surveyFields.style.display = 'none';
+    announcementFields.style.display = 'none';
+    
+    // Show fields based on selected type
+    if (selectedType === 'survey') {
+        surveyFields.style.display = 'block';
+    } else if (selectedType === 'announcement') {
+        announcementFields.style.display = 'block';
+    }
+}
+
+// Call updateFields when the document is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Initial call to set the correct fields
+    updateFields();
+    
+    // Add change event listener to the type select
+    const typeSelect = document.getElementById('post_edit_type');
+    if (typeSelect) {
+        typeSelect.addEventListener('change', updateFields);
+    }
+});
+</script>

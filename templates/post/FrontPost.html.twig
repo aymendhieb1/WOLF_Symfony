@@ -28,6 +28,22 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editPostModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="editFormContainer">
+                    <!-- Edit form will be loaded here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="forum-container">
         <div class="forum-wrapper" 
              x-data="{
@@ -48,29 +64,46 @@
                         surveyTags: postElement.surveyTags,
                         dateCreation: postElement.dateCreation,
                         dateModification: postElement.dateModification,
-                        cheminFichier: postElement.cheminFichier
+                        cheminFichier: postElement.cheminFichier,
+                        votes: parseInt(postElement.votes) || 0,
+                        nbrSignal: parseInt(postElement.nbrSignal) || 0,
+                        upVoteList: postElement.upVoteList || '',
+                        downVoteList: postElement.downVoteList || '',
+                        signalList: postElement.signalList || '',
+                        userEmail: postElement.userEmail
                     };
+                    
                     this.selectedPost = post;
                     this.activeLeftTab = 'comments';
-                    this.autoComment = null;
                     
+
+                                            loadDisqus(post);
+
+                    // Fetch auto-comment
+                    this.autoComment = 'Chargement du commentaire...';
                     fetch(`/api/ai/post/${post.postId}/auto-comment`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/json'
                         }
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            this.autoComment = data.comment;
-                        } else {
-                            this.autoComment = 'Error loading comment.';
-                        }
-                    })
-                    .catch(() => {
-                        this.autoComment = 'Error loading comment.';
-                    });
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success && data.comment) {
+                                this.autoComment = data.comment;
+                            } else {
+                                throw new Error(data.error || 'Failed to generate comment');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching auto-comment:', error);
+                            this.autoComment = '⚠️ Erreur: Impossible de générer le commentaire automatique. Veuillez réessayer plus tard.';
+                        });
                 },
                 handleVote(postId, voteType) {
                     fetch(`/api/post/${postId}/vote`, {
@@ -117,35 +150,55 @@
                         console.error('Error:', error);
                         alert('Error reporting post. Please try again.');
                     });
+                },
+                loadEditForm(postId) {
+                    fetch(`/front/post/${postId}/edit-form`)
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById('editFormContainer').innerHTML = html;
+                            $('#editPostModal').modal('show');
+                        })
+                        .catch(error => {
+                            console.error('Error loading edit form:', error);
+                            const toast = new bootstrap.Toast(document.getElementById('errorToast'));
+                            document.getElementById('errorMessage').textContent = 'Error loading edit form';
+                            toast.show();
+                        });
                 }
              }">
             
             <!-- Left Pane -->
             <div class="forum-left-pane">
                 <div class="forum-tab-container">
-
-
                     <!-- Posts Tab Content -->
                     <div x-show="activeLeftTab === 'posts'" class="forum-tab-content">
-                        <div class="forum-search-bar">
-                            <div class="search-form">
-                                <input type="text" 
-                                       name="search"
-                                       value="{{ searchTerm }}"
-                                       placeholder="Search posts..." 
-                                       class="forum-search-field"
-                                       data-autocomplete-url="{{ path('app_autocomplete') }}"
-                                       autocomplete="on">
-                                <input type="hidden" name="forum" value="{{ currentForum ? currentForum.ForumId : '' }}">
-                                <input type="hidden" name="sort" value="{{ sortBy }}">
-                                <button type="button" class="search-button" onclick="handleSearch()">
-                                    <i class="fas fa-search"></i>
-                                </button>
+                        {% if not currentForum %}
+                            <div class="no-forum-selected">
+                                <i class="fas fa-info-circle" style="font-size: 48px; color: #e78d1e; margin-bottom: 20px;"></i>
+                                <h3>Veuillez sélectionner un forum</h3>
+                                <p>Pour voir les publications, veuillez choisir un forum dans le menu déroulant à droite.</p>
                             </div>
-                        </div>
-                        <div class="forum-scroll-container">
-                            {% include 'post/_posts.html.twig' with {'posts': posts} %}
-                        </div>
+                        {% else %}
+                            <div class="forum-search-bar">
+                                <div class="search-form">
+                                    <input type="text" 
+                                           name="search"
+                                           value="{{ searchTerm }}"
+                                           placeholder="Search posts..." 
+                                           class="forum-search-field"
+                                           data-autocomplete-url="{{ path('app_autocomplete') }}"
+                                           autocomplete="on">
+                                    <input type="hidden" name="forum" value="{{ currentForum ? currentForum.ForumId : '' }}">
+                                    <input type="hidden" name="sort" value="{{ sortBy }}">
+                                    <button type="button" class="search-button" onclick="handleSearch()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="forum-scroll-container">
+                                {% include 'post/_posts.html.twig' with {'posts': posts} %}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <!-- Comments Tab Content -->
@@ -237,18 +290,97 @@
                             <h3>Comments</h3>
                             <div id="disqus_thread"></div>
                             <script>
-                                var disqus_config = function () {
-                                    this.page.url = '{{ disqus_config.url|default(app.request.uri) }}';
-                                    this.page.identifier = '{{ disqus_config.identifier|default('general') }}';
-                                    this.page.title = '{{ disqus_config.title|default('TripToGo Forum') }}';
-                                };
+                                let disqusLoaded = false;
 
-                                (function() {
-                                    var d = document, s = d.createElement('script');
-                                    s.src = 'https://{{ disqus_config.shortname|default('triptogo-1') }}.disqus.com/embed.js';
-                                    s.setAttribute('data-timestamp', +new Date());
-                                    (d.head || d.body).appendChild(s);
-                                })();
+                                function loadDisqus(post) {
+                                    // Clear existing Disqus thread
+                                    const disqusThread = document.getElementById('disqus_thread');
+                                    disqusThread.innerHTML = '';
+
+                                    // Configure Disqus
+                                    window.disqus_config = function () {
+                                        this.page.identifier = 'post_' + post.postId;
+                                        this.page.url = window.location.origin + '/front/post/' + post.postId;
+                                        this.page.title = post.type === 'announcement' ? 
+                                            post.announcementTitle : post.surveyQuestion;
+                                    };
+
+                                    // If Disqus is already loaded, reset it
+                                    if (window.DISQUS) {
+                                        DISQUS.reset({
+                                            reload: true,
+                                            config: window.disqus_config
+                                        });
+                                    } else {
+                                        // Load Disqus for the first time
+                                        var d = document, s = d.createElement('script');
+                                        s.src = 'https://{{ disqus_config.shortname|default('triptogo-1') }}.disqus.com/embed.js';
+                                        s.setAttribute('data-timestamp', +new Date());
+                                        (d.head || d.body).appendChild(s);
+                                        disqusLoaded = true;
+                                    }
+                                }
+
+                                // Watch for changes in selectedPost
+                                document.addEventListener('alpine:init', () => {
+                                    Alpine.data('forumData', () => ({
+                                        selectedPost: null,
+                                        loadPostDetails(postElement) {
+                                            const post = {
+                                                postId: postElement.postId,
+                                                type: postElement.type,
+                                                announcementTitle: postElement.announcementTitle,
+                                                surveyQuestion: postElement.surveyQuestion,
+                                                announcementContent: postElement.announcementContent,
+                                                announcementTags: postElement.announcementTags,
+                                                surveyTags: postElement.surveyTags,
+                                                dateCreation: postElement.dateCreation,
+                                                dateModification: postElement.dateModification,
+                                                cheminFichier: postElement.cheminFichier,
+                                                votes: parseInt(postElement.votes) || 0,
+                                                nbrSignal: parseInt(postElement.nbrSignal) || 0,
+                                                upVoteList: postElement.upVoteList || '',
+                                                downVoteList: postElement.downVoteList || '',
+                                                signalList: postElement.signalList || '',
+                                                userEmail: postElement.userEmail
+                                            };
+                                            
+                                            this.selectedPost = post;
+                                            this.activeLeftTab = 'comments';
+                                            
+                                            // Load Disqus after a short delay to ensure DOM is ready
+                                            setTimeout(() => {
+                                                loadDisqus(post);
+                                            }, 100);
+
+                                            // Fetch auto-comment
+                                            this.autoComment = 'Chargement du commentaire...';
+                                            fetch(`/api/ai/post/${post.postId}/auto-comment`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(data => {
+                                                if (data.success && data.comment) {
+                                                    this.autoComment = data.comment;
+                                                } else {
+                                                    throw new Error(data.error || 'Failed to generate comment');
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error fetching auto-comment:', error);
+                                                this.autoComment = '⚠️ Erreur: Impossible de générer le commentaire automatique. Veuillez réessayer plus tard.';
+                                            });
+                                        }
+                                    }));
+                                });
                             </script>
                             <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
                         </div>
@@ -271,14 +403,14 @@
                     <div x-show="activeRightTab === 'forum-info'" class="forum-tab-content">
                         <select class="forum-select" x-model="selectedForumId"
                                 @change="window.location.href = '?forum=' + selectedForumId">
-                            <option value="">Select Forum</option>
+                            <option value="">Sélectionner un forum</option>
                             {% for forum in forums %}
                                 <option value="{{ forum.forumId }}" 
                                         {% if currentForum is not null and currentForum.forumId == forum.forumId %}selected{% endif %}>
-                                    {{ forum.name|default('Unnamed Forum') }}
+                                    {{ forum.name|default('Forum sans nom') }}
                                 </option>
                             {% else %}
-                                <option value="">No forums available</option>
+                                <option value="">Aucun forum disponible</option>
                             {% endfor %}
                         </select>
                         
@@ -286,25 +418,25 @@
                         <div class="forum-info">
                             <h3>{{ currentForum.name }}</h3>
                             <div class="forum-description">
-                                {{- currentForum.description|default('No description available') -}}
+                                {{- currentForum.description|default('Aucune description disponible') -}}
                             </div>
                             
                             <button type="button" class="forum-submit-button" data-toggle="modal" data-target="#newPostModal">
-                                Create Post
+                                Créer une publication
                             </button>
                             
                             <div class="forum-stats">
                                 {% if currentForum.isPrivate %}
                                 <span class="stat-item">
-                                    Members: {{ currentForum.nbr_members|default(0) }}
+                                    Membres: {{ currentForum.nbr_members|default(0) }}
                                 </span>
                                 {% endif %}
                                 
                                 <span class="stat-item">
-                                    Created: {{ currentForum.dateCreation|date('Y-m-d') }}
+                                    Créé le: {{ currentForum.dateCreation|date('Y-m-d') }}
                                 </span>
                                 <span class="stat-item">
-                                    Posts: {{ currentForum.post_count|default(0) }}
+                                    Publications: {{ currentForum.post_count|default(0) }}
                                 </span>
                             </div>
                         </div>
@@ -816,6 +948,79 @@
         .pdf-export-button i {
             font-size: 16px;
         }
+
+        /* Add Modal Styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-backdrop.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background-color: #e78d1e;
+            color: white;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            padding: 1rem;
+        }
+
+        .modal-header .close {
+            color: white;
+            opacity: 1;
+            text-shadow: none;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #e9ecef;
+            padding: 1rem;
+        }
+
+        /* Ensure modal is above other elements */
+        .modal {
+            z-index: 1050;
+        }
+
+        .modal-backdrop {
+            z-index: 1040;
+        }
+
+        .no-forum-selected {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 20px;
+        }
+
+        .no-forum-selected h3 {
+            color: #e78d1e;
+            margin: 20px 0;
+            font-size: 24px;
+        }
+
+        .no-forum-selected p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+            max-width: 400px;
+        }
     </style>
 
     <script>
@@ -1004,12 +1209,93 @@
                 document.querySelector('.forum-scroll-container').innerHTML = '<div class="alert alert-danger">Error updating content. Please try again.</div>';
             });
     }
+
+    function loadEditForm(postId) {
+        fetch(`/front/post/${postId}/edit-form`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('editFormContainer').innerHTML = html;
+                $('#editPostModal').modal('show');
+            })
+            .catch(error => {
+                console.error('Error loading edit form:', error);
+                const toast = new bootstrap.Toast(document.getElementById('errorToast'));
+                document.getElementById('errorMessage').textContent = 'Error loading edit form';
+                toast.show();
+            });
+    }
+
+    // Make loadEditForm available globally
+    window.loadEditForm = loadEditForm;
+    </script>
+
+    <!-- Toast containers for notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="successToastMessage"></div>
+        </div>
+
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-danger text-white">
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="errorToastMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        // Function to refresh posts list
+        function refreshPosts() {
+            // Get current filters
+            const forumId = document.getElementById('forum-filter')?.value;
+            const searchTerm = document.getElementById('search-input')?.value;
+            const sortBy = document.getElementById('sort-select')?.value;
+            
+            // Build URL with current filters
+            let url = '{{ path("app_front_post_update") }}';
+            const params = new URLSearchParams();
+            if (forumId) params.append('forum', forumId);
+            if (searchTerm) params.append('search', searchTerm);
+            if (sortBy) params.append('sort', sortBy);
+            
+            // Make AJAX request to refresh posts
+            fetch(url + '?' + params.toString())
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('posts-container').innerHTML = data.html;
+                    }
+                })
+                .catch(error => console.error('Error refreshing posts:', error));
+        }
     </script>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make loadEditForm available globally
+            window.loadEditForm = function(postId) {
+                fetch(`/front/post/${postId}/edit-form`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('editFormContainer').innerHTML = html;
+                        $('#editPostModal').modal('show');
+                    })
+                    .catch(error => {
+                        console.error('Error loading edit form:', error);
+                        alert('An error occurred while loading the edit form');
+                    });
+            };
+        });
+    </script>
 {% endblock %}

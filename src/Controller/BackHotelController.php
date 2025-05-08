@@ -35,50 +35,50 @@ class BackHotelController extends AbstractController
         $hotel = new Hotel();
         $form = $this->createForm(HotelType::class, $hotel);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-    
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
                 try {
                     $uploadDir = $this->getParameter('hotel_images_directory');
                     if (!file_exists($uploadDir)) {
                         mkdir($uploadDir, 0777, true);
                     }
-                    
+
                     $imageFile->move(
                         $uploadDir,
                         $newFilename
                     );
-                    
+
                     $hotel->setImage($newFilename);
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image');
                 }
             }
-    
+
             $entityManager->persist($hotel);
             $entityManager->flush();
-    
+
             // Generate PDF
             $html = $this->renderView('back_hotel/pdf.html.twig', [
                 'hotel' => $hotel,
             ]);
-            
+
             $pdfContent = $knpSnappy->getOutputFromHtml($html, [
                 'disable-smart-shrinking' => true,
                 'no-stop-slow-scripts' => true,
                 'enable-local-file-access' => true,
             ]);
-    
+
             // Save PDF to a temporary location
             $pdfFilename = 'hotel_' . $hotel->getId() . '.pdf';
             $tempDir = sys_get_temp_dir(); // Use system temp directory
             file_put_contents($tempDir . '/' . $pdfFilename, $pdfContent);
-    
+
             // Send email with the PDF attachment
             $email = (new Email())
                 ->from('triptogo2025@gmail.com')
@@ -92,21 +92,16 @@ class BackHotelController extends AbstractController
     <div style="text-align: center; margin-bottom: 20px;">
         <img src="cid:logo" alt="TripToGo Logo" style="width: 120px; height: auto;">
     </div>
-    <h2 style="color: #333333; text-align: center;">Réinitialisation du mot de passe</h2>
+    <h2 style="color: #333333; text-align: center;">Confirmation d\'ajout d\'hôtel</h2>
     <p style="font-size: 16px; color: #555555; text-align: center;">
         Bonjour, <br><br>
-        Vous avez demandé à réinitialiser votre mot de passe. Voici votre code de vérification :
+        Votre hôtel a été ajouté avec succès sur TripToGo. Vous trouverez ci-joint un PDF contenant les détails de votre hôtel.
     </p>
     <div style="text-align: center; margin: 30px 0;">
-        <span style="font-size: 32px; color: #ff681a; font-weight: bold;">' . $code . '</span>
-    </div>
-    <div style="text-align: center; margin-bottom: 20px;">
-        <a href="' . $verificationUrl . '" style="display: inline-block; padding: 12px 24px; background-color: #ff681a; color: white; border-radius: 6px; text-decoration: none; font-weight: bold;">
-            👉 Saisir le code maintenant
-        </a>
+        <span style="font-size: 24px; color: #ff681a; font-weight: bold;">Merci de votre confiance !</span>
     </div>
     <p style="font-size: 14px; color: #999999; text-align: center;">
-        Ce code est valable pendant quelques minutes. Si vous n’êtes pas à l’origine de cette demande, ignorez cet email.
+        Si vous avez des questions, n\'hésitez pas à nous contacter.
     </p>
     <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
     <p style="font-size: 12px; color: #aaaaaa; text-align: center;">
@@ -115,22 +110,22 @@ class BackHotelController extends AbstractController
 </div>
 </div>')
                 ->embedFromPath('C:/Users/Dhib/IdeaProjects/Projet_Pidev/src/main/resources/images/primary.png', 'logo');
-           $mailer->send($email);
-    
+            $mailer->send($email);
+
             return $this->redirectToRoute('app_back_hotel_index', [], Response::HTTP_SEE_OTHER);
         }
-    
+
         return $this->render('back_hotel/new.html.twig', [
             'hotel' => $hotel,
             'form' => $form->createView(),
         ]);
     }
-  
+
     #[Route('/{id}/edit', name: 'app_back_hotel_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, int $id, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $hotel = $entityManager->getRepository(Hotel::class)->find($id);
-        
+
         if (!$hotel) {
             throw $this->createNotFoundException('Hotel not found');
         }
@@ -143,14 +138,14 @@ class BackHotelController extends AbstractController
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
                 try {
                     $uploadDir = $this->getParameter('hotel_images_directory');
                     if (!file_exists($uploadDir)) {
                         mkdir($uploadDir, 0777, true);
                     }
-                    
+
                     // Remove old image if it exists
                     $oldImage = $hotel->getImage();
                     if ($oldImage) {
@@ -159,12 +154,12 @@ class BackHotelController extends AbstractController
                             unlink($oldImagePath);
                         }
                     }
-                    
+
                     $imageFile->move(
                         $uploadDir,
                         $newFilename
                     );
-                    
+
                     $hotel->setImage($newFilename);
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image');
@@ -186,12 +181,12 @@ class BackHotelController extends AbstractController
     public function delete(Request $request, int $id, EntityManagerInterface $entityManager): Response
     {
         $hotel = $entityManager->getRepository(Hotel::class)->find($id);
-        
+
         if (!$hotel) {
             throw $this->createNotFoundException('Hotel not found');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$hotel->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $hotel->getId(), $request->request->get('_token'))) {
             $entityManager->remove($hotel);
             $entityManager->flush();
         }
@@ -205,30 +200,30 @@ class BackHotelController extends AbstractController
     {
         // Retrieve the hotel entity from the database
         $hotel = $entityManager->getRepository(Hotel::class)->find($id);
-        
+
         if (!$hotel) {
             throw $this->createNotFoundException('Hotel not found');
         }
-    
+
         // Render the view to a variable
         $html = $this->renderView('back_hotel/pdf.html.twig', [
             'hotel' => $hotel,
         ]);
-    
+
         // Generate PDF from HTML with proper options
         $pdfContent = $knpSnappy->getOutputFromHtml($html, [
             'disable-smart-shrinking' => true,
             'no-stop-slow-scripts' => true,
             'enable-local-file-access' => true,
         ]);
-    
+
         // Create a Response with the PDF content
         return new Response(
             $pdfContent,
             200,
             [
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="hotel_'.$hotel->getId().'.pdf"'
+                'Content-Disposition' => 'attachment; filename="hotel_' . $hotel->getId() . '.pdf"'
             ]
         );
     }

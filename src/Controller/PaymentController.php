@@ -28,16 +28,19 @@ use Doctrine\DBAL\LockMode;
 use Endroid\QrCode\Builder\Builder;
 use chillerlan\QRCode\QRCode as ChillerlanQRCode;
 use chillerlan\QRCode\QROptions;
+use Psr\Log\LoggerInterface;
 
 class PaymentController extends AbstractController
 {
     private $stripe;
     private $mailer;
+    private $logger;
 
-    public function __construct(StripeClient $stripe, MailerInterface $mailer)
+    public function __construct(StripeClient $stripe, MailerInterface $mailer, LoggerInterface $logger)
     {
         $this->stripe = $stripe;
         $this->mailer = $mailer;
+        $this->logger = $logger;
     }
 
     #[Route('/payment/{chambreId}/{dateDebut}/{dateFin}/{amount}', name: 'app_payment')]
@@ -63,16 +66,27 @@ class PaymentController extends AbstractController
     public function processPayment(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
+            $this->logger->info('Starting payment process');
             $data = json_decode($request->getContent(), true);
+            
+            // Log received data
+            $this->logger->info('Received payment data', [
+                'chambreId' => $data['chambreId'] ?? 'not set',
+                'dateDebut' => $data['dateDebut'] ?? 'not set',
+                'dateFin' => $data['dateFin'] ?? 'not set',
+                'amount' => $data['amount'] ?? 'not set'
+            ]);
             
             // Validate required fields
             if (!isset($data['chambreId'], $data['dateDebut'], $data['dateFin'], $data['amount'])) {
-                throw new \Exception('Missing required fields');
+                $this->logger->error('Missing required fields in payment data');
+                throw new \Exception('Tous les champs requis doivent être remplis.');
             }
 
             $user = $this->getUser();
             if (!$user) {
-                throw new \Exception('User not authenticated');
+                $this->logger->error('User not authenticated during payment');
+                throw new \Exception('Vous devez être connecté pour effectuer un paiement.');
             }
 
             $startDate = new \DateTime($data['dateDebut']);
@@ -81,7 +95,8 @@ class PaymentController extends AbstractController
             // Check if room is still available
             $chambre = $entityManager->getRepository(Chambre::class)->find($data['chambreId']);
             if (!$chambre) {
-                throw new \Exception('Room not found');
+                $this->logger->error('Room not found', ['chambreId' => $data['chambreId']]);
+                throw new \Exception('La chambre sélectionnée n\'existe plus.');
             }
 
             // Check for existing reservations
@@ -92,11 +107,18 @@ class PaymentController extends AbstractController
             );
 
             if (count($existingReservations) > 0) {
+                $this->logger->error('Room already reserved for selected dates', [
+                    'chambreId' => $data['chambreId'],
+                    'startDate' => $startDate->format('Y-m-d'),
+                    'endDate' => $endDate->format('Y-m-d')
+                ]);
                 throw new \Exception('Cette chambre est déjà réservée pour les dates sélectionnées.');
             }
 
             // Create Stripe Checkout Session
             try {
+                $this->logger->info('Creating Stripe checkout session');
+                
                 $successUrl = $this->generateUrl('app_reservation_success', [
                     'chambreId' => $data['chambreId'],
                     'dateDebut' => $data['dateDebut'],
@@ -106,6 +128,8 @@ class PaymentController extends AbstractController
                 
                 // Append the session_id parameter
                 $successUrl .= (parse_url($successUrl, PHP_URL_QUERY) ? '&' : '?') . 'session_id={CHECKOUT_SESSION_ID}';
+
+                $this->logger->info('Generated success URL', ['url' => $successUrl]);
 
                 $session = $this->stripe->checkout->sessions->create([
                     'payment_method_types' => ['card'],
@@ -122,17 +146,30 @@ class PaymentController extends AbstractController
                     ]],
                     'mode' => 'payment',
                     'success_url' => $successUrl,
-                    'cancel_url' => $this->generateUrl('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                    'cancel_url' => $this->generateUrl('app_payment_error', [
+                        'error' => 'Paiement annulé',
+                        'room_id' => $data['chambreId']
+                    ], UrlGeneratorInterface::ABSOLUTE_URL),
                 ]);
+
+                $this->logger->info('Stripe session created successfully', ['sessionId' => $session->id]);
 
                 return new JsonResponse([
                     'sessionId' => $session->id
                 ]);
             } catch (\Stripe\Exception\ApiErrorException $e) {
-                throw new \Exception('Stripe error: ' . $e->getMessage());
+                $this->logger->error('Stripe API error', [
+                    'error' => $e->getMessage(),
+                    'code' => $e->getStripeCode()
+                ]);
+                throw new \Exception('Erreur Stripe: ' . $e->getMessage());
             }
 
         } catch (\Exception $e) {
+            $this->logger->error('Payment process failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return new JsonResponse([
                 'error' => $e->getMessage()
             ], 400);
@@ -144,15 +181,21 @@ class PaymentController extends AbstractController
     public function success(Request $request, EntityManagerInterface $entityManager): Response
     {
         try {
+            $this->logger->info('Starting reservation success process');
+            
             // Verify the payment was successful with Stripe
             $sessionId = $request->query->get('session_id');
             if (!$sessionId) {
-                throw new \Exception('No session ID provided');
+                $this->logger->error('No session ID provided in success callback');
+                throw new \Exception('Session ID manquant');
             }
 
+            $this->logger->info('Retrieving Stripe session', ['sessionId' => $sessionId]);
             $session = $this->stripe->checkout->sessions->retrieve($sessionId);
+            
             if ($session->payment_status !== 'paid') {
-                throw new \Exception('Payment not completed');
+                $this->logger->error('Payment not completed', ['status' => $session->payment_status]);
+                throw new \Exception('Le paiement n\'a pas été complété');
             }
 
             $chambreId = $request->query->get('chambreId');
@@ -160,18 +203,29 @@ class PaymentController extends AbstractController
             $dateFin = new \DateTime($request->query->get('dateFin'));
             $amount = $request->query->get('amount');
 
+            $this->logger->info('Processing reservation data', [
+                'chambreId' => $chambreId,
+                'dateDebut' => $dateDebut->format('Y-m-d'),
+                'dateFin' => $dateFin->format('Y-m-d'),
+                'amount' => $amount
+            ]);
+
             $user = $this->getUser();
             if (!$user) {
-                throw new \Exception('User not authenticated');
+                $this->logger->error('User not authenticated in success callback');
+                throw new \Exception('Utilisateur non authentifié');
             }
 
             // Start transaction
             $entityManager->beginTransaction();
             try {
+                $this->logger->info('Starting database transaction');
+
                 // Get the Chambre entity with lock
                 $chambre = $entityManager->find(Chambre::class, $chambreId, LockMode::PESSIMISTIC_WRITE);
                 if (!$chambre) {
-                    throw new \Exception('Room not found');
+                    $this->logger->error('Room not found in success callback', ['chambreId' => $chambreId]);
+                    throw new \Exception('Chambre non trouvée');
                 }
 
                 // Check for overlapping reservations within transaction
@@ -179,7 +233,12 @@ class PaymentController extends AbstractController
                     ->findOverlappingReservations($chambreId, $dateDebut, $dateFin);
 
                 if (count($existingReservations) > 0) {
-                    throw new \Exception('Cette chambre a été réservée par quelqu\'un d\'autre. Veuillez choisir une autre chambre ou d\'autres dates.');
+                    $this->logger->error('Room already reserved in success callback', [
+                        'chambreId' => $chambreId,
+                        'dateDebut' => $dateDebut->format('Y-m-d'),
+                        'dateFin' => $dateFin->format('Y-m-d')
+                    ]);
+                    throw new \Exception('Cette chambre a été réservée par quelqu\'un d\'autre');
                 }
 
                 // Create reservation
@@ -192,70 +251,57 @@ class PaymentController extends AbstractController
                 $reservation->setDateFin($dateFin);
                 $reservation->setDateReservation(new \DateTime());
 
+                $this->logger->info('Created reservation entity', ['reservationId' => $reservation->getId()]);
+
                 // Create payment record
                 $payment = new Paiement();
                 $payment->setIdUser($user->getId());
                 $payment->setUser($user);
                 $payment->setMontant((float)$amount);
-                $payment->setDatePaiement(new \DateTime());
+
+                $this->logger->info('Created payment entity', ['paymentId' => $payment->getId()]);
 
                 // Save to database
                 $entityManager->persist($reservation);
                 $entityManager->persist($payment);
                 $entityManager->flush();
 
+                $this->logger->info('Successfully saved reservation and payment to database');
+
                 // Generate QR code with hotel location
                 $location = $chambre->getHotel()->getLocalisation();
                 $mapsUrl = "https://www.google.com/maps/search/?api=1&query=" . urlencode($location);
-                
-                // Using QRServer.com API for better compatibility
                 $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($mapsUrl);
 
                 // Send confirmation email
                 try {
+                    $this->logger->info('Sending confirmation email');
                     $email = (new Email())
                         ->from('triptogo2025@gmail.com')
                         ->to($user->getMail())
                         ->subject('Confirmation de votre réservation - TripToGo')
-                        ->html('
-                        <div style="font-family: Arial, sans-serif; background-color: #f4f7fa; padding: 30px;">
-                            <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                                <h1 style="color: #ff681a; text-align: center;">Confirmation de Réservation</h1>
-                                
-                                <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                                    <h2 style="color: #333333;">Détails de la réservation</h2>
-                                    <p><strong>Numéro de réservation:</strong> #' . $reservation->getId() . '</p>
-                                    <p><strong>Hôtel:</strong> ' . $chambre->getHotel()->getNom() . '</p>
-                                    <p><strong>Type de chambre:</strong> ' . $chambre->getType() . '</p>
-                                    <p><strong>Date d\'arrivée:</strong> ' . $dateDebut->format('d/m/Y') . '</p>
-                                    <p><strong>Date de départ:</strong> ' . $dateFin->format('d/m/Y') . '</p>
-                                    <p><strong>Nombre de nuits:</strong> ' . $dateDebut->diff($dateFin)->days . '</p>
-                                    <p><strong>Montant total:</strong> ' . $amount . ' DT</p>
-                                </div>
-                                
-                                <div style="text-align: center; margin: 20px 0;">
-                                    <p>Scannez le QR code ci-dessous pour voir la localisation de l\'hôtel:</p>
-                                    <img src="' . $qrCodeUrl . '" width="200" height="200" alt="QR Code pour la localisation" style="display: block; margin: 0 auto;">
-                                </div>
-                                
-                                <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-                                <p style="font-size: 12px; color: #aaaaaa; text-align: center;">
-                                    © ' . date("Y") . ' TripToGo. Tous droits réservés.
-                                </p>
-                            </div>
-                        </div>
-                        ');
+                        ->html($this->renderView('emails/reservation_confirmation.html.twig', [
+                            'reservation' => $reservation,
+                            'payment' => $payment,
+                            'hotelName' => $chambre->getHotel()->getNom(),
+                            'qrCodeUrl' => $qrCodeUrl,
+                            'location' => $location
+                        ]));
 
                     $this->mailer->send($email);
+                    $this->logger->info('Confirmation email sent successfully');
                 } catch (\Exception $e) {
-                    // Log email error but don't fail the transaction
-                    $this->logger->error('Failed to send confirmation email: ' . $e->getMessage());
+                    $this->logger->error('Failed to send confirmation email', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
                 }
 
                 // Commit transaction
                 $entityManager->commit();
+                $this->logger->info('Database transaction committed successfully');
 
-                // Render success page with all required variables
+                // Render success page
                 return $this->render('payment/success.html.twig', [
                     'reservation' => $reservation,
                     'payment' => $payment,
@@ -265,13 +311,34 @@ class PaymentController extends AbstractController
                 ]);
 
             } catch (\Exception $e) {
+                $this->logger->error('Error during database transaction', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
                 $entityManager->rollback();
                 throw $e;
             }
         } catch (\Exception $e) {
+            $this->logger->error('Reservation success process failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return $this->render('payment/error.html.twig', [
-                'error' => $e->getMessage()
+                'error_message' => $e->getMessage(),
+                'room_id' => $request->query->get('chambreId')
             ]);
         }
+    }
+
+    #[Route('/payment-error', name: 'app_payment_error')]
+    public function error(Request $request): Response
+    {
+        $errorMessage = $request->query->get('error', 'Une erreur est survenue lors du traitement de votre paiement.');
+        $roomId = $request->query->get('room_id');
+
+        return $this->render('payment/error.html.twig', [
+            'error_message' => $errorMessage,
+            'room_id' => $roomId
+        ]);
     }
 } 

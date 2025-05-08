@@ -147,10 +147,6 @@
                     <span class="detail-value">#{{ payment.id }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Date du paiement</span>
-                    <span class="detail-value">{{ payment.datePaiement|date('d/m/Y H:i') }}</span>
-                </div>
-                <div class="detail-row">
                     <span class="detail-label">Montant total</span>
                     <span class="detail-value">{{ payment.montant|number_format(2, ',', ' ') }} €</span>
                 </div>

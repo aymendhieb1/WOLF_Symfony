@@ -12,10 +12,10 @@
 		<div
 			class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
 			<!--
-						        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-						
-						        Tip 2: you can also add an image using data-image tag
-						    -->
+												        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+												
+												        Tip 2: you can also add an image using data-image tag
+												    -->
 			<div class="logo">
 				<img src="{{ asset('assets/img/secondry - Copie.png') }}" class="simple-text logo-mini" alt="Logo">
 			</div>
@@ -111,13 +111,13 @@
 						<div class="collapse" id="gestionVolMenu">
 							<ul class="nav">
 								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_back_vol')}}">
+									<a class="nav-link" href="{{path('app_back_vol_index')}}">
 										<span class="sidebar-mini">V</span>
 										<span class="sidebar-normal">Vols</span>
 									</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_back_checkout')}}">
+									<a class="nav-link" href="{{path('app_back_checkoutvol_list')}}">
 										<span class="sidebar-mini">C</span>
 										<span class="sidebar-normal">Check Out</span>
 									</a>
@@ -303,13 +303,15 @@
 									</div>
 									<h4 class="card-title">Liste des Hôtels</h4>
 									<a href="{{ path('app_back_hotel_new') }}" class="btn btn-warning btn-round float-right">
-										<i class="material-icons">add</i> Ajouter Hôtel
+										<i class="material-icons">add</i>
+										Ajouter Hôtel
 									</a>
 
-										<a href="{{ path('app_hotel_chambre_index') }}" class="btn btn-warning btn-round float-right">
-										<i class="material-icons">visibility</i> Voir les hotels
+									<a href="{{ path('app_hotel_chambre_index') }}" class="btn btn-warning btn-round float-right">
+										<i class="material-icons">visibility</i>
+										Voir les hotels
 									</a>
-								
+
 								</div>
 								<div class="card-body">
 									<div class="material-datatables">
@@ -333,7 +335,7 @@
 														<td>{{ hotel.email }}</td>
 														<td>{{ hotel.promotion }}%</td>
 														<td class="text-right">
-															
+
 															<a href="{{ path('app_back_hotel_pdf', {'id': hotel.id}) }}" class="btn btn-link btn-warning btn-just-icon" target="_blank">
 																<i class="material-icons">picture_as_pdf</i>
 															</a>
@@ -751,7 +753,7 @@ clearInterval(simulateWindowResize);
 
 });
 });
-	});
+});
 	</script>
 	<!-- Sharrre libray -->
 	<script src="{{ asset('assets/demo/jquery.sharrre.js')}}"></script>
@@ -813,11 +815,13 @@ if (f.fbq)
 return;
 
 
+
 n = f.fbq = function () {
 n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
 };
 if (! f._fbq) 
 f._fbq = n;
+
 
 
 n.push = n;
@@ -847,11 +851,13 @@ if (f.fbq)
 return;
 
 
+
 n = f.fbq = function () {
 n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
 };
 if (! f._fbq) 
 f._fbq = n;
+
 
 
 n.push = n;
@@ -879,7 +885,7 @@ console.log('Facebook Track Error:', err);
 	<script>
 
 
-// Edit record
+		// Edit record
 
 table.on('click', '.edit', function () {
 $tr = $(this).closest('tr');
@@ -911,6 +917,7 @@ table.on('click', '.like', function () {
 alert('You clicked on Like button');
 });
 });
+
 	</script>
 	<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"926215487d4a5bca","version":"2025.3.0","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"token":"1b7cbb72744b40c580f8633c6b62637e","b":1}' crossorigin="anonymous"></script>
 

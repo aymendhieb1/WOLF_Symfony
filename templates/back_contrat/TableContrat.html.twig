@@ -121,13 +121,13 @@
 						<div class="collapse" id="gestionVolMenu">
 							<ul class="nav">
 								<li class="nav-item">
-									<a class="nav-link" href="{{ path('app_back_vol') }}">
+									<a class="nav-link" href="{{ path('app_back_vol_index') }}">
 										<span class="sidebar-mini">V</span>
 										<span class="sidebar-normal">Vols</span>
 									</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="{{ path('app_back_checkout') }}">
+									<a class="nav-link" href="{{ path('app_back_checkoutvol_list') }}">
 										<span class="sidebar-mini">C</span>
 										<span class="sidebar-normal">Check Out</span>
 									</a>
@@ -724,37 +724,6 @@
 if ($.fn.DataTable.isDataTable('#datatables')) {
 $('#datatables').DataTable().destroy();
 }
-
-// Initialize DataTable with selection
-var table = $('#datatables').DataTable({
-pagingType: "full_numbers",
-lengthMenu: [
-[
-1, 2, 3, -1
-],
-[
-1, 2, 3, "All"
-]
-],
-responsive: true,
-language: {
-search: "",
-searchPlaceholder: "Chercher",
-lengthMenu: "Afficher _MENU_ entrées",
-select: {
-rows: {
-_: "%d lignes sélectionnées",
-0: "Cliquez sur une ligne pour la sélectionner",
-1: "1 ligne sélectionnée"
-}
-}
-},
-select: {
-style: 'single',
-info: true
-}
-});
-
 // Handle row selection with visual feedback
 $('#datatables tbody').on('click', 'tr', function () {
 if ($(this).hasClass('selected')) {
@@ -930,6 +899,7 @@ $('#addContratForm').on('submit', function (e) {
 e.preventDefault();
 if (isSubmitting) 
 return;
+
 
 
 var $form = $(this);
@@ -1263,11 +1233,15 @@ text: xhr.responseJSON ?. message || 'Failed to send email'
 if (f.fbq) 
 return;
 
+
+
 n = f.fbq = function () {
 n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
 };
 if (! f._fbq) 
 f._fbq = n;
+
+
 
 n.push = n;
 n.loaded = !0;

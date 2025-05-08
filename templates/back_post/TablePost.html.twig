@@ -10,10 +10,10 @@
 	<div
 		class="sidebar" data-color="orange" data-background-color="black" data-image="{{ asset('assets/img/sidebar-1.jpg')}}">
 		<!--
-								        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-								
-								        Tip 2: you can also add an image using data-image tag
-								    -->
+										        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+										
+										        Tip 2: you can also add an image using data-image tag
+										    -->
 		<div class="logo">
 			<a href="http://www.creative-tim.com/" class="simple-text logo-mini">
 				Picture
@@ -160,13 +160,13 @@
 					<div class="collapse" id="gestionVolMenu">
 						<ul class="nav">
 							<li class="nav-item">
-								<a class="nav-link" href="{{path('app_back_vol')}}">
+								<a class="nav-link" href="{{path('app_back_vol_index')}}">
 									<span class="sidebar-mini">V</span>
 									<span class="sidebar-normal">Vols</span>
 								</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="{{path('app_back_checkout')}}">
+								<a class="nav-link" href="{{path('app_back_checkoutvol_list')}}">
 									<span class="sidebar-mini">C</span>
 									<span class="sidebar-normal">Check Out</span>
 								</a>
@@ -895,27 +895,27 @@ console.log('Facebook Track Error:', err);
 	</noscript>
 	<script>
 		$(document).ready(function () {
-		$('#datatables').DataTable({
-		"pagingType": "full_numbers",
-		"lengthMenu": [
-		[
-		10, 25, 50, -1
-		],
-		[
-		10, 25, 50, "All"
-		]
-		],
-		responsive: true,
-		language: {
-		search: "",
-		searchPlaceholder: "Chercher"
-		}
-		});
-		
-		var table = $('#datatables').DataTable();
-		
-		
-		});
-		
-		
-			{% endblock %}
+				$('#datatables').DataTable({
+				"pagingType": "full_numbers",
+				"lengthMenu": [
+				[
+				10, 25, 50, -1
+				],
+				[
+				10, 25, 50, "All"
+				]
+				],
+				responsive: true,
+				language: {
+				search: "",
+				searchPlaceholder: "Chercher"
+				}
+				});
+				
+				var table = $('#datatables').DataTable();
+				
+				
+				});
+				
+				
+					{% endblock %}

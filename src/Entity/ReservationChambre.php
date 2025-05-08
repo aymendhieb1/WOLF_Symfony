@@ -35,8 +35,8 @@ class ReservationChambre
     #[ORM\Column(type: 'date')]
     private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\Column(type: 'date')]
-    private ?\DateTimeInterface $dateReservation = null;
+    #[ORM\Column(type: 'datetime')]
+    private $dateReservation;
 
     public function getId(): ?int
     {
@@ -120,7 +120,7 @@ class ReservationChambre
         return $this->dateReservation;
     }
 
-    public function setDateReservation(\DateTimeInterface $dateReservation): self
+    public function setDateReservation(\DateTimeInterface $dateReservation): static
     {
         $this->dateReservation = $dateReservation;
         return $this;

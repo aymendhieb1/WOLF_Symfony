@@ -132,6 +132,24 @@
         padding-top: 1.5rem;
         margin-top: 2rem;
     }
+
+    .form-control.is-valid {
+        border-color: var(--success-color) !important;
+        background-image: none;
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--error-color) !important;
+        background-image: none;
+    }
+
+    .form-control-file.is-valid {
+        border-color: var(--success-color) !important;
+    }
+
+    .form-control-file.is-invalid {
+        border-color: var(--error-color) !important;
+    }
 </style>
 
 {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'post-form', 'class': 'post-form'}}) }}
@@ -298,6 +316,8 @@
         file: false
     };
 
+    let originalFormData = null;
+
     function handlePostTypeChange(type) {
         // Hide all type-specific fields
         document.querySelectorAll('.post-type-fields').forEach(el => {
@@ -428,6 +448,7 @@
     function updateSubmitButton() {
         const submitBtn = document.getElementById('submit-button');
         const type = document.getElementById('post_type').value;
+        const isEdit = document.getElementById('post_type').disabled;
         
         let isValid = formValid.type;
         
@@ -437,12 +458,39 @@
             isValid = isValid && formValid.question && formValid.surveyTags;
         }
         
-        if (!document.getElementById('post_type').disabled) {
+        if (!isEdit) {
             isValid = isValid && formValid.file;
         }
+
+        // Check if form data has changed
+        const currentFormData = new FormData(document.getElementById('post-form'));
+        const hasChanges = !isFormDataEqual(currentFormData, originalFormData);
         
-        submitBtn.disabled = !isValid;
-        submitBtn.classList.toggle('btn-disabled', !isValid);
+        submitBtn.disabled = !isValid || !hasChanges;
+        submitBtn.classList.toggle('btn-disabled', !isValid || !hasChanges);
+    }
+
+    function isFormDataEqual(form1, form2) {
+        if (!form1 || !form2) return false;
+        
+        const entries1 = Array.from(form1.entries());
+        const entries2 = Array.from(form2.entries());
+        
+        if (entries1.length !== entries2.length) return false;
+        
+        for (let i = 0; i < entries1.length; i++) {
+            const [key1, value1] = entries1[i];
+            const [key2, value2] = entries2[i];
+            
+            if (key1 !== key2) return false;
+            
+            // Skip file comparison as it's always different
+            if (key1 === 'post[chemin_fichier]') continue;
+            
+            if (value1 !== value2) return false;
+        }
+        
+        return true;
     }
 
     function showError(field, errorLabel, message) {
@@ -473,6 +521,53 @@
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
         const type = document.getElementById('post_type').value;
-        handlePostTypeChange(type);
+        const isEdit = document.getElementById('post_type').disabled;
+        
+        // Initialize form validation based on type
+        formValid.type = true; // Type is always valid in edit mode
+        
+        // Show the correct fields based on type
+        if (type === 'announcement') {
+            document.getElementById('announcement-fields').style.display = 'block';
+            document.getElementById('survey-fields').style.display = 'none';
+            
+            // Validate announcement fields
+            const title = document.getElementById('post_announcement_title')?.value;
+            const content = document.getElementById('post_announcement_content')?.value;
+            const tags = document.getElementById('post_announcement_tags')?.value;
+            
+            if (title) validateAnnouncementTitle(title);
+            if (content) validateAnnouncementContent(content);
+            if (tags) validateTags(tags, 'announcement');
+        } else if (type === 'survey') {
+            document.getElementById('survey-fields').style.display = 'block';
+            document.getElementById('announcement-fields').style.display = 'none';
+            
+            // Validate survey fields
+            const question = document.getElementById('post_survey_question')?.value;
+            const tags = document.getElementById('post_survey_tags')?.value;
+            
+            if (question) validateSurveyQuestion(question);
+            if (tags) validateTags(tags, 'survey');
+        }
+        
+        // Handle file validation
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+            formValid.file = true; // File is optional in edit mode
+        }
+        
+        // Store original form data for comparison
+        originalFormData = new FormData(document.getElementById('post-form'));
+        
+        // Add change event listeners to all form inputs
+        const form = document.getElementById('post-form');
+        form.querySelectorAll('input, textarea, select').forEach(input => {
+            input.addEventListener('change', () => updateSubmitButton());
+            input.addEventListener('keyup', () => updateSubmitButton());
+        });
+        
+        // Initial button state update
+        updateSubmitButton();
     });
 </script>

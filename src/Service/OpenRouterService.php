@@ -20,27 +20,69 @@ class OpenRouterService
         $this->client = $client;
         $this->logger = $logger;
         $this->apiUrl = 'https://openrouter.ai/api/v1';
-        $this->apiKey = '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';
+        $this->apiKey = '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';
     }
 
-    public function generateResponse(array $messages, string $model = 'deepseek/deepseek-v3-base:free'): array
+    public function generateResponse(array $messages, string $model = 'deepseek/deepseek-chat:free'): array
     {
         try {
+            $this->logger->info('Sending request to OpenRouter API', [
+                'model' => $model,
+                'messages' => $messages
+            ]);
+
             $response = $this->client->request('POST', $this->apiUrl . '/chat/completions', [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer ' . $this->apiKey,
+                    'HTTP-Referer' => 'https://triptogo.com',
+                    'X-Title' => 'TripToGo Bot'
                 ],
                 'json' => [
                     'model' => $model,
                     'messages' => $messages,
+                    'max_tokens' => 100,
+                    'stream' => false,
+                    'metadata' => [
+                        'language' => 'fr'
+                    ]
                 ],
             ]);
 
-            return $response->toArray();
+            $statusCode = $response->getStatusCode();
+            $content = $response->getContent();
+
+            $this->logger->info('OpenRouter API response', [
+                'status_code' => $statusCode,
+                'content' => $content
+            ]);
+
+            if ($statusCode !== 200) {
+                throw new \RuntimeException('OpenRouter API returned non-200 status code: ' . $statusCode);
+            }
+
+            $data = json_decode($content, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \RuntimeException('Failed to decode API response: ' . json_last_error_msg());
+            }
+
+            if (isset($data['error'])) {
+                throw new \RuntimeException('API Error: ' . ($data['error']['message'] ?? 'Unknown error'));
+            }
+
+            return $data;
         } catch (TransportExceptionInterface $e) {
-            $this->logger->error('OpenRouter API error: ' . $e->getMessage());
+            $this->logger->error('OpenRouter API error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
             throw new \RuntimeException('Failed to communicate with OpenRouter API: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            $this->logger->error('Unexpected error in OpenRouter API call: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw new \RuntimeException('Unexpected error in OpenRouter API call: ' . $e->getMessage());
         }
     }
 
@@ -61,83 +103,4 @@ class OpenRouterService
         }
     }
 
-    public function generateComment(string $prompt): string
-    {
-        try {
-            $this->logger->info('Sending request to OpenRouter API', [
-                'prompt' => $prompt,
-                'model' => 'deepseek/deepseek-v3-base:free'
-            ]);
-
-            $response = $this->client->request('POST', $this->apiUrl . '/chat/completions', [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->apiKey,
-                ],
-                'json' => [
-                    'model' => 'deepseek/deepseek-v3-base:free',
-                    'messages' => [
-                        [
-                            'role' => 'system',
-                            'content' => 'Tu es un bot d\'agence de voyage. Fournis des commentaires brefs et amicaux en français sur les annonces et sondages liés aux voyages.'
-                        ],
-                        [
-                            'role' => 'user',
-                            'content' => $prompt
-                        ]
-                    ],
-                    'temperature' => 0.7,
-                    'max_tokens' => 150,
-                    'stream' => false
-                ],
-            ]);
-
-            $statusCode = $response->getStatusCode();
-            $content = $response->getContent();
-            
-            $this->logger->info('OpenRouter API response', [
-                'status_code' => $statusCode,
-                'content' => $content
-            ]);
-
-            $data = json_decode($content, true);
-            
-            if (isset($data['error'])) {
-                $errorMessage = $data['error']['message'] ?? 'Unknown API error';
-                $this->logger->error('API Error: ' . $errorMessage);
-                throw new \RuntimeException('API Error: ' . $errorMessage);
-            }
-
-            if (!isset($data['choices']) || empty($data['choices'])) {
-                $this->logger->error('Invalid response format from OpenRouter API', [
-                    'data' => $data
-                ]);
-                throw new \RuntimeException('Invalid response format from OpenRouter API');
-            }
-
-            $botComment = $data['choices'][0]['message']['content'] ?? '';
-            
-            if (empty($botComment)) {
-                $this->logger->error('Empty message in API response', [
-                    'data' => $data
-                ]);
-                throw new \RuntimeException('Empty message in API response');
-            }
-
-            // Format the final comment
-            $finalComment = "Bonjour et bienvenue sur le forum !\n" .
-                          "TripToGo, votre agence de voyage, vous souhaite une excellente expérience.\n\n" .
-                          $botComment . "\n\n" .
-                          "Je suis un bot, et cette action a été effectuée automatiquement.\n" .
-                          "Veuillez contacter les modérateurs du forum pour toute question ou préoccupation.";
-
-            return $finalComment;
-        } catch (TransportExceptionInterface $e) {
-            $this->logger->error('OpenRouter API error: ' . $e->getMessage());
-            throw new \RuntimeException('Failed to generate comment: ' . $e->getMessage());
-        } catch (\Exception $e) {
-            $this->logger->error('Unexpected error: ' . $e->getMessage());
-            throw new \RuntimeException('Unexpected error: ' . $e->getMessage());
-        }
-    }
-} 
+}

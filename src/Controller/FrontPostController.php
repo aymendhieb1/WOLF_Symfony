@@ -7,6 +7,7 @@ use App\Entity\Forum;
 use App\Entity\Comment;
 use App\Form\PostType;
 use App\Form\CommentType;
+use App\Form\PostEditType;
 use App\Repository\PostRepository;
 use App\Repository\ForumRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,15 +64,7 @@ class FrontPostController extends AbstractController
         $searchTerm = $request->query->get('search');
         $sortBy = $request->query->get('sort', 'date');
 
-        $currentForum = null;
-        if ($forumId) {
-            foreach ($forums as $forum) {
-                if ($forum->getForumId() == $forumId) {
-                    $currentForum = $forum;
-                    break;
-                }
-            }
-        }
+        $currentForum = $forumId ? $this->forumRepository->find($forumId) : null;
 
         $posts = $this->postRepository->findByForumAndSearch(
             $forumId,
@@ -83,6 +76,14 @@ class FrontPostController extends AbstractController
         $createForm = $this->createForm(PostType::class, new Post(), [
             'action' => $this->generateUrl('app_front_post_new')
         ]);
+
+        // Create edit form for each post
+        $editForms = [];
+        foreach ($posts as $post) {
+            $editForms[$post->getPostId()] = $this->createForm(PostEditType::class, $post, [
+                'action' => $this->generateUrl('app_post_edit', ['id' => $post->getPostId()])
+            ])->createView();
+        }
 
         $disqusConfig = [
             'shortname' => 'triptogo-1',
@@ -103,6 +104,7 @@ class FrontPostController extends AbstractController
             'sortBy' => $sortBy,
             'currentTab' => $request->query->get('tab', 'posts'),
             'create_form' => $createForm->createView(),
+            'edit_forms' => $editForms,
             'current_user' => $user,
             'disqus_config' => $disqusConfig
         ]);
@@ -116,6 +118,15 @@ class FrontPostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Get the current user
+            $user = $this->security->getUser();
+            if (!$user) {
+                $this->addFlash('error', 'You must be logged in to create a post.');
+                return $this->redirectToRoute('app_front_post_index');
+            }
+
+            // Set the user for the post
+            $post->setIdUser($user);
 
             if ($this->badWordService->validatePost($post)) {
                 $this->addFlash('error', 'Your post contains inappropriate content. Please review and try again.');
@@ -135,7 +146,7 @@ class FrontPostController extends AbstractController
                     $this->disqusService->getDefaultThreadId(),
                     'Auto-generated comment for new post: ' . $this->disqusService->getPostTitle($post)
                 );
-
+                
                 if ($commentResult['success']) {
                     $this->addFlash('success', 'Post created successfully with auto-comment!');
                 } else {
@@ -212,46 +223,110 @@ class FrontPostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_front_post_edit', methods: ['GET', 'POST'])]
+    #[Route('/post/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Post $post): Response
     {
-        $this->denyAccessUnlessGranted('EDIT', $post);
+        
+        if ($post->getIdUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You are not authorized to edit this post.');
+        }
 
-        $originalFile = $post->getCheminFichier();
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(PostEditType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->badWordService->validatePost($post)) {
-                $this->addFlash('error', 'Your post contains inappropriate content. Please review and try again.');
-                return $this->render('post/edit.html.twig', [
-                    'post' => $post,
-                    'form' => $form->createView(),
-                ]);
+            // Handle file upload if a new file was provided
+            $file = $form->get('chemin_fichier')->getData();
+            if ($file) {
+                $this->handleFileUpload($form, $post, $post->getCheminFichier());
             }
 
+            // Update modification date
+            $post->setDateModification(new \DateTime());
+
             try {
-                $this->handleFileUpload($form, $post, $originalFile);
-                $post->setDateModification(new \DateTime());
                 $this->entityManager->flush();
-                $this->addFlash('success', 'Post updated successfully!');
-                return $this->redirectToRoute('app_front_post_show', ['id' => $post->getId()]);
+
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => true,
+                        'message' => 'Post updated successfully'
+                    ]);
+                }
+
+                $this->addFlash('success', 'Post updated successfully');
+                return $this->redirectToRoute('app_front_post_index');
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Error updating post: '.$e->getMessage());
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => false,
+                        'message' => 'Error updating post: ' . $e->getMessage()
+                    ], 500);
+                }
+
+                $this->addFlash('error', 'Error updating post: ' . $e->getMessage());
+                return $this->redirectToRoute('app_front_post_index');
             }
         }
 
-        return $this->render('post/edit.html.twig', [
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid form data',
+                'errors' => $this->getFormErrors($form)
+            ], 422);
+        }
+
+        return $this->render('post/_edit_form.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
+        ]);
+    }
+
+    private function getFormErrors($form): array
+    {
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+        return $errors;
+    }
+
+    #[Route('/{id}/edit-form', name: 'app_front_post_edit_form', methods: ['GET'])]
+    public function editForm(Post $post): Response
+    {
+        $user = $this->security->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('You must be logged in to edit a post.');
+        }
+
+        if ($user->getRole() !== 0 && $user->getMail() !== $post->getIdUser()->getMail()) {
+            throw $this->createAccessDeniedException('You do not have permission to edit this post.');
+        }
+
+        $form = $this->createForm(PostEditType::class, $post);
+
+        return $this->render('post/_edit_form.html.twig', [
+            'post' => $post,
+            'form' => $form->createView()
         ]);
     }
 
     #[Route('/{id}/delete', name: 'app_front_post_delete', methods: ['DELETE', 'POST'])]
     public function delete(Request $request, Post $post): Response
     {
+        $user = $this->security->getUser();
+        
+        if (!$user) {
+            throw $this->createAccessDeniedException('You must be logged in to delete a post.');
+        }
 
-        if ($this->isCsrfTokenValid('delete'.$post->getIdUser(), $request->request->get('_token'))) {
+        if ($user->getRole() !== 0 && $user->getMail() !== $post->getIdUser()->getMail()) {
+            throw $this->createAccessDeniedException('You do not have permission to delete this post.');
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$post->getIdUser()->getMail(), $request->request->get('_token'))) {
             try {
                 $this->deletePostFile($post);
                 $this->entityManager->remove($post);
@@ -388,7 +463,7 @@ class FrontPostController extends AbstractController
             $result = $this->disqusService->createThreadWithComment($post, $commentText);
 
             if ($result['success']) {
-
+                // Store the thread ID in the session for future use
                 $request->getSession()->set('disqus_thread_' . $post->getId(), $result['thread']['id']);
             }
 

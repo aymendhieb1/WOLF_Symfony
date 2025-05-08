@@ -25,9 +25,6 @@ class Paiement
     #[ORM\Column(name: 'montant', type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?float $montant = null;
 
-    #[ORM\Column(name: 'date_paiement', type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $datePaiement = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -66,17 +63,6 @@ class Paiement
     public function setMontant(float $montant): self
     {
         $this->montant = $montant;
-        return $this;
-    }
-
-    public function getDatePaiement(): ?\DateTimeInterface
-    {
-        return $this->datePaiement;
-    }
-
-    public function setDatePaiement(\DateTimeInterface $datePaiement): self
-    {
-        $this->datePaiement = $datePaiement;
         return $this;
     }
 } 

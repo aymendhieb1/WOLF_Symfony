@@ -112,13 +112,13 @@
 						<div class="collapse" id="gestionVolMenu">
 							<ul class="nav">
 								<li class="nav-item">
-									<a class="nav-link" href="{{ path('app_back_vol') }}">
+									<a class="nav-link" href="{{ path('app_back_vol_index') }}">
 										<span class="sidebar-mini">V</span>
 										<span class="sidebar-normal">Vols</span>
 									</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="{{ path('app_back_checkout') }}">
+									<a class="nav-link" href="{{ path('app_back_checkoutvol_list') }}">
 										<span class="sidebar-mini">C</span>
 										<span class="sidebar-normal">Check Out</span>
 									</a>
@@ -439,7 +439,6 @@
 	<script src="{{ asset('assets/js/plugins/jquery.bootstrap-wizard.js') }}"></script>
 	<script src="{{ asset('assets/js/plugins/bootstrap-selectpicker.js') }}"></script>
 	<script src="{{ asset('assets/js/plugins/bootstrap-datetimepicker.min.js') }}"></script>
-	<script src="{{ asset('assets/js/plugins/jquery.dataTables.min.js') }}"></script>
 	<script src="{{ asset('assets/js/plugins/bootstrap-tagsinput.js') }}"></script>
 	<script src="{{ asset('assets/js/plugins/jasny-bootstrap.min.js') }}"></script>
 	<script src="{{ asset('assets/js/plugins/fullcalendar.min.js') }}"></script>
@@ -450,4 +449,6 @@
 	<script src="{{ asset('assets/js/plugins/bootstrap-notify.js') }}"></script>
 	<script src="{{ asset('assets/js/material-dashboard.min.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('assets/js/vehicule-table.js') }}"></script>
+
+
 {% endblock %}

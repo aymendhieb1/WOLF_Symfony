@@ -1,6 +1,7 @@
 {% extends 'base1.html.twig' %}
 
-{% block title %}Gestion des Chambres{% endblock %}
+{% block title %}Gestion des Chambres
+{% endblock %}
 
 {% block body %}
 	<!-- Extra details for Live View on GitHub Pages -->
@@ -93,13 +94,13 @@
 						<div class="collapse" id="gestionVolMenu">
 							<ul class="nav">
 								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_back_vol')}}">
+									<a class="nav-link" href="{{path('app_back_vol_index')}}">
 										<span class="sidebar-mini">V</span>
 										<span class="sidebar-normal">Vols</span>
 									</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_back_checkout')}}">
+									<a class="nav-link" href="{{path('app_back_checkoutvol_list')}}">
 										<span class="sidebar-mini">C</span>
 										<span class="sidebar-normal">Check Out</span>
 									</a>
@@ -220,36 +221,37 @@
 												</tr>
 											</tfoot>
 											<tbody>
-											{% for chambre in chambres %}
-												<tr>
-													<td>{{ chambre.type }}</td>
-													<td>{{ chambre.prix }} DT</td>
-													<td>
-														{% if chambre.disponibilite == 'Disponible' %}
-															<span class="badge badge-success">DISPONIBLE</span>
-														{% else %}
-															<span class="badge badge-danger">NON DISPONIBLE</span>
-														{% endif %}
-													</td>
-													<td>{{ chambre.description }}</td>
-													<td>{{ chambre.hotel is not null ? chambre.hotel.nom : 'Non assigné' }}</td>
-													<td class="td-actions text-right">
-														<a href="{{ path('app_back_chambre_edit', {'id': chambre.id}) }}" class="btn btn-success btn-round" style="background-color: #ff681a; color: white;">
-															<i class="material-icons">edit</i>
-														</a>
-														<form method="post" action="{{ path('app_back_chambre_delete', {'id': chambre.id}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette chambre?');">
-															<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chambre.id) }}">
-															<button type="submit" class="btn btn-danger btn-round">
-																<i class="material-icons">close</i>
-															</button>
-														</form>
-													</td>
-												</tr>
-											{% else %}
-												<tr>
-													<td colspan="6" class="text-center">Aucune chambre trouvée</td>
-												</tr>
-											{% endfor %}
+												{% for chambre in chambres %}
+													<tr>
+														<td>{{ chambre.type }}</td>
+														<td>{{ chambre.prix }}
+															DT</td>
+														<td>
+															{% if chambre.disponibilite == 'Disponible' %}
+																<span class="badge badge-success">DISPONIBLE</span>
+															{% else %}
+																<span class="badge badge-danger">NON DISPONIBLE</span>
+															{% endif %}
+														</td>
+														<td>{{ chambre.description }}</td>
+														<td>{{ chambre.hotel is not null ? chambre.hotel.nom : 'Non assigné' }}</td>
+														<td class="td-actions text-right">
+															<a href="{{ path('app_back_chambre_edit', {'id': chambre.id}) }}" class="btn btn-success btn-round" style="background-color: #ff681a; color: white;">
+																<i class="material-icons">edit</i>
+															</a>
+															<form method="post" action="{{ path('app_back_chambre_delete', {'id': chambre.id}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette chambre?');">
+																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chambre.id) }}">
+																<button type="submit" class="btn btn-danger btn-round">
+																	<i class="material-icons">close</i>
+																</button>
+															</form>
+														</td>
+													</tr>
+												{% else %}
+													<tr>
+														<td colspan="6" class="text-center">Aucune chambre trouvée</td>
+													</tr>
+												{% endfor %}
 											</tbody>
 										</table>
 									</div>
@@ -262,112 +264,89 @@
 		</div>
 	</div>
 
-<style>
-	.card {
-		border-radius: 10px;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
+	<style>
+		.card {
+			border-radius: 10px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		}
 
-	.card-header {
-		border-radius: 10px 10px 0 0;
-		padding: 1.5rem;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
+		.card-header {
+			border-radius: 10px 10px 0 0;
+			padding: 1.5rem;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
 
-	.card-title {
-		margin: 0;
-		font-size: 1.5rem;
-		font-weight: 500;
-	}
+		.card-title {
+			margin: 0;
+			font-size: 1.5rem;
+			font-weight: 500;
+		}
 
-	.table {
-		width: 100%;
-		margin-bottom: 1rem;
-		background-color: transparent;
-	}
+		.table {
+			width: 100%;
+			margin-bottom: 1rem;
+			background-color: transparent;
+		}
 
-	.table th {
-		font-weight: 500;
-		color: #333;
-		padding: 1rem;
-		border-bottom: 2px solid #dee2e6;
-	}
+		.table th {
+			font-weight: 500;
+			color: #333;
+			padding: 1rem;
+			border-bottom: 2px solid #dee2e6;
+		}
 
-	.table td {
-		padding: 1rem;
-		vertical-align: middle;
-		border-bottom: 1px solid #dee2e6;
-	}
+		.table td {
+			padding: 1rem;
+			vertical-align: middle;
+			border-bottom: 1px solid #dee2e6;
+		}
 
-	.btn-round {
-		border-radius: 30px;
-		padding: 0.5rem;
-		transition: all 0.3s ease;
-		margin: 0 5px;
-	}
+		.btn-round {
+			border-radius: 30px;
+			padding: 0.5rem;
+			transition: all 0.3s ease;
+			margin: 0 5px;
+		}
 
-	.btn-round:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	}
+		.btn-round:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
 
-	.table-responsive {
-		display: block;
-		width: 100%;
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
-	}
+		.table-responsive {
+			display: block;
+			width: 100%;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+		}
 
-	.float-right {
-		float: right;
-	}
+		.float-right {
+			float: right;
+		}
 
-	.badge-success {
-		background-color: #28a745;
-		color: white;
-		padding: 5px 10px;
-		border-radius: 15px;
-	}
+		.badge-success {
+			background-color: #28a745;
+			color: white;
+			padding: 5px 10px;
+			border-radius: 15px;
+		}
 
-	.badge-danger {
-		background-color: #dc3545;
-		color: white;
-		padding: 5px 10px;
-		border-radius: 15px;
-	}
+		.badge-danger {
+			background-color: #dc3545;
+			color: white;
+			padding: 5px 10px;
+			border-radius: 15px;
+		}
 
-	.td-actions {
-		white-space: nowrap;
-	}
-</style>
+		.td-actions {
+			white-space: nowrap;
+		}
+	</style>
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
-	<script>
-		$(document).ready(function () {
-			$('#datatables').DataTable({
-				"pagingType": "full_numbers",
-				"lengthMenu": [
-					[10, 25, 50, -1],
-					[10, 25, 50, "Tout"]
-				],
-				responsive: true,
-				language: {
-					search: "_INPUT_",
-					searchPlaceholder: "Chercher",
-					info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-					lengthMenu: "Afficher _MENU_ entrées",
-					paginate: {
-						first: "Premier",
-						last: "Dernier",
-						next: "Suivant",
-						previous: "Précédent"
-					}
-				}
-			});
-		});
-	</script>
+
 {% endblock %}

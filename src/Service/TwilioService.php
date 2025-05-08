@@ -5,6 +5,7 @@ namespace App\Service;
 use Twilio\Rest\Client;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class TwilioService
 {
@@ -17,7 +18,7 @@ class TwilioService
     public function __construct(ParameterBagInterface $params, LoggerInterface $logger)
     {
         $this->logger = $logger;
-        
+
         $this->accountSid = $params->get('twilio_account_sid');
         $this->authToken = $params->get('twilio_auth_token');
         $this->fromNumber = $params->get('twilio_from_number');
@@ -95,4 +96,14 @@ class TwilioService
             return false;
         }
     }
-} 
+
+
+
+
+
+
+
+}
+
+
+

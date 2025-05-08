@@ -43,7 +43,6 @@ class AutoBotCommentService
             $rawResponse = $this->generateAiComment($postContent);
             $this->logger->info('Raw API response', ['response' => $rawResponse]);
 
-            // Extract just the content from the response
             $botComment = $this->extractContentFromResponse($rawResponse);
             $this->logger->info('Extracted bot comment', ['comment' => $botComment]);
 
@@ -85,7 +84,7 @@ class AutoBotCommentService
                 $choices = $post->getChoixs()->map(function($choix) {
                     return $choix->getChoix();
                 })->toArray();
-                
+
             return "Sondage Question: " . $post->getSurveyQuestion() . "\n" .
                              "Choix: " . implode(", ", $choices);
             }
@@ -95,43 +94,40 @@ class AutoBotCommentService
 
     private function generateAiComment(string $postContent): array
     {
-        $systemPrompt = "Imagine Tu es un bot d'agence de voyage. Commenter bref dans ce contenu";
+        $systemPrompt = "Tu es un bot d'agence de voyage. Commenter bref dans ce contenu repondu en français essayez d'être serviable et amical";
         try {
             $response = $this->openRouterService->generateResponse([
                 ['role' => 'user', 'content' => $systemPrompt . "\n\n" . $postContent]
             ]);
-            
+
             $this->logger->info('OpenRouter API response', ['response' => $response]);
-            
-            // Clean up the response content
+
             if (isset($response['choices'][0]['message']['content'])) {
                 $content = $response['choices'][0]['message']['content'];
-                
-                // Remove the system prompt if it appears in the response
+
                 $content = str_replace($systemPrompt, '', $content);
-                
-                // Remove any HTML tags
+
                 $content = strip_tags($content);
-                // Remove any email addresses
+
                 $content = preg_replace('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', '', $content);
-                // Remove any phone numbers
+
                 $content = preg_replace('/\b\d{10,}\b/', '', $content);
-                // Remove any URLs
+
                 $content = preg_replace('/\bhttps?:\/\/\S+\b/', '', $content);
-                // Remove any duplicate content
+
                 $content = preg_replace('/\b(Annonce Titre:|Annonce Contenu:|Contenu:|Trip Highlights:|Préfixe:).*?(?=\n|$)/s', '', $content);
-                // Remove any asterisks or special characters
+
                 $content = preg_replace('/[*]+/', '', $content);
-                // Remove any HTML line breaks
+
                 $content = str_replace(['<br/>', '<br>', '<br />'], "\n", $content);
-                // Remove any duplicate newlines
+
                 $content = preg_replace('/\n\s*\n/', "\n\n", $content);
-                // Trim whitespace
+
                 $content = trim($content);
-                
+
                 $response['choices'][0]['message']['content'] = $content;
             }
-            
+
             return $response;
         } catch (\Exception $e) {
             $this->logger->error('Error generating AI comment: ' . $e->getMessage());
@@ -152,7 +148,7 @@ class AutoBotCommentService
     {
         if (isset($response['choices'][0]['message']['content'])) {
             $content = $response['choices'][0]['message']['content'];
-            // Ensure proper line breaks
+
             $content = str_replace("\n\n\n", "\n\n", $content);
             $content = str_replace("\n \n", "\n\n", $content);
             $content = str_replace("\n\n \n", "\n\n", $content);
@@ -164,14 +160,12 @@ class AutoBotCommentService
     private function formatFinalComment(string $botComment, Post $post): string
     {
         $forumName = $post->getForumId()->getName();
-        
+
         $finalComment = "Bonjour et bienvenue sur le forum {$forumName} !\n\n" .
                           "TripToGo, votre agence de voyage, vous souhaite une excellente expérience.\n\n" .
                           trim($botComment) . "\n\n" .
-                          "Je suis un bot, et cette action a été effectuée automatiquement.\n" .
                           "Veuillez contacter les modérateurs du forum pour toute question ou préoccupation.";
 
-        // Ensure proper line breaks
         $finalComment = str_replace("\n\n\n", "\n\n", $finalComment);
         $finalComment = str_replace("\n \n", "\n\n", $finalComment);
         $finalComment = str_replace("\n\n \n", "\n\n", $finalComment);
