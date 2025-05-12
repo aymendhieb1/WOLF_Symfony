@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Reçu de Paiement - Vol</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .receipt-details {
+            margin-bottom: 20px;
+        }
+        .flight-details {
+            margin-bottom: 20px;
+        }
+        .payment-details {
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Reçu de Paiement</h1>
+        <p>Confirmation de Réservation de Vol</p>
+    </div>
+
+    <div class="receipt-details">
+        <h2>Détails du Reçu</h2>
+        <table>
+            <tr>
+                <th>Numéro de Reçu</th>
+                <td>{{ payment.id }}</td>
+            </tr>
+            <tr>
+                <th>Date de Paiement</th>
+                <td>{{ payment.datePaiement|date('d/m/Y H:i') }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="flight-details">
+        <h2>Détails du Vol</h2>
+        <table>
+            <tr>
+                <th>Compagnie Aérienne</th>
+                <td>{{ vol.compagnie }}</td>
+            </tr>
+            <tr>
+                <th>Trajet</th>
+                <td>{{ vol.depart }} → {{ vol.destination }}</td>
+            </tr>
+            <tr>
+                <th>Date de Départ</th>
+                <td>{{ vol.heureDepart|date('d/m/Y H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Date d'Arrivée</th>
+                <td>{{ vol.heureArrivee|date('d/m/Y H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Classe</th>
+                <td>{{ vol.classeChaise }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="payment-details">
+        <h2>Détails du Paiement</h2>
+        <table>
+            <tr>
+                <th>Montant Payé</th>
+                <td>{{ payment.montant|number_format(2, ',', ' ') }} €</td>
+            </tr>
+            <tr>
+                <th>Passager</th>
+                <td>{{ payment.user.nom }} {{ payment.user.prenom }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Merci d'avoir choisi nos services!</p>
+        <p>Ce reçu est une preuve de votre paiement.</p>
+    </div>
+</body>
+</html> 

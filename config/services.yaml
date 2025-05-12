@@ -9,8 +9,6 @@ parameters:
   twilio_auth_token: "%env(TWILIO_AUTH_TOKEN)%"
   twilio_from_number: "%env(TWILIO_PHONE_NUMBER)%"
 
-
-
   twilio_account_sid1: "%env(TWILIO_ACCOUNT_SID1)%"
   twilio_auth_token1: "%env(TWILIO_AUTH_TOKEN)%"
   twilio_from_number1: "%env(TWILIO_PHONE_NUMBER)%"
@@ -25,6 +23,10 @@ parameters:
   stripe_secret_key: "%env(STRIPE_SECRET_KEY)%"
   chambre_images_directory: "uploads/chambres"
   exchange_rate_api_key: "191d06448921407aff3db9f7"
+
+  unsplash_access_key: "%env(UNSPLASH_ACCESS_KEY)%"
+
+  mapbox_api_key: "%env(MAPBOX_API_KEY)%"
 
 services:
   _defaults:
@@ -74,3 +76,19 @@ services:
       $authToken: "%twilio_auth_token1%"
       $twilioPhoneNumber: "%twilio_from_number1%"
       $adminPhoneNumber: "%admin_phone_number1%"
+
+  App\Twig\CountryFlagExtension:
+    tags: ["twig.extension"]
+
+  App\Twig\CityImageExtension:
+    tags: ["twig.extension"]
+
+  App\Twig\CityImagesExtension:
+    arguments:
+      $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface'
+      $unsplashAccessKey: "%unsplash_access_key%"
+
+  App\Service\WeatherServiceVol:
+    arguments:
+      $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface'
+      $logger: "@logger"

@@ -30,23 +30,66 @@ final class BackVolController extends AbstractController
     }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(VolRepository $volRepository, EntityManagerInterface $em): Response
+    public function index(VolRepository $volRepository, EntityManagerInterface $entityManager): Response
     {
         $vols = $volRepository->findAll();
 
-        // Get averages from raw SQL
-        $conn = $em->getConnection();
-        $sql = 'SELECT 
-                    AVG(f.FlightPrice) AS avgPrice,
-                    AVG(f.AvailableSeats) AS avgSeats,
-                    AVG(f.ClasseChaise) AS avgClasse
-                FROM vol f';
-        $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery()->fetchAssociative();
+        // Get class distribution
+        $classStats = [];
+        foreach ($vols as $vol) {
+            $class = $vol->getClasseChaise();
+            if (!isset($classStats[$class])) {
+                $classStats[$class] = 0;
+            }
+            $classStats[$class]++;
+        }
+        arsort($classStats);
+
+        // Get price distribution
+        $priceStats = [];
+        foreach ($vols as $vol) {
+            $price = $vol->getPrix();
+            if (!isset($priceStats[$price])) {
+                $priceStats[$price] = 0;
+            }
+            $priceStats[$price]++;
+        }
+        arsort($priceStats);
+
+        // Get airline flight counts
+        $airlineStats = [];
+        foreach ($vols as $vol) {
+            $airline = $vol->getCompagnie();
+            if (!isset($airlineStats[$airline])) {
+                $airlineStats[$airline] = 0;
+            }
+            $airlineStats[$airline]++;
+        }
+        arsort($airlineStats);
+
+        // Calculate averages
+        $avgPrice = 0;
+        $avgSeats = 0;
+        if (count($vols) > 0) {
+            $totalPrice = 0;
+            $totalSeats = 0;
+            foreach ($vols as $vol) {
+                $totalPrice += $vol->getPrix();
+                $totalSeats += $vol->getSiegesDisponibles();
+            }
+            $avgPrice = $totalPrice / count($vols);
+            $avgSeats = $totalSeats / count($vols);
+        }
 
         return $this->render('back_vol/TableVol.html.twig', [
             'vols' => $vols,
-            'averages' => $result,
+            'classStats' => $classStats,
+            'priceStats' => $priceStats,
+            'airlineStats' => $airlineStats,
+            'averages' => [
+                'avgPrice' => $avgPrice,
+                'avgSeats' => $avgSeats
+            ]
         ]);
     }
 

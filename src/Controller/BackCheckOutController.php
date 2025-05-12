@@ -28,6 +28,17 @@ private CurrencyService $currencyService;
         $checkouts = $entityManager->getRepository(CheckoutVol::class)->findAll();
         $rates = $this->currencyService->getExchangeRates();
 
+        // Format currency data for the template
+        $currencies = [];
+        foreach ($rates as $code => $rate) {
+            $currencies[] = [
+                'code' => $code,
+                'rate' => number_format($rate, 4),
+                'flag' => "https://flagcdn.com/w40/" . strtolower($code) . ".png",
+                'change' => rand(-2, 2) // Simulated change percentage
+            ];
+        }
+
         // Calculate averages
         $totalPrice = 0;
         $totalPassengers = 0;
@@ -48,7 +59,7 @@ private CurrencyService $currencyService;
 
         return $this->render('back_check_out/TableCheckOut.html.twig', [
             'checkouts' => $checkouts,
-            'rates' => $rates,
+            'currencies' => $currencies,
             'averages' => $averages
         ]);
     }

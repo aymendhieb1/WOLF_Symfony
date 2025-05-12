@@ -6,72 +6,316 @@
 {% block body %}
 
 
-	<!-- Main Content Area -->
-	<div class="space">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-8">
-					<div class="card mb-4">
-						<div class="card-header">
-							<h3 class="card-title">Informations du Vol</h3>
-						</div>
-						<div class="card-body">
-							<div class="flight-info">
-								<div class="row">
-									<div class="col-md-6">
-										<div class="info-group">
-											<h4>Départ</h4>
-											<p>
-												<i class="fas fa-map-marker-alt"></i>
-												{{ vol.depart }}</p>
-											<p>
-												<i class="far fa-calendar"></i>
-												{{ vol.heureDepart|date('d/m/Y') }}</p>
-											<p>
-												<i class="far fa-clock"></i>
-												{{ vol.heureDepart|date('H:i') }}</p>
+<!-- Main Content Area -->
+<div class="space">
+	<div class="container">
+		<div class="row">
+			<div
+				class="col-lg-12">
+				<!-- Pagination Tabs -->
+				<ul class="nav nav-pills mb-4 justify-content-center" id="flightTabs" role="tablist">
+					<li class="nav-item" role="presentation">
+						<button class="nav-link active" id="flight-info-tab" data-bs-toggle="pill" data-bs-target="#flight-info" type="button" role="tab">
+							<i class="fas fa-plane"></i>
+							Informations du Vol
+						</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="city-info-tab" data-bs-toggle="pill" data-bs-target="#city-info" type="button" role="tab">
+							<i class="fas fa-city"></i>
+							Informations des Villes
+						</button>
+					</li>
+				</ul>
+
+				<!-- Tab Content -->
+				<div
+					class="tab-content" id="flightTabsContent">
+					<!-- Flight Info Tab -->
+					<div class="tab-pane fade show active" id="flight-info" role="tabpanel">
+						<div class="row">
+							<div
+								class="col-lg-8">
+								<!-- Flight Information Card -->
+								<div class="card mb-4">
+									<div class="card-header">
+										<h3 class="card-title">Informations du Vol</h3>
+									</div>
+									<div class="card-body">
+										<div class="flight-info">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="info-group">
+														<h4>Départ</h4>
+														<p>
+															<i class="fas fa-map-marker-alt"></i>
+															{{ vol.depart }}</p>
+														<p>
+															<i class="far fa-calendar"></i>
+															{{ vol.heureDepart|date('d/m/Y') }}</p>
+														<p>
+															<i class="far fa-clock"></i>
+															{{ vol.heureDepart|date('H:i') }}</p>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="info-group">
+														<h4>Arrivée</h4>
+														<p>
+															<i class="fas fa-map-marker-alt"></i>
+															{{ vol.destination }}</p>
+														<p>
+															<i class="far fa-calendar"></i>
+															{{ vol.heureArrivee|date('d/m/Y') }}</p>
+														<p>
+															<i class="far fa-clock"></i>
+															{{ vol.heureArrivee|date('H:i') }}</p>
+													</div>
+												</div>
+											</div>
+											<div class="col-12">
+												<div class="info-group">
+													<h4>Détails Supplémentaires</h4>
+													<p>
+														<i class="fas fa-plane"></i>
+														Compagnie:
+														{{ vol.compagnie }}</p>
+													<p>
+														<i class="fas fa-tag"></i>
+														Prix:
+														{{ vol.prix }}
+														TND</p>
+													<p>
+														<i class="fas fa-chair"></i>
+														Classe:
+														{{ vol.classeChaise }}</p>
+													<p>
+														<i class="fas fa-chair"></i>
+														Sièges disponibles:
+														{{ vol.siegesDisponibles }}</p>
+													<p>
+														<i class="fas fa-info-circle"></i>
+														Description:
+														{{ vol.description }}</p>
+												</div>
+											</div>
 										</div>
 									</div>
-									<div class="col-md-6">
-										<div class="info-group">
-											<h4>Arrivée</h4>
-											<p>
-												<i class="fas fa-map-marker-alt"></i>
-												{{ vol.destination }}</p>
-											<p>
-												<i class="far fa-calendar"></i>
-												{{ vol.heureArrivee|date('d/m/Y') }}</p>
-											<p>
-												<i class="far fa-clock"></i>
-												{{ vol.heureArrivee|date('H:i') }}</p>
+									<div class="card-footer">
+										{% if app.user %}
+											<a href="{{ path('app_resvol_new', {'id': vol.id}) }}" class="btn btn-primary">
+												<i class="fas fa-plane"></i>
+												Réserver ce vol
+											</a>
+										{% else %}
+											<a href="{{ path('app_seconnecter') }}" class="btn btn-warning">
+												<i class="fas fa-lock"></i>
+												Connectez-vous pour réserver
+											</a>
+										{% endif %}
+										<a href="{{ path('app_vol_index') }}" class="btn btn-secondary">
+											<i class="fas fa-arrow-left"></i>
+											Retour à la liste
+										</a>
+									</div>
+								</div>
+							</div>
+							<div
+								class="col-lg-4">
+								<!-- Flight Map Card -->
+								<div class="card">
+									<div class="card-header">
+										<h3 class="card-title">Carte du Vol</h3>
+									</div>
+									<div class="card-body">
+										<div id="map" style="height: 400px;"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- City Info Tab -->
+					<div class="tab-pane fade" id="city-info" role="tabpanel">
+						<div class="row">
+							<div
+								class="col-lg-8">
+								<!-- City Information Section -->
+								<div class="card mb-4">
+									<div class="card-header">
+										<h3 class="card-title">Informations sur les Villes</h3>
+									</div>
+									<div class="card-body">
+										<div
+											class="row">
+											<!-- Departure City -->
+											<div class="col-md-6">
+												<div class="city-info">
+													<h4>Ville de Départ:
+														{{ vol.depart }}</h4>
+													<div class="city-slideshow">
+														{% for image in vol.depart|city_images %}
+															<div class="slide {% if loop.first %}active{% endif %}">
+																<img src="{{ image.url }}" alt="{{ vol.depart }}" class="img-fluid">
+															</div>
+														{% endfor %}
+														<div class="slideshow-controls">
+															<button class="prev-btn">
+																<i class="fas fa-chevron-left"></i>
+															</button>
+															<button class="next-btn">
+																<i class="fas fa-chevron-right"></i>
+															</button>
+														</div>
+													</div>
+													<div class="city-details mt-3">
+														<p>
+															<i class="fas fa-map-marker-alt"></i>
+															Ville:
+															{{ vol.depart }}</p>
+													</div>
+												</div>
+											</div>
+											<!-- Destination City -->
+											<div class="col-md-6">
+												<div class="city-info">
+													<h4>Ville d'Arrivée:
+														{{ vol.destination }}</h4>
+													<div class="city-slideshow">
+														{% for image in vol.destination|city_images %}
+															<div class="slide {% if loop.first %}active{% endif %}">
+																<img src="{{ image.url }}" alt="{{ vol.destination }}" class="img-fluid">
+															</div>
+														{% endfor %}
+														<div class="slideshow-controls">
+															<button class="prev-btn">
+																<i class="fas fa-chevron-left"></i>
+															</button>
+															<button class="next-btn">
+																<i class="fas fa-chevron-right"></i>
+															</button>
+														</div>
+													</div>
+													<div class="city-details mt-3">
+														<p>
+															<i class="fas fa-map-marker-alt"></i>
+															Ville:
+															{{ vol.destination }}</p>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
+
+								<!-- City General Information Section -->
 								<div class="row mt-4">
 									<div class="col-12">
-										<div class="info-group">
-											<h4>Détails Supplémentaires</h4>
-											<p>
-												<i class="fas fa-plane"></i>
-												Compagnie:
-												{{ vol.compagnie }}</p>
-											<p>
-												<i class="fas fa-tag"></i>
-												Prix:
-												{{ vol.prix }}
-												TND</p>
-											<p>
-												<i class="fas fa-chair"></i>
-												Classe:
-												{{ vol.classeChaise }}</p>
-											<p>
-												<i class="fas fa-chair"></i>
-												Sièges disponibles:
-												{{ vol.siegesDisponibles }}</p>
-											<p>
-												<i class="fas fa-info-circle"></i>
-												Description:
-												{{ vol.description }}</p>
+										<div class="card">
+											<div class="card-header">
+												<h3 class="card-title">Informations Générales sur les Villes</h3>
+											</div>
+											<div class="card-body">
+												<div class="row">
+													<div class="col-md-6">
+														<div class="city-general-info">
+															<h4>{{ vol.depart }}</h4>
+															<div id="departureGeneralInfo" class="general-info-container">
+																<div class="text-center">
+																	<div class="spinner-border text-primary" role="status">
+																		<span class="visually-hidden">Loading...</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="city-general-info">
+															<h4>{{ vol.destination }}</h4>
+															<div id="destinationGeneralInfo" class="general-info-container">
+																<div class="text-center">
+																	<div class="spinner-border text-primary" role="status">
+																		<span class="visually-hidden">Loading...</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div
+								class="col-lg-4">
+								<!-- Country News Card -->
+								<div class="card">
+									<div class="card-header">
+										<h3 class="card-title">Actualités et Alertes</h3>
+									</div>
+									<div class="card-body">
+										<div class="news-tabs">
+											<ul class="nav nav-tabs" id="newsTabs" role="tablist">
+												<li class="nav-item" role="presentation">
+													<button class="nav-link active" id="departure-tab" data-bs-toggle="tab" data-bs-target="#departure-news" type="button" role="tab">
+														{{ vol.depart }}
+													</button>
+												</li>
+												<li class="nav-item" role="presentation">
+													<button class="nav-link" id="destination-tab" data-bs-toggle="tab" data-bs-target="#destination-news" type="button" role="tab">
+														{{ vol.destination }}
+													</button>
+												</li>
+											</ul>
+											<div class="tab-content mt-3" id="newsTabsContent">
+												<div
+													class="tab-pane fade show active" id="departure-news" role="tabpanel">
+													<!-- Alerts Section -->
+													<div class="alerts-section mb-4">
+														<h5 class="mb-3">Alertes en cours</h5>
+														<div id="departureAlerts" class="alerts-container">
+															<div class="text-center">
+																<div class="spinner-border text-primary" role="status">
+																	<span class="visually-hidden">Loading...</span>
+																</div>
+															</div>
+														</div>
+													</div>
+													<!-- News Section -->
+													<h5 class="mb-3">Actualités récentes</h5>
+													<div class="news-container" id="departureNews">
+														<div class="text-center">
+															<div class="spinner-border text-primary" role="status">
+																<span class="visually-hidden">Loading...</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div
+													class="tab-pane fade" id="destination-news" role="tabpanel">
+													<!-- Alerts Section -->
+													<div class="alerts-section mb-4">
+														<h5 class="mb-3">Alertes en cours</h5>
+														<div id="destinationAlerts" class="alerts-container">
+															<div class="text-center">
+																<div class="spinner-border text-primary" role="status">
+																	<span class="visually-hidden">Loading...</span>
+																</div>
+															</div>
+														</div>
+													</div>
+													<!-- News Section -->
+													<h5 class="mb-3">Actualités récentes</h5>
+													<div class="news-container" id="destinationNews">
+														<div class="text-center">
+															<div class="spinner-border text-primary" role="status">
+																<span class="visually-hidden">Loading...</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -79,168 +323,1089 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-4">
-					<div class="card">
-						<div class="card-header">
-							<h3 class="card-title">Carte du Vol</h3>
-						</div>
-						<div class="card-body">
-							<div id="map" style="height: 400px;"></div>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>
+</div>
 
-	{% block weather_section %}{% endblock %}
+{% block weather_section %}{% endblock %}
 
-	<a href="{{ path('app_vol_index') }}" class="btn btn-primary">Retour à la liste</a>
-{% endblock %}
+<style>
+	.pagination-controls {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 20px 0;
+	}
 
-{% block stylesheets %}
-	{{ parent() }}
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-	<style>
-		.hero-layout {
-			padding: 120px 0;
-			background-size: cover;
-			background-position: center;
-			position: relative;
-		}
-		.hero-mask {
-			background: rgba(0, 0, 0, 0.5);
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-		}
-		.hero-content {
-			position: relative;
-			z-index: 1;
-			color: white;
-		}
-		.hero-subtitle {
-			font-size: 1.2rem;
-			margin-bottom: 1rem;
-			display: block;
-		}
-		.hero-title {
-			font-size: 3rem;
-			margin-bottom: 1.5rem;
-		}
-		.hero-text {
-			font-size: 1.1rem;
-			margin-bottom: 2rem;
-		}
-		.space {
-			padding: 80px 0;
-		}
-		.card {
-			border: none;
-			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-			border-radius: 10px;
-		}
-		.card-header {
-			background-color: #fff;
-			border-bottom: 1px solid #eee;
-			padding: 20px;
-		}
-		.card-title {
-			margin: 0;
-			color: #333;
-			font-size: 1.5rem;
-		}
-		.card-body {
-			padding: 30px;
-		}
-		.info-group {
-			padding: 20px;
-			background: #f8f9fa;
-			border-radius: 8px;
-		}
-		.info-group h4 {
-			color: #333;
-			margin-bottom: 15px;
-		}
-		.info-group p {
-			margin-bottom: 10px;
-			color: #666;
-		}
-		.info-group i {
-			margin-right: 10px;
-			color: #ff681a;
-		}
-		#map {
-			border-radius: 8px;
-			overflow: hidden;
-		}
-	</style>
-{% endblock %}
+	.page-content {
+		transition: opacity 0.3s ease-in-out;
+	}
 
-{% block javascripts %}
-	{{ parent() }}
-	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () { // Initialize the map
-const map = L.map('map').setView([
-0, 0
-], 2);
+	.page-content.hidden {
+		opacity: 0;
+		pointer-events: none;
+	}
 
-// Add OpenStreetMap tiles
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-maxZoom: 19,
-attribution: '© OpenStreetMap contributors'
-}).addTo(map);
+	.city-info {
+		background: #fff;
+		border-radius: 8px;
+		padding: 20px;
+		height: 100%;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
 
-// Function to get coordinates from city name using Nominatim
-async function getCoordinates(city) {
-try {
-const response = await fetch (`https://nominatim.openstreetmap.org/search?format=json&q=${
-encodeURIComponent(city)
-}`);
-const data = await response.json();
-if (data && data.length > 0) {
-return [
-parseFloat(data[0].lat),
-parseFloat(data[0].lon)
-];
-}
-return null;
-} catch (error) {
-console.error('Error fetching coordinates:', error);
-return null;
-}
-}
+	.city-slideshow {
+		position: relative;
+		height: 300px;
+		overflow: hidden;
+		border-radius: 8px;
+		margin-bottom: 15px;
+	}
 
-// Add markers and line for the flight
-async function addFlightPath() {
-const departCoords = await getCoordinates('{{ vol.depart }}');
-const destCoords = await getCoordinates('{{ vol.destination }}');
+	.slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		transition: opacity 0.5s ease-in-out;
+	}
 
-if (departCoords && destCoords) { // Add markers
-const departMarker = L.marker(departCoords).addTo(map).bindPopup('Départ:  {{ vol.depart }}');
+	.slide.active {
+		opacity: 1;
+	}
 
-const destMarker = L.marker(destCoords).addTo(map).bindPopup('Arrivée:  {{ vol.destination }}');
+	.slide img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 
-// Add flight path
-const flightPath = L.polyline([
-departCoords, destCoords
-], {
-color: '#ff681a',
-weight: 3,
-opacity: 0.7,
-dashArray: '10, 10'
-}).addTo(map);
+	.slideshow-controls {
+		position: absolute;
+		bottom: 10px;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		gap: 10px;
+		z-index: 2;
+	}
 
-// Fit map to show both markers
-map.fitBounds(flightPath.getBounds());
-}
-}
+	.slideshow-controls button {
+		background: rgba(255, 255, 255, 0.8);
+		border: none;
+		border-radius: 50%;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.3s ease;
+	}
 
-// Initialize the flight path
-addFlightPath();
-});
-	</script>
-{% endblock %}
+	.slideshow-controls button:hover {
+		background: rgba(255, 255, 255, 1);
+		transform: scale(1.1);
+	}
+
+	.city-info h4 {
+		color: #333;
+		margin-bottom: 20px;
+		padding-bottom: 10px;
+		border-bottom: 2px solid #ff681a;
+	}
+
+	.city-details {
+		color: #666;
+	}
+
+	.city-details p {
+		margin-bottom: 5px;
+		font-size: 1.1em;
+	}
+
+	.city-details i {
+		color: #ff681a;
+		margin-right: 8px;
+		width: 20px;
+	}
+
+	.country-flag {
+		font-size: 1.2em;
+		vertical-align: middle;
+		margin-right: 8px;
+	}
+
+	.nav-pills .nav-link {
+		color: #666;
+		padding: 10px 20px;
+		margin: 0 5px;
+		border-radius: 20px;
+		transition: all 0.3s ease;
+	}
+
+	.nav-pills .nav-link.active {
+		background-color: #ff681a;
+		color: white;
+	}
+
+	.nav-pills .nav-link:hover:not(.active) {
+		background-color: #f8f9fa;
+	}
+
+	.nav-pills .nav-link i {
+		margin-right: 8px;
+	}
+
+	.news-card,
+	.alert-card {
+		background: #fff;
+		border-radius: 8px;
+		padding: 15px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.news-title {
+		font-size: 1.1rem;
+		margin-bottom: 10px;
+		color: #333;
+	}
+
+	.news-description {
+		font-size: 0.9rem;
+		color: #666;
+		margin-bottom: 10px;
+	}
+
+	.news-meta {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.nav-tabs .nav-link {
+		color: #666;
+	}
+
+	.nav-tabs .nav-link.active {
+		color: #ff681a;
+		font-weight: bold;
+	}
+
+	.news-container,
+	.alerts-container {
+		max-height: 400px;
+		overflow-y: auto;
+	}
+
+	.alert-heading {
+		margin-bottom: 8px;
+		color: #333;
+	}
+
+	.alert i {
+		margin-right: 8px;
+	}
+
+	.city-general-info {
+		background: #fff;
+		border-radius: 8px;
+		padding: 20px;
+		height: 100%;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.city-general-info h4 {
+		color: #333;
+		margin-bottom: 15px;
+		padding-bottom: 10px;
+		border-bottom: 2px solid #ff681a;
+	}
+
+	.general-info-container {
+		max-height: 400px;
+		overflow-y: auto;
+		padding-right: 10px;
+	}
+
+	.general-info-container::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	.general-info-container::-webkit-scrollbar-track {
+		background: #f1f1f1;
+		border-radius: 3px;
+	}
+
+	.general-info-container::-webkit-scrollbar-thumb {
+		background: #ff681a;
+		border-radius: 3px;
+	}
+
+	.general-info-container p {
+		color: #666;
+		line-height: 1.6;
+		margin-bottom: 15px;
+	}
+
+	.general-info-container .info-section {
+		margin-bottom: 20px;
+	}
+
+	.general-info-container .info-section h5 {
+		color: #333;
+		margin-bottom: 10px;
+	}
+
+	.general-info-container .info-section ul {
+		list-style: none;
+		padding-left: 0;
+	}
+
+	.general-info-container .info-section ul li {
+		color: #666;
+		margin-bottom: 8px;
+		padding-left: 20px;
+		position: relative;
+	}
+
+	.general-info-container .info-section ul li:before {
+		content: "•";
+		color: #ff681a;
+		position: absolute;
+		left: 0;
+	}
+
+	.general-info-container .info-section ul li:last-child {
+		margin-bottom: 0;
+	}
+</style>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+				// Initialize main tabs
+				const flightTabs = document.querySelectorAll('#flightTabs button');
+				flightTabs.forEach(tab => {
+					tab.addEventListener('shown.bs.tab', (event) => {
+						if (event.target.id === 'city-info-tab') {
+							// Load all city information when switching to city info tab
+							fetchCountryNews('{{ vol.depart }}', 'departureNews');
+							fetchAlerts('{{ vol.depart }}', 'departureAlerts');
+							fetchCityGeneralInfo('{{ vol.depart }}', 'departureGeneralInfo');
+							fetchCityGeneralInfo('{{ vol.destination }}', 'destinationGeneralInfo');
+						}
+					});
+				});
+	
+				// Initialize city tabs
+				document.getElementById('departure-tab').addEventListener('shown.bs.tab', () => {
+					if (document.getElementById('city-info-tab').classList.contains('active')) {
+						fetchCountryNews('{{ vol.depart }}', 'departureNews');
+						fetchAlerts('{{ vol.depart }}', 'departureAlerts');
+						fetchCityGeneralInfo('{{ vol.depart }}', 'departureGeneralInfo');
+					}
+				});
+	
+				document.getElementById('destination-tab').addEventListener('shown.bs.tab', () => {
+					if (document.getElementById('city-info-tab').classList.contains('active')) {
+						fetchCountryNews('{{ vol.destination }}', 'destinationNews');
+						fetchAlerts('{{ vol.destination }}', 'destinationAlerts');
+						fetchCityGeneralInfo('{{ vol.destination }}', 'destinationGeneralInfo');
+					}
+				});
+	
+				// Initialize slideshows with more images
+				document.querySelectorAll('.city-slideshow').forEach(slideshow => {
+					const slides = slideshow.querySelectorAll('.slide');
+					const prevBtn = slideshow.querySelector('.prev-btn');
+					const nextBtn = slideshow.querySelector('.next-btn');
+					let currentSlide = 0;
+	
+					function showSlide(index) {
+						slides.forEach(slide => slide.classList.remove('active'));
+						slides[index].classList.add('active');
+					}
+	
+					prevBtn.addEventListener('click', () => {
+						currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+						showSlide(currentSlide);
+					});
+	
+					nextBtn.addEventListener('click', () => {
+						currentSlide = (currentSlide + 1) % slides.length;
+						showSlide(currentSlide);
+					});
+	
+					// Auto-advance slides every 4 seconds
+					setInterval(() => {
+						currentSlide = (currentSlide + 1) % slides.length;
+						showSlide(currentSlide);
+					}, 4000);
+				});
+	
+				// Initialize map
+				const map = L.map('map').setView([0, 0], 2);
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					maxZoom: 19,
+					attribution: '© OpenStreetMap contributors'
+				}).addTo(map);
+	
+				// Get coordinates for map
+				async function getCoordinates(city) {
+					try {
+						const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
+						const data = await response.json();
+						if (data && data.length > 0) {
+							return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+						}
+						return null;
+					} catch (error) {
+						console.error('Error fetching coordinates:', error);
+						return null;
+					}
+				}
+	
+				// Add flight path to map
+				async function addFlightPath() {
+					const departCoords = await getCoordinates('{{ vol.depart }}');
+					const destCoords = await getCoordinates('{{ vol.destination }}');
+	
+					if (departCoords && destCoords) {
+						const departMarker = L.marker(departCoords).addTo(map).bindPopup('Départ: {{ vol.depart }}');
+						const destMarker = L.marker(destCoords).addTo(map).bindPopup('Arrivée: {{ vol.destination }}');
+	
+						const flightPath = L.polyline([departCoords, destCoords], {
+							color: '#ff681a',
+							weight: 3,
+							opacity: 0.7,
+							dashArray: '10, 10'
+						}).addTo(map);
+	
+						map.fitBounds(flightPath.getBounds());
+					}
+				}
+	
+				// Fetch city alerts
+				async function fetchAlerts(city, containerId) {
+					try {
+						const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=730743c5041adacdbcd2a962e158d72d&units=metric&lang=fr`);
+						const data = await response.json();
+						
+						const container = document.getElementById(containerId);
+						container.innerHTML = '';
+	
+						if (data.weather && data.weather.length > 0) {
+							const weather = data.weather[0];
+							const temp = data.main.temp;
+							const alertCard = document.createElement('div');
+							alertCard.className = 'alert-card mb-3';
+							alertCard.innerHTML = `
+								<div class="alert alert-info">
+									<h6 class="alert-heading">
+										<i class="fas fa-cloud"></i> Conditions météorologiques
+									</h6>
+									<p class="mb-0">
+										${weather.description.charAt(0).toUpperCase() + weather.description.slice(1)}<br>
+										Température: ${temp}°C
+									</p>
+								</div>
+							`;
+							container.appendChild(alertCard);
+						}
+	
+						const advisoryCard = document.createElement('div');
+						advisoryCard.className = 'alert-card mb-3';
+						advisoryCard.innerHTML = `
+							<div class="alert alert-warning">
+								<h6 class="alert-heading">
+									<i class="fas fa-exclamation-triangle"></i> Conseils de voyage
+								</h6>
+								<p class="mb-0">
+									Vérifiez les dernières mises à jour des conseils de voyage pour ${city} sur le site du gouvernement.
+								</p>
+							</div>
+						`;
+						container.appendChild(advisoryCard);
+	
+					} catch (error) {
+						console.error('Error fetching alerts:', error);
+						document.getElementById(containerId).innerHTML = '<p class="text-center text-danger">Erreur lors du chargement des alertes</p>';
+					}
+				}
+	
+				// Fetch city news
+				async function fetchCountryNews(city, containerId) {
+					try {
+						const response = await fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(city)}&language=fr&sortBy=publishedAt&apiKey=17cb667ee1404ba2ab6cf550a0bf78e5`);
+						const data = await response.json();
+						
+						const container = document.getElementById(containerId);
+						container.innerHTML = '';
+	
+						if (data.articles && data.articles.length > 0) {
+							data.articles.slice(0, 5).forEach(article => {
+								const newsCard = document.createElement('div');
+								newsCard.className = 'news-card mb-3';
+								newsCard.innerHTML = `
+									<h5 class="news-title">${article.title}</h5>
+									<p class="news-description">${article.description || ''}</p>
+									<div class="news-meta">
+										<small class="text-muted">${new Date(article.publishedAt).toLocaleDateString()}</small>
+										<a href="${article.url}" target="_blank" class="btn btn-sm btn-outline-primary float-end">Lire plus</a>
+									</div>
+								`;
+								container.appendChild(newsCard);
+							});
+						} else {
+							container.innerHTML = '<p class="text-center">Aucune actualité disponible</p>';
+						}
+					} catch (error) {
+						console.error('Error fetching news:', error);
+						document.getElementById(containerId).innerHTML = '<p class="text-center text-danger">Erreur lors du chargement des actualités</p>';
+					}
+				}
+	
+				// Fetch city general information
+				async function fetchCityGeneralInfo(city, containerId) {
+					try {
+						// First get coordinates from OpenWeatherMap Geocoding API
+						const geoResponse = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)}&limit=1&appid=730743c5041adacdbcd2a962e158d72d`);
+						const geoData = await geoResponse.json();
+						
+						if (geoData && geoData.length > 0) {
+							const { lat, lon, country } = geoData[0];
+							
+							// Get tourist information from OpenTripMap API
+							const radius = 5000; // 5km radius
+							const limit = 5; // Number of attractions to show
+							const otmResponse = await fetch(`https://api.opentripmap.com/0.1/en/places/radius?radius=${radius}&lon=${lon}&lat=${lat}&limit=${limit}&apikey=5ae2e3f221c38a28845f05b6e1a72a6e8c4e169f048cbfe8b253951e`);
+							const otmData = await otmResponse.json();
+							
+							// Get weather data for current conditions
+							const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=730743c5041adacdbcd2a962e158d72d&units=metric&lang=fr`);
+							const weatherData = await weatherResponse.json();
+	
+							// Get Wikipedia data for city description
+							const wikiResponse = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(city)}`);
+							const wikiData = await wikiResponse.json();
+							
+							const container = document.getElementById(containerId);
+							
+							// Build the content
+							let content = `
+								<div class="info-section">
+									<h5>À Propos de ${city}</h5>
+									<p>${wikiData.extract || `${city} est une ville fascinante située en ${country}.`}</p>
+								</div>
+								<div class="info-section">
+									<h5>Points d'Intérêt à Ne Pas Manquer</h5>
+									<ul>
+							`;
+	
+							// Add attractions
+							if (otmData.features && otmData.features.length > 0) {
+								for (const feature of otmData.features) {
+									const name = feature.properties.name || 'Attraction';
+									const type = feature.properties.kinds ? feature.properties.kinds.split(',')[0] : 'Lieu';
+									content += `
+										<li>
+											<strong>${name}</strong><br>
+											<small>${type}</small>
+										</li>
+									`;
+								}
+							} else {
+								content += `<li>Aucune attraction trouvée dans un rayon de 5km</li>`;
+							}
+	
+							content += `
+									</ul>
+								</div>
+								<div class="info-section">
+									<h5>Conditions Actuelles</h5>
+									<ul>
+										<li>Température: ${Math.round(weatherData.main.temp)}°C</li>
+										<li>Conditions: ${weatherData.weather[0].description}</li>
+									</ul>
+								</div>
+								<div class="info-section">
+									<h5>Conseils pour les Voyageurs</h5>
+									<ul>
+										<li>Meilleure période: ${getBestTimeToVisit(weatherData)}</li>
+										<li>Durée recommandée: ${getRecommendedDuration()}</li>
+										<li>Transport local: ${getLocalTransport()}</li>
+										<li>Conseils pratiques: ${getPracticalTips()}</li>
+									</ul>
+								</div>
+								<div class="info-section">
+									<h5>Culture et Traditions</h5>
+									<ul>
+										<li>Langue: ${getLocalLanguage(country)}</li>
+										<li>Monnaie: ${getLocalCurrency(country)}</li>
+										<li>Spécialités culinaires: ${getLocalCuisine(city)}</li>
+										<li>Événements culturels: ${getCulturalEvents(city)}</li>
+									</ul>
+								</div>
+							`;
+							
+							container.innerHTML = content;
+						} else {
+							document.getElementById(containerId).innerHTML = '<p class="text-center">Aucune information disponible</p>';
+						}
+					} catch (error) {
+						console.error('Error fetching city info:', error);
+						document.getElementById(containerId).innerHTML = '<p class="text-center text-danger">Erreur lors du chargement des informations</p>';
+					}
+				}
+	
+				// Helper functions for travel tips
+				function getBestTimeToVisit(weatherData) {
+					const temp = weatherData.main.temp;
+					if (temp > 25) return "Été (juin à août) pour les activités en plein air";
+					if (temp > 15) return "Printemps (mars à mai) ou automne (septembre à novembre) pour un climat agréable";
+					return "Hiver (décembre à février) pour les activités hivernales";
+				}
+	
+				function getRecommendedDuration() {
+					return "2-3 jours pour explorer les principales attractions";
+				}
+	
+				function getLocalTransport() {
+					return "Métro, bus et taxis disponibles. Location de vélo recommandée pour les courtes distances.";
+				}
+	
+				function getPracticalTips() {
+					return "Prévoyez des vêtements adaptés à la saison, une carte de la ville, et réservez vos hébergements à l'avance.";
+				}
+	
+				function getLocalLanguage(country) {
+					const languages = {
+						'FR': 'Français',
+						'GB': 'Anglais',
+						'US': 'Anglais',
+						'ES': 'Espagnol',
+						'IT': 'Italien',
+						'DE': 'Allemand',
+						'JP': 'Japonais',
+						'CN': 'Chinois',
+						'AE': 'Arabe',
+						'SA': 'Arabe',
+						'EG': 'Arabe',
+						'MA': 'Arabe',
+						'TN': 'Arabe'
+					};
+					return languages[country] || 'Vérifiez la langue locale avant votre voyage';
+				}
+	
+				function getLocalCurrency(country) {
+					const currencies = {
+						'FR': 'Euro (€)',
+						'GB': 'Livre Sterling (£)',
+						'US': 'Dollar américain ($)',
+						'ES': 'Euro (€)',
+						'IT': 'Euro (€)',
+						'DE': 'Euro (€)',
+						'JP': 'Yen (¥)',
+						'CN': 'Yuan (¥)',
+						'AE': 'Dirham (د.إ)',
+						'SA': 'Riyal (﷼)',
+						'EG': 'Livre égyptienne (E£)',
+						'MA': 'Dirham marocain (د.م.)',
+						'TN': 'Dinar tunisien (د.ت)'
+					};
+					return currencies[country] || 'Vérifiez la monnaie locale avant votre voyage';
+				}
+	
+				function getLocalCuisine(city) {
+					const cuisines = {
+						'Paris': 'Croissants, Coq au Vin, Escargots, Crêpes',
+						'London': 'Fish & Chips, Sunday Roast, Full English Breakfast',
+						'New York': 'Pizza, Hot Dogs, Cheesecake, Bagels',
+						'Tokyo': 'Sushi, Ramen, Tempura, Sashimi',
+						'Rome': 'Pizza, Pasta, Gelato, Tiramisu',
+						'Dubai': 'Shawarma, Hummus, Falafel, Kunafa',
+						'Cairo': 'Koshari, Ful Medames, Shawarma, Baklava',
+						'Casablanca': 'Couscous, Tagine, Pastilla, Mint Tea',
+						'Tunis': 'Couscous, Brik, Lablabi, Makroudh'
+					};
+					return cuisines[city] || 'Découvrez les spécialités culinaires locales';
+				}
+	
+				function getCulturalEvents(city) {
+					const events = {
+						'Paris': 'Festival de Cannes, Fête de la Musique, Nuit Blanche',
+						'London': 'Notting Hill Carnival, Wimbledon, London Fashion Week',
+						'New York': 'New Year\'s Eve, Macy\'s Thanksgiving Parade, Tribeca Film Festival',
+						'Tokyo': 'Cherry Blossom Festival, Sumo Tournaments, Tokyo Game Show',
+						'Rome': 'Festa della Repubblica, Estate Romana, Roma Film Fest',
+						'Dubai': 'Dubai Shopping Festival, Dubai Food Festival, Dubai Jazz Festival',
+						'Cairo': 'Cairo International Film Festival, Cairo Jazz Festival',
+						'Casablanca': 'Jazzablanca, Festival de Casablanca',
+						'Tunis': 'Festival de Carthage, Festival International du Film de Tunis'
+					};
+					return events[city] || 'Renseignez-vous sur les événements culturels locaux';
+				}
+	
+				// Initialize the flight path
+				addFlightPath();
+			});
+		</script>
+	{% endblock %}
+	
+	{% block stylesheets %}
+		{{ parent() }}
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+		<style>
+			.hero-layout {
+				padding: 120px 0;
+				background-size: cover;
+				background-position: center;
+				position: relative;
+			}
+			.hero-mask {
+				background: rgba(0, 0, 0, 0.5);
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+			}
+			.hero-content {
+				position: relative;
+				z-index: 1;
+				color: white;
+			}
+			.hero-subtitle {
+				font-size: 1.2rem;
+				margin-bottom: 1rem;
+				display: block;
+			}
+			.hero-title {
+				font-size: 3rem;
+				margin-bottom: 1.5rem;
+			}
+			.hero-text {
+				font-size: 1.1rem;
+				margin-bottom: 2rem;
+			}
+			.space {
+				padding: 80px 0;
+			}
+			.card {
+				border: none;
+				box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+				border-radius: 10px;
+			}
+			.card-header {
+				background-color: #fff;
+				border-bottom: 1px solid #eee;
+				padding: 20px;
+			}
+			.card-title {
+				margin: 0;
+				color: #333;
+				font-size: 1.5rem;
+			}
+			.card-body {
+				padding: 30px;
+			}
+			.info-group {
+				padding: 20px;
+				background: #f8f9fa;
+				border-radius: 8px;
+			}
+			.info-group h4 {
+				color: #333;
+				margin-bottom: 15px;
+			}
+			.info-group p {
+				margin-bottom: 10px;
+				color: #666;
+			}
+			.info-group i {
+				margin-right: 10px;
+				color: #ff681a;
+			}
+			#map {
+				border-radius: 8px;
+				overflow: hidden;
+			}
+		</style>
+	{% endblock %}
+	
+	{% block javascripts %}
+		{{ parent() }}
+		<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				// Initialize main tabs
+				const flightTabs = document.querySelectorAll('#flightTabs button');
+				flightTabs.forEach(tab => {
+					tab.addEventListener('shown.bs.tab', (event) => {
+						if (event.target.id === 'city-info-tab') {
+							// Load all city information when switching to city info tab
+							fetchCountryNews('{{ vol.depart }}', 'departureNews');
+							fetchAlerts('{{ vol.depart }}', 'departureAlerts');
+							fetchCityGeneralInfo('{{ vol.depart }}', 'departureGeneralInfo');
+							fetchCityGeneralInfo('{{ vol.destination }}', 'destinationGeneralInfo');
+						}
+					});
+				});
+	
+				// Initialize city tabs
+				document.getElementById('departure-tab').addEventListener('shown.bs.tab', () => {
+					if (document.getElementById('city-info-tab').classList.contains('active')) {
+						fetchCountryNews('{{ vol.depart }}', 'departureNews');
+						fetchAlerts('{{ vol.depart }}', 'departureAlerts');
+						fetchCityGeneralInfo('{{ vol.depart }}', 'departureGeneralInfo');
+					}
+				});
+	
+				document.getElementById('destination-tab').addEventListener('shown.bs.tab', () => {
+					if (document.getElementById('city-info-tab').classList.contains('active')) {
+						fetchCountryNews('{{ vol.destination }}', 'destinationNews');
+						fetchAlerts('{{ vol.destination }}', 'destinationAlerts');
+						fetchCityGeneralInfo('{{ vol.destination }}', 'destinationGeneralInfo');
+					}
+				});
+	
+				// Initialize slideshows with more images
+				document.querySelectorAll('.city-slideshow').forEach(slideshow => {
+					const slides = slideshow.querySelectorAll('.slide');
+					const prevBtn = slideshow.querySelector('.prev-btn');
+					const nextBtn = slideshow.querySelector('.next-btn');
+					let currentSlide = 0;
+	
+					function showSlide(index) {
+						slides.forEach(slide => slide.classList.remove('active'));
+						slides[index].classList.add('active');
+					}
+	
+					prevBtn.addEventListener('click', () => {
+						currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+						showSlide(currentSlide);
+					});
+	
+					nextBtn.addEventListener('click', () => {
+						currentSlide = (currentSlide + 1) % slides.length;
+						showSlide(currentSlide);
+					});
+	
+					// Auto-advance slides every 4 seconds
+					setInterval(() => {
+						currentSlide = (currentSlide + 1) % slides.length;
+						showSlide(currentSlide);
+					}, 4000);
+				});
+	
+				// Initialize map
+				const map = L.map('map').setView([0, 0], 2);
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					maxZoom: 19,
+					attribution: '© OpenStreetMap contributors'
+				}).addTo(map);
+	
+				// Get coordinates for map
+				async function getCoordinates(city) {
+					try {
+						const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
+						const data = await response.json();
+						if (data && data.length > 0) {
+							return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+						}
+						return null;
+					} catch (error) {
+						console.error('Error fetching coordinates:', error);
+						return null;
+					}
+				}
+	
+				// Add flight path to map
+				async function addFlightPath() {
+					const departCoords = await getCoordinates('{{ vol.depart }}');
+					const destCoords = await getCoordinates('{{ vol.destination }}');
+	
+					if (departCoords && destCoords) {
+						const departMarker = L.marker(departCoords).addTo(map).bindPopup('Départ: {{ vol.depart }}');
+						const destMarker = L.marker(destCoords).addTo(map).bindPopup('Arrivée: {{ vol.destination }}');
+	
+						const flightPath = L.polyline([departCoords, destCoords], {
+							color: '#ff681a',
+							weight: 3,
+							opacity: 0.7,
+							dashArray: '10, 10'
+						}).addTo(map);
+	
+						map.fitBounds(flightPath.getBounds());
+					}
+				}
+	
+				// Fetch city alerts
+				async function fetchAlerts(city, containerId) {
+					try {
+						const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=730743c5041adacdbcd2a962e158d72d&units=metric&lang=fr`);
+						const data = await response.json();
+						
+						const container = document.getElementById(containerId);
+						container.innerHTML = '';
+	
+						if (data.weather && data.weather.length > 0) {
+							const weather = data.weather[0];
+							const temp = data.main.temp;
+							const alertCard = document.createElement('div');
+							alertCard.className = 'alert-card mb-3';
+							alertCard.innerHTML = `
+								<div class="alert alert-info">
+									<h6 class="alert-heading">
+										<i class="fas fa-cloud"></i> Conditions météorologiques
+									</h6>
+									<p class="mb-0">
+										${weather.description.charAt(0).toUpperCase() + weather.description.slice(1)}<br>
+										Température: ${temp}°C
+									</p>
+								</div>
+							`;
+							container.appendChild(alertCard);
+						}
+	
+						const advisoryCard = document.createElement('div');
+						advisoryCard.className = 'alert-card mb-3';
+						advisoryCard.innerHTML = `
+							<div class="alert alert-warning">
+								<h6 class="alert-heading">
+									<i class="fas fa-exclamation-triangle"></i> Conseils de voyage
+								</h6>
+								<p class="mb-0">
+									Vérifiez les dernières mises à jour des conseils de voyage pour ${city} sur le site du gouvernement.
+								</p>
+							</div>
+						`;
+						container.appendChild(advisoryCard);
+	
+					} catch (error) {
+						console.error('Error fetching alerts:', error);
+						document.getElementById(containerId).innerHTML = '<p class="text-center text-danger">Erreur lors du chargement des alertes</p>';
+					}
+				}
+	
+				// Fetch city news
+				async function fetchCountryNews(city, containerId) {
+					try {
+						const response = await fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(city)}&language=fr&sortBy=publishedAt&apiKey=17cb667ee1404ba2ab6cf550a0bf78e5`);
+						const data = await response.json();
+						
+						const container = document.getElementById(containerId);
+						container.innerHTML = '';
+	
+						if (data.articles && data.articles.length > 0) {
+							data.articles.slice(0, 5).forEach(article => {
+								const newsCard = document.createElement('div');
+								newsCard.className = 'news-card mb-3';
+								newsCard.innerHTML = `
+									<h5 class="news-title">${article.title}</h5>
+									<p class="news-description">${article.description || ''}</p>
+									<div class="news-meta">
+										<small class="text-muted">${new Date(article.publishedAt).toLocaleDateString()}</small>
+										<a href="${article.url}" target="_blank" class="btn btn-sm btn-outline-primary float-end">Lire plus</a>
+									</div>
+								`;
+								container.appendChild(newsCard);
+							});
+						} else {
+							container.innerHTML = '<p class="text-center">Aucune actualité disponible</p>';
+						}
+					} catch (error) {
+						console.error('Error fetching news:', error);
+						document.getElementById(containerId).innerHTML = '<p class="text-center text-danger">Erreur lors du chargement des actualités</p>';
+					}
+				}
+	
+				// Fetch city general information
+				async function fetchCityGeneralInfo(city, containerId) {
+					try {
+						// First get coordinates from OpenWeatherMap Geocoding API
+						const geoResponse = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)}&limit=1&appid=730743c5041adacdbcd2a962e158d72d`);
+						const geoData = await geoResponse.json();
+						
+						if (geoData && geoData.length > 0) {
+							const { lat, lon, country } = geoData[0];
+							
+							// Get tourist information from OpenTripMap API
+							const radius = 5000; // 5km radius
+							const limit = 5; // Number of attractions to show
+							const otmResponse = await fetch(`https://api.opentripmap.com/0.1/en/places/radius?radius=${radius}&lon=${lon}&lat=${lat}&limit=${limit}&apikey=5ae2e3f221c38a28845f05b6e1a72a6e8c4e169f048cbfe8b253951e`);
+							const otmData = await otmResponse.json();
+							
+							// Get weather data for current conditions
+							const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=730743c5041adacdbcd2a962e158d72d&units=metric&lang=fr`);
+							const weatherData = await weatherResponse.json();
+	
+							// Get Wikipedia data for city description
+							const wikiResponse = await fetch(`https://fr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(city)}`);
+							const wikiData = await wikiResponse.json();
+							
+							const container = document.getElementById(containerId);
+							
+							// Build the content
+							let content = `
+								<div class="info-section">
+									<h5>À Propos de ${city}</h5>
+									<p>${wikiData.extract || `${city} est une ville fascinante située en ${country}.`}</p>
+								</div>
+								<div class="info-section">
+									<h5>Points d'Intérêt à Ne Pas Manquer</h5>
+									<ul>
+							`;
+	
+							// Add attractions
+							if (otmData.features && otmData.features.length > 0) {
+								for (const feature of otmData.features) {
+									const name = feature.properties.name || 'Attraction';
+									const type = feature.properties.kinds ? feature.properties.kinds.split(',')[0] : 'Lieu';
+									content += `
+										<li>
+											<strong>${name}</strong><br>
+											<small>${type}</small>
+										</li>
+									`;
+								}
+							} else {
+								content += `<li>Aucune attraction trouvée dans un rayon de 5km</li>`;
+							}
+	
+							content += `
+									</ul>
+								</div>
+								<div class="info-section">
+									<h5>Conditions Actuelles</h5>
+									<ul>
+										<li>Température: ${Math.round(weatherData.main.temp)}°C</li>
+										<li>Conditions: ${weatherData.weather[0].description}</li>
+									</ul>
+								</div>
+								<div class="info-section">
+									<h5>Conseils pour les Voyageurs</h5>
+									<ul>
+										<li>Meilleure période: ${getBestTimeToVisit(weatherData)}</li>
+										<li>Durée recommandée: ${getRecommendedDuration()}</li>
+										<li>Transport local: ${getLocalTransport()}</li>
+										<li>Conseils pratiques: ${getPracticalTips()}</li>
+									</ul>
+								</div>
+								<div class="info-section">
+									<h5>Culture et Traditions</h5>
+									<ul>
+										<li>Langue: ${getLocalLanguage(country)}</li>
+										<li>Monnaie: ${getLocalCurrency(country)}</li>
+										<li>Spécialités culinaires: ${getLocalCuisine(city)}</li>
+										<li>Événements culturels: ${getCulturalEvents(city)}</li>
+									</ul>
+								</div>
+							`;
+							
+							container.innerHTML = content;
+						} else {
+							document.getElementById(containerId).innerHTML = '<p class="text-center">Aucune information disponible</p>';
+						}
+					} catch (error) {
+						console.error('Error fetching city info:', error);
+						document.getElementById(containerId).innerHTML = '<p class="text-center text-danger">Erreur lors du chargement des informations</p>';
+					}
+				}
+	
+				// Helper functions for travel tips
+				function getBestTimeToVisit(weatherData) {
+					const temp = weatherData.main.temp;
+					if (temp > 25) return "Été (juin à août) pour les activités en plein air";
+					if (temp > 15) return "Printemps (mars à mai) ou automne (septembre à novembre) pour un climat agréable";
+					return "Hiver (décembre à février) pour les activités hivernales";
+				}
+	
+				function getRecommendedDuration() {
+					return "2-3 jours pour explorer les principales attractions";
+				}
+	
+				function getLocalTransport() {
+					return "Métro, bus et taxis disponibles. Location de vélo recommandée pour les courtes distances.";
+				}
+	
+				function getPracticalTips() {
+					return "Prévoyez des vêtements adaptés à la saison, une carte de la ville, et réservez vos hébergements à l'avance.";
+				}
+	
+				function getLocalLanguage(country) {
+					const languages = {
+						'FR': 'Français',
+						'GB': 'Anglais',
+						'US': 'Anglais',
+						'ES': 'Espagnol',
+						'IT': 'Italien',
+						'DE': 'Allemand',
+						'JP': 'Japonais',
+						'CN': 'Chinois',
+						'AE': 'Arabe',
+						'SA': 'Arabe',
+						'EG': 'Arabe',
+						'MA': 'Arabe',
+						'TN': 'Arabe'
+					};
+					return languages[country] || 'Vérifiez la langue locale avant votre voyage';
+				}
+	
+				function getLocalCurrency(country) {
+					const currencies = {
+						'FR': 'Euro (€)',
+						'GB': 'Livre Sterling (£)',
+						'US': 'Dollar américain ($)',
+						'ES': 'Euro (€)',
+						'IT': 'Euro (€)',
+						'DE': 'Euro (€)',
+						'JP': 'Yen (¥)',
+						'CN': 'Yuan (¥)',
+						'AE': 'Dirham (د.إ)',
+						'SA': 'Riyal (﷼)',
+						'EG': 'Livre égyptienne (E£)',
+						'MA': 'Dirham marocain (د.م.)',
+						'TN': 'Dinar tunisien (د.ت)'
+					};
+					return currencies[country] || 'Vérifiez la monnaie locale avant votre voyage';
+				}
+	
+				function getLocalCuisine(city) {
+					const cuisines = {
+						'Paris': 'Croissants, Coq au Vin, Escargots, Crêpes',
+						'London': 'Fish & Chips, Sunday Roast, Full English Breakfast',
+						'New York': 'Pizza, Hot Dogs, Cheesecake, Bagels',
+						'Tokyo': 'Sushi, Ramen, Tempura, Sashimi',
+						'Rome': 'Pizza, Pasta, Gelato, Tiramisu',
+						'Dubai': 'Shawarma, Hummus, Falafel, Kunafa',
+						'Cairo': 'Koshari, Ful Medames, Shawarma, Baklava',
+						'Casablanca': 'Couscous, Tagine, Pastilla, Mint Tea',
+						'Tunis': 'Couscous, Brik, Lablabi, Makroudh'
+					};
+					return cuisines[city] || 'Découvrez les spécialités culinaires locales';
+				}
+	
+				function getCulturalEvents(city) {
+					const events = {
+						'Paris': 'Festival de Cannes, Fête de la Musique, Nuit Blanche',
+						'London': 'Notting Hill Carnival, Wimbledon, London Fashion Week',
+						'New York': 'New Year\'s Eve, Macy\'s Thanksgiving Parade, Tribeca Film Festival',
+						'Tokyo': 'Cherry Blossom Festival, Sumo Tournaments, Tokyo Game Show',
+						'Rome': 'Festa della Repubblica, Estate Romana, Roma Film Fest',
+						'Dubai': 'Dubai Shopping Festival, Dubai Food Festival, Dubai Jazz Festival',
+						'Cairo': 'Cairo International Film Festival, Cairo Jazz Festival',
+						'Casablanca': 'Jazzablanca, Festival de Casablanca',
+						'Tunis': 'Festival de Carthage, Festival International du Film de Tunis'
+					};
+					return events[city] || 'Renseignez-vous sur les événements culturels locaux';
+				}
+	
+				// Initialize the flight path
+				addFlightPath();
+			});
+		</script>
+	{% endblock %}

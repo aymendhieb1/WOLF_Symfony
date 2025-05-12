@@ -165,32 +165,40 @@
 .forecast-container {
     display: flex;
     justify-content: space-between;
-    overflow-x: auto;
+    gap: 15px;
     padding: 10px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .forecast-day {
     text-align: center;
-    padding: 10px;
-    min-width: 100px;
+    padding: 15px;
+    min-width: 120px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .day-name {
     font-weight: bold;
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    text-transform: capitalize;
 }
 
 .forecast-temp {
     font-size: 1.2rem;
     color: #333;
-    margin: 5px 0;
+    margin: 8px 0;
+    font-weight: 500;
 }
 
 .forecast-desc {
     font-size: 0.9rem;
     color: #666;
     text-transform: capitalize;
+    margin-top: 5px;
 }
 
 .weather-loading {
@@ -209,7 +217,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const loading = widget.querySelector('.weather-loading');
         const error = widget.querySelector('.weather-error');
         
-        fetch(`/api/weather/${encodeURIComponent(city)}`)
+        // Get coordinates from the map if available
+        let url = `/api/weather/${encodeURIComponent(city)}`;
+        const map = document.querySelector('#map');
+        if (map && map._leaflet_id) {
+            const markers = Object.values(map._leaflet_layers || {})
+                .filter(layer => layer instanceof L.Marker);
+            
+            const cityMarker = markers.find(marker => 
+                marker.getPopup().getContent().includes(city)
+            );
+            
+            if (cityMarker) {
+                const coords = cityMarker.getLatLng();
+                url += `?lat=${coords.lat}&lon=${coords.lng}`;
+            }
+        }
+        
+        fetch(url)
             .then(response => response.json())
             .then(data => {
                 if (data.weather.error) {
@@ -236,22 +261,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 const forecastContainer = widget.querySelector('.forecast-container');
                 forecastContainer.innerHTML = '';
                 
-                data.forecast.forEach(day => {
-                    const dayElement = document.createElement('div');
-                    dayElement.className = 'forecast-day';
-                    dayElement.innerHTML = `
-                        <div class="day-name">${day.day}</div>
-                        <img src="http://openweathermap.org/img/wn/${day.icon}.png" alt="Weather icon">
-                        <div class="forecast-temp">${day.temperature}°C</div>
-                        <div class="forecast-desc">${day.description}</div>
-                    `;
-                    forecastContainer.appendChild(dayElement);
-                });
+                if (data.forecast && Array.isArray(data.forecast)) {
+                    data.forecast.forEach(day => {
+                        const dayElement = document.createElement('div');
+                        dayElement.className = 'forecast-day';
+                        dayElement.innerHTML = `
+                            <div class="day-name">${day.day}</div>
+                            <img src="http://openweathermap.org/img/wn/${day.icon}.png" alt="Weather icon" style="width: 50px; height: 50px;">
+                            <div class="forecast-temp">${day.temperature}°C</div>
+                            <div class="forecast-desc">${day.description}</div>
+                        `;
+                        forecastContainer.appendChild(dayElement);
+                    });
+                } else {
+                    console.error('Invalid forecast data:', data.forecast);
+                }
 
                 loading.style.display = 'none';
                 content.style.display = 'block';
             })
             .catch(err => {
+                console.error('Weather fetch error:', err);
                 error.textContent = 'Erreur lors de la récupération des données météo';
                 error.style.display = 'block';
                 loading.style.display = 'none';

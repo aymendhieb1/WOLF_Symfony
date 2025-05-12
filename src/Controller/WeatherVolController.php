@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Service\WeatherServiceVol;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
@@ -21,12 +22,22 @@ class WeatherVolController extends AbstractController
     }
 
     #[Route('/api/weather/{city}', name: 'app_weather_vol_get', methods: ['GET'])]
-    public function getWeather(string $city): JsonResponse
+    public function getWeather(string $city, Request $request): JsonResponse
     {
         try {
             $this->logger->info('Fetching weather for city: ' . $city);
             
-            $weather = $this->weatherService->getWeatherForCity($city);
+            // Get coordinates from request if available
+            $coordinates = null;
+            if ($request->query->has('lat') && $request->query->has('lon')) {
+                $coordinates = [
+                    'lat' => $request->query->get('lat'),
+                    'lon' => $request->query->get('lon')
+                ];
+                $this->logger->info('Using coordinates: ' . json_encode($coordinates));
+            }
+            
+            $weather = $this->weatherService->getWeatherForCity($city, $coordinates);
             if (isset($weather['error'])) {
                 $this->logger->error('Weather service error: ' . $weather['error']);
                 return $this->json([
@@ -35,7 +46,9 @@ class WeatherVolController extends AbstractController
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            $forecast = $this->weatherService->getForecastForCity($city);
+            $forecast = $this->weatherService->getForecastForCity($city, $coordinates);
+            $this->logger->info('Forecast data: ' . json_encode($forecast));
+            
             if (isset($forecast['error'])) {
                 $this->logger->error('Forecast service error: ' . $forecast['error']);
                 return $this->json([

@@ -96,10 +96,7 @@ class UserType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez entrer votre numéro de téléphone.']),
 
-                    new Regex([
-                        'pattern' => '/^\+\d{6,15}$/',
-                        'message' => 'Le numéro doit inclure l’indicatif, ex: +21612345678',
-                    ]),
+
                     new Callback([$this, 'validateENumberExists']),
 
 

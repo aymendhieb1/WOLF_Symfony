@@ -446,6 +446,7 @@
 			padding: 20px;
 			border-radius: 10px;
 			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+
 		}
 
 		.widget_title {
@@ -1328,7 +1329,7 @@ $('[data-toggle="tooltip"]').tooltip();
 	.vs-btn {
 		background: var(--theme-color);
 		color: #fff;
-		padding: 8px 20px;
+		padding: 15px;
 		border-radius: 5px;
 		text-decoration: none;
 		transition: all 0.3s ease;
@@ -1558,35 +1559,54 @@ $('[data-toggle="tooltip"]').tooltip();
 		background: #e55a0f;
 		transform: translateY(-2px);
 	}
+	/* Change the track (line) color */
+	#price-slider .noUi-connect {
+		background: #FF6600; /* Orange (change this to your desired color) */
+	}
+
+	/* Change the handle (thumb) color */
+	#price-slider .noUi-handle {
+		background-color: white;
+		border: 2px solid #FF6600;
+		box-shadow: none;
+	}
+
+	/* Optional: adjust hover/focus effects */
+	#price-slider .noUi-handle:hover {
+		background-color: #FF6600;
+		border-color: #e65000;
+	}
+	.sidebar-area {
+		height: 100%;
+		min-height: 100%;
+	}
+
+	.wrapper,
+	.main-panel,
+	.content {
+		height: 100%;
+	}
 </style>
 
-<div class="wrapper">
-	<div
-		class="main-panel">
-		<!-- Navbar -->
-		<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
-			<div class="container-fluid">
-				<div class="navbar-wrapper"></div>
-			</div>
-		</nav>
-		<!-- End Navbar -->
+<div class="wrapper" style="background-color:#f0f0f0">
+	<div class="main-panel">
 		<div class="content">
 			<div
-				class="container-fluid">
+				class="container-fluid h-100 d-flex flex-column" style="padding-top:50px;">
 				<!-- Calendar and Reservation Buttons -->
 				<div class="row mb-4">
-					<div class="col-12">
-						<button id="showCalendarBtn" class="calendar-btn">
+					<div class="col-12 d-flex justify-content-center gap-5 px-4 py-3">
+						<button id="showCalendarBtn" class="vs-btn style4">
 							<i class="fas fa-calendar-alt"></i>
-							View Calendar
+							Voir le calendrier
 						</button>
-						<button id="showReservationBtn" class="reservation-btn">
+						<button id="showReservationBtn" class="vs-btn style4">
 							<i class="fas fa-bookmark"></i>
-							Make Reservation
+							Faire une réservation
 						</button>
-						<button id="checkReservationsBtn" class="reservation-btn" style="background: #17a2b8;" onclick="checkReservations()">
+						<button id="checkReservationsBtn" class="vs-btn style4" onclick="checkReservations()">
 							<i class="fas fa-list-alt"></i>
-							Check Reservations
+							Vérifier les réservations
 						</button>
 					</div>
 				</div>
@@ -1646,27 +1666,8 @@ $('[data-toggle="tooltip"]').tooltip();
 					</div>
 				</div>
 
-				<!-- Filter Menu -->
-				<div class="filter-menu1">
-					<button class="tab-button active" data-filter="*">
-						<i class="fas fa-sort-alpha-up"></i>
-						Nom (A - Z)
-					</button>
-					<button class="tab-button" data-filter=".date">
-						<i class="fas fa-calendar-alt"></i>
-						Date
-					</button>
-					<button class="tab-button" data-filter=".hightTolow">
-						<i class="fas fa-upload"></i>
-						Prix Croissant
-					</button>
-					<button class="tab-button" data-filter=".lowToHigh">
-						<i class="fas fa-download"></i>
-						Prix Décroissant
-					</button>
-				</div>
 
-				<div class="row">
+				<div class="row full-height">
 					<div class="col-lg-9">
 						<div class="row filter-active tours-active">
 							{% for activite in activites %}
@@ -1697,12 +1698,12 @@ $('[data-toggle="tooltip"]').tooltip();
 													DT</a>
 											</div>
 
-											<div class="package-footer">
-												<button class="vs-btn sessions-btn" style="width: 100%; margin-top: 10px;" data-activity-id="{{ activite.id }}" data-activity-name="{{ activite.nom }}">
+											<div class="package-footer" style="gap:20px">
+												<button class="vs-btn style4 sessions-btn" style="width: 100%; padding-top: 10px;" data-activity-id="{{ activite.id }}" data-activity-name="{{ activite.nom }}">
 													<i class="fas fa-calendar-alt"></i>
 													Sessions
 												</button>
-												<a href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_activite_index')|url_encode }}&quote=Check out {{ activite.nom }} - {{ activite.type }} activity at TripToGo! Price: {{ activite.prix }} DT" target="_blank" class="share-btn">
+												<a href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_activite_index')|url_encode }}&quote=Check out {{ activite.nom }} - {{ activite.type }} activity at TripToGo! Price: {{ activite.prix }} DT" target="_blank" class="vs-btn w-100 style2">
 													<i class="fab fa-facebook-f"></i>
 													Partager sur Facebook
 												</a>
@@ -1713,9 +1714,9 @@ $('[data-toggle="tooltip"]').tooltip();
 							{% endfor %}
 						</div>
 					</div>
-					<div class="col-lg-3">
-						<div class="sidebar-area tours-sidebar">
-							<div class="widget">
+					<div class="col-lg-3 h-100">
+						<div class="sidebar-area tours-sidebar h-100" style="margin-bottom:30px;padding-bottom:20px">
+							<div class="widget h-100 d-flex flex-column justify-content-between" style="background-color:white">
 								<h3 class="widget_title">Filtrer les Activités</h3>
 								<form class="booking-form" id="filterForm" onsubmit="return false;">
 									<div class="form-group">
@@ -1741,14 +1742,18 @@ $('[data-toggle="tooltip"]').tooltip();
 										</div>
 										<div id="price-slider"></div>
 									</div>
-									<button type="button" class="filter-btn search" id="applyFilters">
-										<i class="fas fa-search"></i>
-										Rechercher
-									</button>
-									<button type="button" class="filter-btn reset" id="resetFilters">
-										<i class="fas fa-undo"></i>
-										Réinitialiser
-									</button>
+									<div style="display: flex; flex-direction: column; gap: 15px;">
+										<button type="button" class="vs-btn w-100 style4" id="applyFilters">
+											<i class="fas fa-search"></i>
+											Rechercher
+										</button>
+										<button type="button" class="vs-btn w-100 style2" id="resetFilters" style="padding:10px">
+											<i class="fas fa-undo"></i>
+											Réinitialiser
+										</button>
+									</div>
+
+
 								</form>
 							</div>
 						</div>
@@ -1776,6 +1781,46 @@ $('[data-toggle="tooltip"]').tooltip();
 
 <!-- Add this hidden input for CSRF token -->
 <input type="hidden" name="csrf_token" value="{{ csrf_token('reservation_token') }}">
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+var slider = document.getElementById("price-slider");
+var minInput = document.getElementById("minPrice");
+var maxInput = document.getElementById("maxPrice");
+
+noUiSlider.create(slider, {
+start: [
+0, 1000
+],
+connect: true,
+step: 1,
+range: {
+min: 0,
+max: 1000
+},
+format: {
+to: value => Math.round(value),
+from: value => parseInt(value)
+}
+});
+
+slider.noUiSlider.on("update", function (values, handle) {
+if (handle === 0) {
+minInput.value = values[0];
+} else {
+maxInput.value = values[1];
+}
+});
+
+minInput.addEventListener("change", function () {
+slider.noUiSlider.set([this.value, null]);
+});
+
+maxInput.addEventListener("change", function () {
+slider.noUiSlider.set([null, this.value]);
+});
+});
+</script>
+
 
 <script>
 	document.addEventListener('DOMContentLoaded', function () { // Filter functionality

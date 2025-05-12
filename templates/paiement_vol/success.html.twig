@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réservation Confirmée{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Réservation Confirmée</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        <h2 class="mt-3">Paiement Réussi!</h2>
+                        <p class="lead">Votre réservation de vol a été confirmée.</p>
+                        {% if email_error is defined and email_error %}
+                            <div class="alert alert-warning mt-3">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Votre réservation a été confirmée, mais nous n'avons pas pu envoyer l'email de confirmation. 
+                                Vous pouvez télécharger votre reçu depuis votre espace personnel.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="reservation-details">
+                        <h5 class="mb-3">Détails de la Réservation</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Vol:</strong> {{ vol.depart }} - {{ vol.destination }}</p>
+                                <p><strong>Compagnie:</strong> {{ vol.compagnie }}</p>
+                                <p><strong>Classe:</strong> {{ vol.classeChaise }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Date de Réservation:</strong> {{ reservation.volReservationDate|date('d/m/Y H:i') }}</p>
+                                <p><strong>Montant Payé:</strong> {{ payment.montant|number_format(2, ',', ' ') }} €</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="{{ path('app_vol_index') }}" class="btn btn-primary">
+                            <i class="fas fa-plane"></i> Retour aux Vols
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

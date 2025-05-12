@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Réservation de Vol{% endblock %}
+
+{% block body %}
+    <div class="space">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Confirmer votre réservation</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="user-info mb-4">
+                                <h4>Informations du Passager</h4>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p><strong>Nom:</strong> {{ app.user.nom }}</p>
+                                        <p><strong>Prénom:</strong> {{ app.user.prenom }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flight-summary mb-4">
+                                <h4>Détails du Vol</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Départ:</strong> {{ vol.depart }}</p>
+                                        <p><strong>Destination:</strong> {{ vol.destination }}</p>
+                                        <p><strong>Date de départ:</strong> {{ vol.heureDepart|date('d/m/Y H:i') }}</p>
+                                        <p><strong>Date d'arrivée:</strong> {{ vol.heureArrivee|date('d/m/Y H:i') }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Compagnie:</strong> {{ vol.compagnie }}</p>
+                                        <p><strong>Classe:</strong> {{ vol.classeChaise }}</p>
+                                        <p><strong>Prix:</strong> {{ vol.prix }} TND</p>
+                                        <p><strong>Sièges disponibles:</strong> {{ vol.siegesDisponibles }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{ form_start(form) }}
+                                {{ form_widget(form.idUser) }}
+                                {{ form_widget(form.flightId) }}
+                                <div class="form-group">
+                                    {{ form_row(form.departure) }}
+                                    {{ form_row(form.destination) }}
+                                    {{ form_row(form.departureTime) }}
+                                    {{ form_row(form.arrivalTime) }}
+                                    {{ form_row(form.classeChaise) }}
+                                    {{ form_row(form.flightPrice) }}
+                                    {{ form_row(form.airline) }}
+                                    {{ form_row(form.volReservationDate) }}
+                                </div>
+
+                                <div class="form-group text-center mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-check"></i> Confirmer la réservation
+                                    </button>
+                                    <a href="{{ path('app_vol_show', {'id': vol.id}) }}" class="btn btn-secondary">
+                                        <i class="fas fa-times"></i> Annuler
+                                    </a>
+                                </div>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .user-info, .flight-summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .user-info h4, .flight-summary h4 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ff681a;
+            padding-bottom: 10px;
+        }
+        .user-info p, .flight-summary p {
+            margin-bottom: 10px;
+            color: #666;
+        }
+        .user-info strong, .flight-summary strong {
+            color: #333;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .form-control {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 0.5rem 0.75rem;
+            color: #495057;
+        }
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            opacity: 1;
+            cursor: not-allowed;
+        }
+        input[type="datetime-local"] {
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        input[type="datetime-local"]:disabled {
+            background-color: #f8f9fa;
+            opacity: 1;
+            cursor: not-allowed;
+        }
+    </style>
+{% endblock %} 

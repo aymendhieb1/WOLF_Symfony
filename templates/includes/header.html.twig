@@ -123,7 +123,7 @@
 														<a href="{{ path('app_vol_index') }}">Réservation de Vol</a>
 													{% else %}
 														<a href="{{ path('app_seconnecter') }}">
-															TripToTube
+															Réservation de Vol
 														</a>
 													{% endif %}
 												</li>
@@ -148,6 +148,8 @@
 						<button class="vs-menu-toggle d-inline-block d-lg-none">
 							<i class="fal fa-bars"></i>
 						</button>
+
+
 					</div>
 
 
@@ -159,6 +161,89 @@
 
 
 						</div>
+					</div>
+				</div>
+			</div>
+			<!--==============================
+																																																			      Mobile Menu
+																																																			    ============================== -->
+			<div class="vs-menu-wrapper">
+				<div class="vs-menu-area text-center">
+					<button class="vs-menu-toggle">
+						<i class="fal fa-times"></i>
+					</button>
+					<div class="mobile-logo">
+						<a href="index.html"><img src="{{ asset('assets/img/primary.png') }}" alt="TripToGo"/></a>
+					</div>
+					<div class="vs-mobile-menu">
+						<ul>
+							<li>
+								<a href="{{ path('app_home') }}">Accueil</a>
+							</li>
+							<li class="menu-item-has-children">
+								<a href="#">Nos offres</a>
+								<!-- Changer "Destinationsxxx" en "Destinations" -->
+								<ul class="sub-menu">
+									<li>
+										{% if app.user %}
+											<a href="{{ path('app_circuit') }}">Circuits</a>
+										{% else %}
+											<a href="{{ path('app_seconnecter') }}">
+												Circuits
+											</a>
+										{% endif %}
+									</li>
+									<li>
+										{% if app.user %}
+											<a href="{{ path('app_hotel_chambre_index') }}">Hotels</a>
+										{% else %}
+											<a href="{{ path('app_seconnecter') }}">
+												Hotels
+											</a>
+										{% endif %}
+									</li>
+
+									<li>
+										{% if app.user %}
+											<a href="{{ path('app_front_post_index') }}">Forum</a>
+										{% else %}
+											<a href="{{ path('app_seconnecter') }}">
+												Forum
+											</a>
+										{% endif %}
+									</li>
+									<li>
+										{% if app.user %}
+											<a href="{{ path('app_youtube') }}">TripToTube</a>
+										{% else %}
+											<a href="{{ path('app_seconnecter') }}">
+												TripToTube
+											</a>
+										{% endif %}
+									</li>
+									<li>
+										{% if app.user %}
+											<a href="{{ path('app_vol_index') }}">Réservation de Vol</a>
+										{% else %}
+											<a href="{{ path('app_seconnecter') }}">
+												Réservation de Vol
+											</a>
+										{% endif %}
+									</li>
+									<!-- Changer en français -->
+								</ul>
+							</li>
+							<li>
+								<a href="{{path('app_about_us')}}">à propos de nous
+								</a>
+								<!-- Toujours afficher Contact -->
+							</li>
+							<li>
+								<a href="{{path('app_contact')}}">Contact</a>
+							</li>
+
+
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -200,6 +285,7 @@
 					background-color: var(--theme-color);
 					color: #ffffff;
 				}
+				/* Sidebar styles */
 			</style>
 			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
@@ -229,6 +315,8 @@ window.location.href = logoutLink.getAttribute('href');
 });
 });
 			</script>
+
+
 		</div>
 	</div>
 </header>

@@ -23,8 +23,8 @@
 
 		{% block stylesheets %}
 			<!--==============================
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																        All CSS Files
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																      ==============================-->
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														        All CSS Files
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														      ==============================-->
 			<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/fontawesome.min.css') }}"/>
 			<link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.min.css') }}"/>
@@ -34,6 +34,7 @@
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 			<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css"/>
 
 
 			<style>
@@ -238,6 +239,30 @@
 				#start-record-btn:hover {
 					color: #e64a19;
 				}
+				.z-index-negative {
+					z-index: -1;
+				}
+
+
+				/* Couleurs par défaut (desktop) */
+				.hero-title {
+					color: #ffffff; /* blanc */
+				}
+
+				.hero-text {
+					color: #e0e0e0; /* gris clair */
+				}
+
+				/* Sur mobile (écrans <= 767px) */
+				@media(max-width: 767px) {
+					.hero-title {
+						color: #000000; /* noir */
+					}
+
+					.hero-text {
+						color: #000000; /* noir */
+					}
+				}
 			</style>
 
 
@@ -270,6 +295,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 <script src="{{ asset('assets/js/weather-api.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
 
 
 <script>

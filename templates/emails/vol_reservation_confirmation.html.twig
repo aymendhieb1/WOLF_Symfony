@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+        }
+        h1 {
+            color: #333333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .details {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .detail-label {
+            color: #666666;
+            font-weight: bold;
+        }
+        .detail-value {
+            color: #333333;
+        }
+        .qr-code {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .qr-code img {
+            max-width: 200px;
+            height: auto;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eeeeee;
+            color: #999999;
+            font-size: 12px;
+        }
+        .thank-you {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 24px;
+            color: #ff681a;
+            font-weight: bold;
+        }
+        .attachment-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            {% if logo is defined %}
+                <img src="cid:logo" alt="TripToGo Logo" class="logo">
+            {% endif %}
+            <h1>Confirmation de votre réservation de vol</h1>
+        </div>
+
+        <p style="font-size: 16px; color: #555555; text-align: center;">
+            Bonjour {{ user.prenom }},<br><br>
+            Votre réservation de vol a été confirmée avec succès sur TripToGo.
+            Veuillez trouver ci-joint votre reçu PDF.
+        </p>
+
+        <div class="attachment-note">
+            <strong>Important :</strong> Votre reçu PDF est joint à cet email.
+        </div>
+
+        <div class="details">
+            <div class="detail-row">
+                <span class="detail-label">Numéro de réservation:</span>
+                <span class="detail-value">#{{ reservation.id }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date de réservation:</span>
+                <span class="detail-value">{{ reservation.volReservationDate|date('d/m/Y H:i') }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Vol:</span>
+                <span class="detail-value">{{ vol.depart }} → {{ vol.destination }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date de départ:</span>
+                <span class="detail-value">{{ vol.heureDepart|date('d/m/Y H:i') }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date d'arrivée:</span>
+                <span class="detail-value">{{ vol.heureArrivee|date('d/m/Y H:i') }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Compagnie aérienne:</span>
+                <span class="detail-value">{{ vol.compagnie }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Classe:</span>
+                <span class="detail-value">{{ vol.classeChaise }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Montant payé:</span>
+                <span class="detail-value">{{ payment.montant }} €</span>
+            </div>
+        </div>
+
+        <div class="qr-code">
+            <p style="margin-bottom: 10px; color: #666666;">Scannez ce QR code pour accéder à votre billet:</p>
+            <img src="{{ qrCodeUrl }}" alt="QR Code">
+        </div>
+
+        <div class="thank-you">
+            Merci de votre confiance !
+        </div>
+
+        <p style="font-size: 14px; color: #999999; text-align: center;">
+            Si vous avez des questions, n'hésitez pas à nous contacter.<br>
+            Nous vous souhaitons un excellent vol !
+        </p>
+
+        <div class="footer">
+            © {{ "now"|date("Y") }} TripToGo. Tous droits réservés.
+        </div>
+    </div>
+</body>
+</html> 

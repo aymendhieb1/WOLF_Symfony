@@ -4,13 +4,13 @@
 {% block body %}
 
 	<!--********************************
-																																																																																																								    Code Start From Here 
-																																																																																																								    ******************************** -->
+																																																																																																																																																																																    Code Start From Here 
+																																																																																																																																																																																    ******************************** -->
 
 
 	<!--==============================
-																																																																																																								      Popup Search Box
-																																																																																																								    ============================== -->
+																																																																																																																																																																																      Popup Search Box
+																																																																																																																																																																																    ============================== -->
 		<div class="popup-search-box d-none d-lg-block"> <button class="searchClose" onclick="toggleChatWindow()">
 			<i class="fal fa-times"></i>
 		</button>
@@ -38,9 +38,22 @@
 
 
 	<!--==============================
-																																																																																																						    Hero Area Start 
-																																																																																																						  ==============================-->
-	<section class="hero-layout" data-bg-src="{{ asset('assets/img/banner/banner-bg-1.png') }}">
+																																																																																																																																																																														    Hero Area Start 
+																																																																																																																																																																														  ==============================-->
+	<section
+		class="hero-layout position-relative " style="min-height: 82vh;">
+		<!-- Vidéo visible uniquement sur desktop -->
+		<div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.3); z-index:-1;">
+
+			<video autoplay muted loop playsinline preload="metadata" class="bg-video d-none d-md-block position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; z-index: -1;">
+				<source src="{{ asset('assets/img/0303.mp4') }}" type="video/mp4"/>
+			</video>
+		</div>
+
+		<!-- Image visible uniquement sur mobile -->
+		<img src="{{ asset('assets/img/banner/banner-bg-1.png') }}" alt="Fond mobile" class="bg-image d-block d-md-none position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; z-index: -1;"/>
+
+
 		<div class="hero-mask">
 			<div class="vs-carousel" id="hero-slider" data-slide-show="1" autoplay="false">
 				<div class="hero-slide">
@@ -54,15 +67,15 @@
 									</h1>
 									<p class="hero-text">
 										Partez à l'aventure à travers les paysages les plus
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      magnifiques de la planète. Que ce soit en montagne, au
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      bord de la mer ou en pleine nature, chaque endroit a une
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      histoire à raconter. Osez découvrir de nouveaux horizons
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      et laissez-vous émerveiller par la richesse du monde qui
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      vous entoure.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      magnifiques de la planète. Que ce soit en montagne, au
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      bord de la mer ou en pleine nature, chaque endroit a une
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      histoire à raconter. Osez découvrir de nouveaux horizons
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      et laissez-vous émerveiller par la richesse du monde qui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      vous entoure.
 									</p>
 
 									{% if app.user %}
-										<a href="about.html" class="vs-btn style4">En savoir plus</a>
+										<a href="{{ path('app_vol_index') }}" class="vs-btn style4">En savoir plus</a>
 									{% else %}
 										<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
 											En savoir plus
@@ -89,12 +102,12 @@
 									<h1 class="hero-title">Lancez votre aventure imaginaire</h1>
 									<p class="hero-text">
 										Partez à la découverte d’un monde rempli de mystères et de
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      merveilles. Chaque pas vous rapproche d’une nouvelle
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      expérience, d’une légende à vivre et d’un rêve à réaliser.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      Laissez votre imagination vous guider.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      merveilles. Chaque pas vous rapproche d’une nouvelle
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      expérience, d’une légende à vivre et d’un rêve à réaliser.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      Laissez votre imagination vous guider.
 									</p>
 									{% if app.user %}
-										<a href="about.html" class="vs-btn style4">En savoir plus</a>
+										<a href="{{ path('app_vol_index') }}" class="vs-btn style4">En savoir plus</a>
 									{% else %}
 										<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
 											En savoir plus
@@ -122,12 +135,12 @@
 									</h1>
 									<p class="hero-text">
 										Chaque destination cache un récit unique qui n’attend qu’à
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      être exploré. Partez à la rencontre de cultures
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      fascinantes, de paysages inoubliables et d’expériences qui
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      marquent une vie. Le monde regorge d’histoires à vivre.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      être exploré. Partez à la rencontre de cultures
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      fascinantes, de paysages inoubliables et d’expériences qui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                      marquent une vie. Le monde regorge d’histoires à vivre.
 									</p>
 									{% if app.user %}
-										<a href="about.html" class="vs-btn style4">En savoir plus</a>
+										<a href="{{ path('app_vol_index') }}" class="vs-btn style4">En savoir plus</a>
 									{% else %}
 										<a href="{{ path('app_seconnecter') }}" class="vs-btn style4">
 											En savoir plus
@@ -155,13 +168,13 @@
 				<div class="container">
 					<form class="hero-form">
 						<div class="row">
-							<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+							<div class="col-lg-4 col-md-6 col-sm-6 col-12">
 								<div class="form-group">
 									<i class="fas fa-compass"></i>
 									<input type="text" placeholder="Où aller ?"/>
 								</div>
 							</div>
-							<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+							<div class="col-lg-4 col-md-6 col-sm-6 col-12">
 								<div class="form-group">
 									<i class="fas fa-calendar-alt"></i>
 									<select class="form-select" name="name">
@@ -183,20 +196,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="col-lg-3 col-md-6 col-sm-6 col-12">
-								<div class="form-group">
-									<i class="fas fa-thumbtack"></i>
-									<select class="form-select" name="name">
-										<option value="" selected="selected" disabled="disabled" hidden="">
-											Sélectionner un type
-										</option>
-										<option value="">Aventure</option>
-										<option value="">Combiné</option>
-										<option value="">Sportif</option>
-										<option value="">National</option>
-									</select>
-								</div>
-							</div>
+
 							<div class="col-lg-3 col-md-6 col-sm-6 col-12">
 								{% if app.user %}
 									<a href="about.html" class="vs-btn style4">Trouver maintenant</a>
@@ -214,12 +214,12 @@
 		</div>
 	</section>
 	<!-- ============================
-																																																																																																						      Hero Area End 
-																																																																																																						    ==============================-->
+																																																																																																																																																																														      Hero Area End 
+																																																																																																																																																																														    ==============================-->
 
 	<!--==============================
-																																																																																																						    About Blog Area Start 
-																																																																																																						  ==============================-->
+																																																																																																																																																																														    About Blog Area Start 
+																																																																																																																																																																														  ==============================-->
 	<div class="space-top space-extra-bottom blog-wrapper1 shape-mockup-wrap">
 		<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-5%" data-left="-5%">
 			<img src="assets/img/shape/circle1.png" alt="circle"/>
@@ -254,7 +254,7 @@
 						Planifiez à l’avance</a>
 					<h3 class="blog-title">
 						<a href="blog-details.html">Réservez vos billets, logements et activités tôt pour éviter
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						                les mauvaises surprises.</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                les mauvaises surprises.</a>
 					</h3>
 
 					{% if app.user %}
@@ -278,10 +278,10 @@
 					<a class="blog-date" href="blog-details.html">
 						<i class="far fa-calendar-alt"></i>
 						Faites une liste de
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														              vérification (checklist)</a>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														              vérification (checklist)</a>
 					<h3 class="blog-title">
 						<a href="blog-details.html">Notez ce que vous devez emporter : passeport, argent,
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						                chargeurs, vêtements, etc.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                chargeurs, vêtements, etc.
 						</a>
 					</h3>
 
@@ -297,12 +297,12 @@
 		</div>
 	</div>
 	<!--==============================
-																																																																																																						    About Blog Area End 
-																																																																																																						  ==============================-->
+																																																																																																																																																																														    About Blog Area End 
+																																																																																																																																																																														  ==============================-->
 
 	<!--==============================
-																																																																																																						      Tour Package Area Start 
-																																																																																																						    ==============================-->
+																																																																																																																																																																														      Tour Package Area Start 
+																																																																																																																																																																														    ==============================-->
 	<section class="space bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
 		<div class="shape-mockup d-none d-xl-block jump z-index-negative" data-bottom="20%" data-left="5%">
 			<img src="assets/img/shape/Dot.png" alt="Dots"/>
@@ -321,9 +321,9 @@
 						<h2 class="sec-title h1">Meilleur forfait vacances</h2>
 						<p class="sec-text">
 							Découvrez nos offres exceptionnelles pour vivre des vacances
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						                inoubliables. Que ce soit pour l'aventure, la détente ou la
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						                découverte culturelle, nous avons le forfait idéal pour vous.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						                Préparez-vous à explorer le monde autrement.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                inoubliables. Que ce soit pour l'aventure, la détente ou la
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                découverte culturelle, nous avons le forfait idéal pour vous.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														                Préparez-vous à explorer le monde autrement.
 						</p>
 					</div>
 				</div>
@@ -386,8 +386,8 @@
 <!--==============================
 																																		      Tour Package Area End 
 																																		    ==============================--><!--==============================
-																																				      Gallery Area Start 
-																																				    ==============================--><section class="space space-extra-bottom gallery-style1">
+																																																																																																												      Gallery Area Start 
+																																																																																																												    ==============================--><section class="space space-extra-bottom gallery-style1">
 	<div class="container">
 		<div class="row">
 			<div class="col-xl-6">
@@ -397,426 +397,367 @@
 					<h2 class="sec-title h1">Villes à couper le souffle</h2>
 					<p class="sec-text">
 						Explorez des destinations incroyables autour du monde. Chaque
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                ville vous réserve une expérience unique et mémorable.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                ville vous réserve une expérience unique et mémorable.
 					</p>
 				</div>
 			</div>
 
 			<div class="col-xl-6">
 				<div style="
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                position: relative;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                width: 100%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                padding-top: 100%; /* ratio 1:1 = 100% */
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                overflow: hidden;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                border-radius: 20px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									              ">
-					<video autoplay muted loop playsinline style="
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  position: absolute;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  top: 0;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  left: 0;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  width: 100%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  height: 100%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  object-fit: cover;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                ">
-						<source src="assets/img/0303.mp4" type="video/mp4"/>
-						Votre navigateur ne prend pas en charge la lecture de la vidéo.
-					</video>
-				</div>
-			</div>
-		</div>
-	</div>
-</section><!--==============================
-																																				      Gallery Area End 
-																																				    ==============================--><!--==============================
-																																				      Features Area Start 
-																																				    ==============================--><section class="space-extra-bottom">
-	<div class="container">
-		<div class="row">
-			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
-				<div class="features-style1">
-					<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
-					<div class="features-image">
-						<img src="assets/img/features/features-1-1.png" alt="image"/>
-					</div>
-					<div class="features-content">
-						<h3 class="features-title">Activités Spéciales</h3>
-						<p class="features-text">
-							Profitez d’activités uniques et inoubliables lors de votre
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  voyage. Que ce soit des aventures en plein air, des ateliers
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  culturels ou des expériences locales.
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
-				<div class="features-style1">
-					<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
-					<div class="features-image">
-						<img src="assets/img/features/features-1-2.png" alt="image"/>
-					</div>
-					<div class="features-content">
-						<h3 class="features-title">Guide Pratique</h3>
-						<p class="features-text">
-							Suivez nos conseils avisés pour profiter pleinement de chaque
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  destination. Nos guides vous accompagnent pas à pas pour une
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  expérience sans stress et enrichissante.
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
-				<div class="features-style1">
-					<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
-					<div class="features-image">
-						<img src="assets/img/features/features-1-3.png" alt="image"/>
-					</div>
-					<div class="features-content">
-						<h3 class="features-title">Organisation du Voyage</h3>
-						<p class="features-text">
-							Nous nous occupons de tous les détails de votre voyage :
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  transport, hébergement et activités. Voyagez l'esprit
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  tranquille, tout est déjà planifié pour vous.
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-3 col-md-6 col-sm-6 col-12">
-				<div class="features-style1">
-					<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
-					<div class="features-image">
-						<img src="assets/img/features/features-1-4.png" alt="image"/>
-					</div>
-					<div class="features-content">
-						<h3 class="features-title">Responsable des Lieux</h3>
-						<p class="features-text">
-							Un expert local veille à ce que chaque site soit prêt à vous
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  accueillir dans les meilleures conditions. Profitez de chaque
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	                  lieu sans vous soucier de l’organisation.
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section><!--==============================
-																																				      Features Area End 
-																																				    ==============================--><!--==============================
-																																				      Special Offer Area Start 
-																																				    ==============================--><section class="space position-relative" data-bg-src="assets/img/bg/offer-bg.jpg">
-	<div class="container">
-		<div class="row align-items-center justify-content-between">
-			<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-6">
-				<div class="title-area white-title mb-md-0">
-					<span class="sec-subtitle">Partez & Découvrez</span>
-					<h2 class="sec-title h1">Profitez d'une offre spéciale</h2>
-					<p class="sec-text">
-						Explorez de nouvelles destinations à des prix exceptionnels.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                Vivez une expérience unique avec nos offres limitées et partez à
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                l’aventure dès aujourd’hui.
-					</p>
+																																																								position: relative;
+																																																								width: 100%;
+																																																								padding-top: 100%;
+																																																								overflow: hidden;
+																																																								border-radius: 20px;
+																																																								box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+																																																								background-image: url('https://www.triptogo.com/images/promotion/home_taiwan.jpg');
+																																																								background-size: cover;
+																																																								background-position: center;
+																																																							"></div>
 
-					{% if app.user %}
-						<a href="{{path('app_hotel_chambre_index')}}" class="vs-btn style2">Voir plus</a>
-					{% else %}
-						<a href="{{ path('app_seconnecter') }}" class="vs-btn style2">
-							Voir plus
-						</a>
-					{% endif %}
-				</div>
-			</div>
-			<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-6">
-				<div class="img-box1">
-					<img class="img-1-1" src="assets/img/shape/offer-1-1.png" alt="Offer image"/>
-				</div>
 			</div>
 		</div>
-	</div>
-</section><!--==============================
-																																				      Special Offer Area End 
-																																				    ==============================--><!--==============================
-																																				      Destiniations Area Start 
-																																				  ==============================--><section class="space space-extra-bottom bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
-	<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-20%" data-right="-8%">
-		<img src="assets/img/shape/circle1.png" alt="circle"/>
-	</div>
-	<div class="shape-mockup d-none d-xl-block z-index-negative" data-bottom="13%" data-left="0%">
-		<img src="assets/img/shape/walk.png" alt="circle"/>
-	</div>
-	<div class="container">
-		<div class="row justify-content-between align-items-center">
-			<div class="col-lg-5 col-md-8">
-				<div class="title-area">
-					<span class="sec-subtitle">Destinations phares</span>
-					<h2 class="sec-title h1">Des villes inoubliables</h2>
-					<p class="sec-text">
-						Découvrez des lieux qui marquent les esprits. Chaque ville a son
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                charme unique, prête à vous offrir des souvenirs mémorables et
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                des aventures exceptionnelles.
-					</p>
-				</div>
-			</div>
-			<div class="col-auto">
-				<div class="sec-btns">
-					<button class="icon-btn" data-slick-prev=".destinationSlide">
-						<i class="fas fa-chevron-left"></i>
-					</button>
-					<button class="icon-btn" data-slick-next=".destinationSlide">
-						<i class="fas fa-chevron-right"></i>
-					</button>
-				</div>
-			</div>
-		</div>
-		<div class="row destinationSlide vs-carousel" data-slide-show="3" data-arrows="false" data-lg-slide-show="2" data-md-slide-show="2" data-sm-slide-show="1">
-			<div class="col-xl-4">
-				<div class="destination-style1">
-					<a href="destination-details.html">
-						<img src="https://www.triptogo.com/images/promotion/home_taiwan.jpg" alt="destination image"/></a>
-					<span class="destination-price">TND 259</span>
-					<div class="destination-info">
-						<h4 class="destination-name">
-							{% if app.user %}
-								<a href="about.html">Thailand</a>
-							{% else %}
-								<a href="{{ path('app_seconnecter') }}">
-									Thailand
-								</a>
-							{% endif %}
-						</h4>
-						<p class="destination-text">Explore Sea & Get Relax</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-4">
-				<div class="destination-style1">
-					<a href="destination-details.html">
-						<img src="https://data.triptogo.com/image/cache/catalog/Asia/japan/Hiroshima/miyajima-400x266.5.jpg" alt="destination image"/></a>
-					<span class="destination-price">TND 369</span>
-					<div class="destination-info">
-						<h4 class="destination-name">
-							{% if app.user %}
-								<a href="about.html">Japan</a>
-							{% else %}
-								<a href="{{ path('app_seconnecter') }}">
-									Japan
-								</a>
-							{% endif %}
-						</h4>
-						<p class="destination-text">Explore Sea & Get Relax</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-4">
-				<div class="destination-style1">
-					<a href="destination-details.html">
-						<img src="https://data.triptogo.com/image/cache/catalog/Europe/Spain/Barcelona/Barceloneta-beach-400x266.5.jpg" alt="destination image"/></a>
-					<span class="destination-price">TND 299</span>
-					<div class="destination-info">
-						<h4 class="destination-name">
-							{% if app.user %}
-								<a href="about.html">Spain</a>
-							{% else %}
-								<a href="{{ path('app_seconnecter') }}">
-									Spain
-								</a>
-							{% endif %}
-						</h4>
-						<p class="destination-text">Explore Sea & Get Relax</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-xl-4">
-				<div class="destination-style1">
-					<a href="destination-details.html">
-						<img src="https://www.triptogo.com/images/promotion/home_peru.jpg" alt="destination image"/></a>
-					<span class="destination-price">TND 158</span>
-					<div class="destination-info">
-						<h4 class="destination-name">
-							{% if app.user %}
-								<a href="about.html">Mexico</a>
-							{% else %}
-								<a href="{{ path('app_seconnecter') }}">
-									Mexico
-								</a>
-							{% endif %}
-						</h4>
-						<p class="destination-text">Explore World & Get Relax</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section><!--==============================
-																																				      Destinations Area End 
-																																				  ==============================--><!--==============================
-																																				      Testimonial Area Start 
-																																				    ==============================--><section class="space testimonial-style1" data-bg-src="assets/img/bg/testimonial-bg.jpg">
-	<div class="container">
-		<div class="row justify-content-between align-items-center">
-			<div class="col-xxl-5 col-xl-5">
-				<div class="title-area">
-					<span class="sec-subtitle" style="color: #ff681a;">Partez à la découverte</span>
-					<h2 class="sec-title h1">Ce que disent nos clients</h2>
-					<p class="sec-text">
-						Découvrez les avis authentiques de nos voyageurs satisfaits.
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                Leurs expériences témoignent de la qualité de nos services et de
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                la magie des destinations proposées.
-					</p>
-					{% if app.user %}
-						<a href="about.html" class="vs-btn style3">Voir plus</a>
-					{% else %}
-						<a href="{{ path('app_seconnecter') }}" class="vs-btn style3">
-							Voir plus
-						</a>
-					{% endif %}
-				</div>
-			</div>
-			<div class="col-xxl-6 col-xl-7">
-				<div class="testi-style1">
-					<div class="testi-avaters vs-slider-tab" data-asnavfor="#testId"></div>
-					<div class="testi-shape"></div>
-					<div class="vs-carousel" id="testId" data-slide-show="1" data-fade="true">
-						<div class="position-relative z-index-common">
-							<div class="testi-quote">
-								<img src="assets/img/shape/quote1.png" alt="quote"/>
-							</div>
-
-							<p class="testi-text">
-								"En tant que client de TripToGo, je suis extrêmement
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    satisfait de la plateforme. L'application est intuitive et
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    facile à utiliser, ce qui m'a permis de planifier mes
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    voyages en toute simplicité. Chaque fonctionnalité semble
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    parfaitement adaptée aux besoins des voyageurs, et
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    l'ensemble de l'expérience est vraiment fluide."
+	</section><!--==============================
+																																																																																																																							      Gallery Area End 
+																																																																																																																							    ==============================--><!--==============================
+																																																																																																																							      Features Area Start 
+																																																																																																																							    ==============================--><section class="space-extra-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-xl-3 col-md-6 col-sm-6 col-12">
+					<div class="features-style1">
+						<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
+						<div class="features-image">
+							<img src="assets/img/features/features-1-1.png" alt="image"/>
+						</div>
+						<div class="features-content">
+							<h3 class="features-title">Activités Spéciales</h3>
+							<p class="features-text">
+								Profitez d’activités uniques et inoubliables lors de votre
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                  voyage. Que ce soit des aventures en plein air, des ateliers
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                  culturels ou des expériences locales.
 							</p>
-
-							<div class="testi-avater">
-								<img src="assets/img/youssef.jpg" alt="customer image" style="
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        border-radius: 50%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        width: 100px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        height: 100px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        object-fit: cover;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                      "/>
-							</div>
-
-							<h3 class="testi-name">Youssef Dhib</h3>
 						</div>
-
-						<div class="position-relative z-index-common">
-							<div class="testi-quote">
-								<img src="assets/img/shape/quote1.png" alt="quote"/>
-							</div>
-
-							<p class="testi-text">
-								"TripToGo a transformé mes voyages ! Grâce à leur service
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    personnalisé et à la qualité de leur plateforme, chaque
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    étape de mon voyage a été simplifiée. Que ce soit pour
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    réserver des hôtels, des vols ou planifier des activités,
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                    tout est facile et efficace.
+					</div>
+				</div>
+				<div class="col-xl-3 col-md-6 col-sm-6 col-12">
+					<div class="features-style1">
+						<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
+						<div class="features-image">
+							<img src="assets/img/features/features-1-2.png" alt="image"/>
+						</div>
+						<div class="features-content">
+							<h3 class="features-title">Guide Pratique</h3>
+							<p class="features-text">
+								Suivez nos conseils avisés pour profiter pleinement de chaque
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                  destination. Nos guides vous accompagnent pas à pas pour une
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                  expérience sans stress et enrichissante.
 							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-md-6 col-sm-6 col-12">
+					<div class="features-style1">
+						<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
+						<div class="features-image">
+							<img src="assets/img/features/features-1-3.png" alt="image"/>
+						</div>
+						<div class="features-content">
+							<h3 class="features-title">Organisation du Voyage</h3>
+							<p class="features-text">
+								Nous nous occupons de tous les détails de votre voyage :
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                  transport, hébergement et activités. Voyagez l'esprit
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                  tranquille, tout est déjà planifié pour vous.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-3 col-md-6 col-sm-6 col-12">
+					<div class="features-style1">
+						<div class="features-bg" data-bg-src="assets/img/shape/features.png"></div>
+						<div class="features-image">
+							<img src="assets/img/features/features-1-4.png" alt="image"/>
+						</div>
+						<div class="features-content">
+							<h3 class="features-title">Responsable des Lieux</h3>
+							<p class="features-text">
+								Un expert local veille à ce que chaque site soit prêt à vous
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                  accueillir dans les meilleures conditions. Profitez de chaque
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                  lieu sans vous soucier de l’organisation.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section><!--==============================
+																																																																																																																							      Features Area End 
+																																																																																																																							    ==============================--><!--==============================
+																																																																																																																							      Special Offer Area Start 
+																																																																																																																							    ==============================--><section class="space position-relative" data-bg-src="assets/img/bg/offer-bg.jpg">
+		<div class="container">
+			<div class="row align-items-center justify-content-between">
+				<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-6">
+					<div class="title-area white-title mb-md-0">
+						<span class="sec-subtitle">Partez & Découvrez</span>
+						<h2 class="sec-title h1">Profitez d'une offre spéciale</h2>
+						<p class="sec-text">
+							Explorez de nouvelles destinations à des prix exceptionnels.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                Vivez une expérience unique avec nos offres limitées et partez à
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                l’aventure dès aujourd’hui.
+						</p>
 
-							<div class="testi-avater">
-								<img src="assets/img/aymen.jpg" alt="customer image" style="
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        border-radius: 50%;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        width: 100px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        height: 100px;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                        object-fit: cover;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									                      "/>
+						{% if app.user %}
+							<a href="{{path('app_hotel_chambre_index')}}" class="vs-btn style2">Voir plus</a>
+						{% else %}
+							<a href="{{ path('app_seconnecter') }}" class="vs-btn style2">
+								Voir plus
+							</a>
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-xxl-5 col-xl-5 col-lg-6 col-md-6">
+					<div class="img-box1">
+						<img class="img-1-1" src="assets/img/shape/offer-1-1.png" alt="Offer image"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section><!--==============================
+																																																																																																																							      Special Offer Area End 
+																																																																																																																							    ==============================--><!--==============================
+																																																																																																																							      Destiniations Area Start 
+																																																																																																																							  ==============================--><section class="space space-extra-bottom bg-light shape-mockup-wrap" data-bg-src="assets/img/shape/Bg.png">
+		<div class="shape-mockup d-none d-xl-block spin z-index-negative" data-top="-20%" data-right="-8%">
+			<img src="assets/img/shape/circle1.png" alt="circle"/>
+		</div>
+		<div class="shape-mockup d-none d-xl-block z-index-negative" data-bottom="13%" data-left="0%">
+			<img src="assets/img/shape/walk.png" alt="circle"/>
+		</div>
+		<div class="container">
+			<div class="row justify-content-between align-items-center">
+				<div class="col-lg-5 col-md-8">
+					<div class="title-area">
+						<span class="hero-subtitle">Nos meilleurs hôtels</span>
+						<br><br><br>
+						<h2 class="sec-title h1">Des séjours inoubliables</h2>
+						<p class="sec-text">
+							Découvrez nos hôtels les mieux notés, alliant confort, luxe et accueil chaleureux. Choisissez l’endroit idéal pour rendre votre voyage inoubliable.
+						</p>
+					</div>
+
+				</div>
+				<div class="col-auto">
+					<div class="sec-btns">
+						<button class="icon-btn" data-slick-prev=".destinationSlide">
+							<i class="fas fa-chevron-left"></i>
+						</button>
+						<button class="icon-btn" data-slick-next=".destinationSlide">
+							<i class="fas fa-chevron-right"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="row destinationSlide vs-carousel" data-slide-show="3" data-arrows="false" data-lg-slide-show="2" data-md-slide-show="2" data-sm-slide-show="1">
+				{% for hotel in hotels %}
+					<div class="col-xl-4">
+						<div class="destination-style1">
+							<a href="{{ path('app_hotel_rooms', {'id': hotel.id}) }}">
+								<img src="{{ asset('uploads/hotels/' ~ hotel.image) }}" alt="{{ hotel.nom }}"/>
+							</a>
+							<span class="destination-price">%
+								{{ hotel.promotion }}</span>
+							<div class="destination-info">
+								<h4 class="destination-name">
+									{% if app.user %}
+										<a href="#">{{ hotel.nom }}</a>
+									{% else %}
+										<a href="{{ path('app_seconnecter') }}">{{ hotel.nom }}</a>
+									{% endif %}
+								</h4>
+								<p class="destination-text">{{ hotel.description ? hotel.description|slice(0, 60) ~ '...' : 'Aucune description' }}
+								</p>
 							</div>
-							<h3 class="testi-name">Aymen Dhieb</h3>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+	<!--==============================
+																																															      Destinations Area End 
+																																															  ==============================--><!--==============================
+																																																																																																																							      Testimonial Area Start 
+																																																																																																																							    ==============================--><section class="space testimonial-style1" data-bg-src="assets/img/bg/testimonial-bg.jpg">
+		<div class="container">
+			<div class="row justify-content-between align-items-center">
+				<div class="col-xxl-5 col-xl-5">
+					<div class="title-area">
+						<span class="sec-subtitle" style="color: #ff681a;">Partez à la découverte</span>
+						<h2 class="sec-title h1">Ce que disent nos clients</h2>
+						<p class="sec-text">
+							Découvrez les avis authentiques de nos voyageurs satisfaits.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                Leurs expériences témoignent de la qualité de nos services et de
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                la magie des destinations proposées.
+						</p>
+						{% if app.user %}
+							<a href="about.html" class="vs-btn style3">Voir plus</a>
+						{% else %}
+							<a href="{{ path('app_seconnecter') }}" class="vs-btn style3">
+								Voir plus
+							</a>
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-xxl-6 col-xl-7">
+					<div class="testi-style1">
+						<div class="testi-avaters vs-slider-tab" data-asnavfor="#testId"></div>
+						<div class="testi-shape"></div>
+						<div class="vs-carousel" id="testId" data-slide-show="1" data-fade="true">
+							<div class="position-relative z-index-common">
+								<div class="testi-quote">
+									<img src="assets/img/shape/quote1.png" alt="quote"/>
+								</div>
+
+								<p class="testi-text">
+									"En tant que client de TripToGo, je suis extrêmement
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    satisfait de la plateforme. L'application est intuitive et
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    facile à utiliser, ce qui m'a permis de planifier mes
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    voyages en toute simplicité. Chaque fonctionnalité semble
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    parfaitement adaptée aux besoins des voyageurs, et
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    l'ensemble de l'expérience est vraiment fluide."
+								</p>
+
+								<div class="testi-avater">
+									<img src="assets/img/youssef.jpg" alt="customer image" style="
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                        border-radius: 50%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                        width: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                        height: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                        object-fit: cover;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                      "/>
+								</div>
+
+								<h3 class="testi-name">Youssef Dhib</h3>
+							</div>
+
+							<div class="position-relative z-index-common">
+								<div class="testi-quote">
+									<img src="assets/img/shape/quote1.png" alt="quote"/>
+								</div>
+
+								<p class="testi-text">
+									"TripToGo a transformé mes voyages ! Grâce à leur service
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    personnalisé et à la qualité de leur plateforme, chaque
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    étape de mon voyage a été simplifiée. Que ce soit pour
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    réserver des hôtels, des vols ou planifier des activités,
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                    tout est facile et efficace.
+								</p>
+
+								<div class="testi-avater">
+									<img src="assets/img/aymen.jpg" alt="customer image" style="
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                        border-radius: 50%;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                        width: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                        height: 100px;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                        object-fit: cover;
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																				                      "/>
+								</div>
+								<h3 class="testi-name">Aymen Dhieb</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section><!--==============================
+																																																																																																																							    Testimonial Area End 
+																																																																																																																							  ==============================--><!--==============================
+																																																																																																																							      Blogs Area Start 
+																																																																																																																							  ==============================--><div class="sidemenu-wrapper offcanvas-wrapper d-none d-lg-block">
+		<div class="sidemenu-content">
+			<button class="closeButton sideMenuCls">
+				<i class="far fa-times"></i>
+			</button>
+			<div class="widget">
+				<div class="vs-widget-about">
+					<div class="footer-logo">
+						<a href="index.html"><img src="assets/img/primary.png" alt="Travolo"/></a>
+					</div>
+					<p class="footer-text">
+						Ut tellus dolor, dapibus eget, elementum iifend cursus eleifend,
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					              elit. Aenean iifend tor wisi Aliquam er at volutpat. Dui ac tui
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					              end cursus eleifendrpis.
+					</p>
+					<div class="info-social style2">
+						<a href="#">
+							<i class="fab fa-facebook-f"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-twitter"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-linkedin-in"></i>
+						</a>
+						<a href="#">
+							<i class="fab fa-google"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="widget">
+				<h3 class="widget_title">Articles récents</h3>
+				<div class="recent-post-wrap">
+					<div class="recent-post">
+						<div class="media-img">
+							<a href="blog-details.html"><img src="assets/img/blog/recent-post1.jpg" alt="Image du Blog"/></a>
+						</div>
+						<div class="media-body">
+							<div class="recent-post-meta">
+								<i class="fal fa-calendar-alt"></i>
+								<a href="blog.html">15 Décembre 2022</a>
+							</div>
+							<h4 class="post-title">
+								<a class="text-inherit" href="blog-details.html">Nous offrons un tour incroyable pour les VIP</a>
+							</h4>
+						</div>
+					</div>
+					<div class="recent-post">
+						<div class="media-img">
+							<a href="blog-details.html"><img src="assets/img/blog/recent-post2.jpg" alt="Image du Blog"/></a>
+						</div>
+						<div class="media-body">
+							<div class="recent-post-meta">
+								<i class="fal fa-calendar-alt"></i>
+								<a href="blog.html">13 Mars 2022</a>
+							</div>
+							<h4 class="post-title">
+								<a class="text-inherit" href="blog-details.html">Le journal du voyageur : Chroniques d'une âme errante</a>
+							</h4>
+						</div>
+					</div>
+					<div class="recent-post">
+						<div class="media-img">
+							<a href="blog-details.html"><img src="assets/img/blog/recent-post3.jpg" alt="Image du Blog"/></a>
+						</div>
+						<div class="media-body">
+							<div class="recent-post-meta">
+								<i class="fal fa-calendar-alt"></i>
+								<a href="blog.html">23 Août 2022</a>
+							</div>
+							<h4 class="post-title">
+								<a class="text-inherit" href="blog-details.html">Errer et se révéler, captivant à tellus.</a>
+							</h4>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</section><!--==============================
-																																				    Testimonial Area End 
-																																				  ==============================--><!--==============================
-																																				      Blogs Area Start 
-																																				  ==============================--><div class="sidemenu-wrapper offcanvas-wrapper d-none d-lg-block">
-	<div class="sidemenu-content">
-		<button class="closeButton sideMenuCls">
-			<i class="far fa-times"></i>
-		</button>
-		<div class="widget">
-			<div class="vs-widget-about">
-				<div class="footer-logo">
-					<a href="index.html"><img src="assets/img/primary.png" alt="Travolo"/></a>
-				</div>
-				<p class="footer-text">
-					Ut tellus dolor, dapibus eget, elementum iifend cursus eleifend,
-																																																																																																																																																																																																																																																																																																																																																																																																																																																		              elit. Aenean iifend tor wisi Aliquam er at volutpat. Dui ac tui
-																																																																																																																																																																																																																																																																																																																																																																																																																																																		              end cursus eleifendrpis.
-				</p>
-				<div class="info-social style2">
-					<a href="#">
-						<i class="fab fa-facebook-f"></i>
-					</a>
-					<a href="#">
-						<i class="fab fa-twitter"></i>
-					</a>
-					<a href="#">
-						<i class="fab fa-linkedin-in"></i>
-					</a>
-					<a href="#">
-						<i class="fab fa-google"></i>
-					</a>
-				</div>
-			</div>
-		</div>
-		<div class="widget">
-			<h3 class="widget_title">Articles récents</h3>
-			<div class="recent-post-wrap">
-				<div class="recent-post">
-					<div class="media-img">
-						<a href="blog-details.html"><img src="assets/img/blog/recent-post1.jpg" alt="Image du Blog"/></a>
-					</div>
-					<div class="media-body">
-						<div class="recent-post-meta">
-							<i class="fal fa-calendar-alt"></i>
-							<a href="blog.html">15 Décembre 2022</a>
-						</div>
-						<h4 class="post-title">
-							<a class="text-inherit" href="blog-details.html">Nous offrons un tour incroyable pour les VIP</a>
-						</h4>
-					</div>
-				</div>
-				<div class="recent-post">
-					<div class="media-img">
-						<a href="blog-details.html"><img src="assets/img/blog/recent-post2.jpg" alt="Image du Blog"/></a>
-					</div>
-					<div class="media-body">
-						<div class="recent-post-meta">
-							<i class="fal fa-calendar-alt"></i>
-							<a href="blog.html">13 Mars 2022</a>
-						</div>
-						<h4 class="post-title">
-							<a class="text-inherit" href="blog-details.html">Le journal du voyageur : Chroniques d'une âme errante</a>
-						</h4>
-					</div>
-				</div>
-				<div class="recent-post">
-					<div class="media-img">
-						<a href="blog-details.html"><img src="assets/img/blog/recent-post3.jpg" alt="Image du Blog"/></a>
-					</div>
-					<div class="media-body">
-						<div class="recent-post-meta">
-							<i class="fal fa-calendar-alt"></i>
-							<a href="blog.html">23 Août 2022</a>
-						</div>
-						<h4 class="post-title">
-							<a class="text-inherit" href="blog-details.html">Errer et se révéler, captivant à tellus.</a>
-						</h4>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>{% endblock %}{% block javascripts %}
-{{parent()}}
-<script>
-	document.addEventListener('DOMContentLoaded', function () {
+{% endblock %}
+{% block javascripts %}
+	{{parent()}}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
 const inputField = document.getElementById('user-question');
 const recordButton = document.getElementById('start-record-btn');
 const chatForm = document.getElementById('chat-form');
@@ -848,4 +789,5 @@ recordButton.disabled = true;
 recordButton.innerText = 'Non supporté';
 }
 });
-</script>{% endblock %}
+	</script>
+{% endblock %}
